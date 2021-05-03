@@ -1,0 +1,221 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: content-box;
+	font-family: arial;
+}
+input:focus {
+    outline-width: 0;
+}
+.flex-center{
+	justify-content: center;
+	align-items: center;
+	position: relative;
+	display: flex;
+	height: 95vh;
+
+}
+.top_nav {
+	overflow: hidden;
+	background: #d84646;
+	width: 100%;
+}
+.top_nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #d84646;
+  float: right;
+}
+
+.top_nav li {
+  float: left;
+}
+
+.top_nav li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+.top_nav li a:hover {
+  background-color: #111;
+}
+.top_nav div a {
+	color: #9eff6c;
+	font-weight: bold;
+	text-decoration: none;
+	float: left;
+	padding: 8px 12px;
+	display: inline-block;
+	transition: .4s;
+}
+.top_nav div a:hover {
+	background: #4798ff;
+	color: blanchedalmond;
+}
+.fulll_stak_menu {
+	background: #f15959;
+	overflow: hidden;
+}
+.fulll_stak_menu img {
+	height: 50px;
+	margin-left: 10px;
+	cursor: pointer;
+}
+.fulll_stak_menu .partision {
+	float: left;
+	
+}
+.fulll_stak_menu .partision form input#search{
+	padding:10px 36px;
+	width: 70%;
+	font: 20px arial;
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+	border: 1px solid #5d3030;
+	border-right: none;
+	vertical-align: middle;
+	
+	background: url(../img/search-icon.PNG) 6px 52% / auto 61% no-repeat white;
+}
+.fulll_stak_menu .partision form input[name=submit]{
+	padding:10px 20px;
+	font: 20px arial;
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+	border: 1px solid #14428a;
+	border-left: none;
+	vertical-align: middle;
+	background: #14428a;
+	color: white;
+	translate: .4s;
+}
+.fulll_stak_menu .partision form input[name=submit]:hover{
+	background: #133873;
+	cursor: pointer;
+	border: 1px solid #133873;
+	border-left: none;
+}
+.fulll_stak_menu .partision{
+	padding: 10px;
+}
+.fulll_stak_menu .user_setting a{
+	display: inline-block;
+	color: white;
+	text-decoration: none;
+	padding: 10px;
+}
+.fulll_stak_menu .user_setting {
+	float: right;
+}
+.fulll_stak_menu .user_setting a span.glyphicon {
+	font-weight: bold;
+	color: #fff59f;
+	font-size: 20px;
+	vertical-align: bottom;
+	padding-right: 5px;
+}
+
+.fulll_stak_menu .partision:first-child {
+	width: 16%;
+	overflow: hidden;
+}
+.fulll_stak_menu .partision.form {
+	width: 50%;
+}
+.fulll_stak_menu .partision:last-child {
+	width: 29%;
+	float: right;
+}
+
+/* Responsive Menu */
+@media(max-width: 1258px){
+	.fulll_stak_menu .partision.form {
+	  width: 50%;
+  }
+	.fulll_stak_menu .partision form input#search{
+		width: 60%;
+	}
+	.fulll_stak_menu .user_setting .wo {
+		display: none;
+	}
+	
+	.fulll_stak_menu .partision:last-child {
+		width: 145px;
+	}
+	.fulll_stak_menu .partision:first-child {
+		width: 200px;
+	}
+	.fulll_stak_menu .user_setting .fa {
+		
+	}
+}
+@media(max-width: 922px){
+	.fulll_stak_menu .partision.form {
+	  width: 50%;
+  }
+	.fulll_stak_menu .partision:first-child {
+		width: 180px;
+	}
+	.fulll_stak_menu .partision:last-child {
+		width: 160px;
+	}
+	.fulll_stak_menu .partision form input#search{
+		width: 50%;
+	}
+}
+@media(max-width: 836px){
+	.fulll_stak_menu .partision.form {
+	  width: 70%;
+  }
+	.fulll_stak_menu .partision.form input[type=submit]{
+		display: none;
+	}
+	.fulll_stak_menu .partision.form input#search{
+		border-radius: 10px;
+		padding: 7px 31px;
+		width: 90%;
+	}
+	.fulll_stak_menu .partision:first-child {
+		display: none;
+	}
+	.fulll_stak_menu .partision:last-child {
+		width: 160px;
+	}
+}
+@media(max-width: 672px){
+	.fulll_stak_menu .partision.form {
+	  width: 60%;
+  }
+}
+@media(max-width: 504px){
+	.fulll_stak_menu .partision.form {
+	  width: 54%;
+		padding: 10px 1px;
+		margin-top: 3px;
+  }
+	.fulll_stak_menu .user_setting a{
+		padding: 10px 5px;
+	}
+	.fulll_stak_menu .partision:last-child {
+		width: 115px;
+		margin: 0;
+	}
+	.top_nav ul li a {
+		font-size: 11px;
+		padding: 9px 8px;
+	}
+}
+@media(max-width: 399px){
+	.fulll_stak_menu .partision.form {
+	  width: 50%;
+  }
+	.fulll_stak_menu .form form input#search {
+		font-size: 15px !important;
+		margin: 0px !important;;
+	}
+}

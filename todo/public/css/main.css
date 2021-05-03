@@ -1,0 +1,137 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: content-box;
+  font-family: arial;
+}
+input:focus {
+    outline-width: 0;
+}
+.flex-center{
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  display: flex;
+  height: 95vh;
+
+}
+body {
+  background:url(../img/blur.fev.PNG) 14% 60% / auto 100% fixed;
+}
+
+.fulll_stak_menu {
+  background: #12daff;
+  overflow: hidden;
+  box-shadow: 0px 1px 6px 0px black;
+}
+
+.fulll_stak_menu .partision {
+  float: left;
+  
+}
+.day_tog {
+    border: 1px solid green;
+    display:inline-block;
+    padding: 4px 10px;
+    color: green;
+    margin: 1%;
+    border-radius: 10px;
+}
+.day_tog.day_sl{
+    color: red;
+    border-color: red; 
+}
+
+.march {
+  background: #ffffffEE;
+  text-align: left;
+  overflow: hidden;
+  margin-top: 4px;
+  border-radius: 1px;
+}
+.march .name_s{
+  float: left;
+  width: 70%;
+}
+.march .button_s .btn {
+  margin: 5px;
+}
+.march .name_s h5,.march .name_s h4{
+  margin: 0;
+  padding: 4px;
+}
+.march .name_s h5{
+  color: green;
+}
+
+
+.fulll_stak_menu .partision{
+  color: yellow;
+  font-weight: bold;
+  font-size: 20px;
+}
+.fulll_stak_menu .user_setting a{
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  padding: 16px;
+}
+.fulll_stak_menu .user_setting {
+  float: right;
+}
+.fulll_stak_menu .user_setting .wo{
+  color: #ff00db;
+  font-size: 18px;
+}
+.fulll_stak_menu h2 {
+
+font-size: 20px;
+
+color: #e16f00;
+
+padding-left: 10px;
+}
+.fulll_stak_menu .user_setting a span.glyphicon,.fulll_stak_menu .user_setting a span.fa {
+  font-weight: bold;
+  color: #ff00db;
+  font-size: 29px;
+  vertical-align: bottom;
+  padding-right: 5px;
+  margin-top: -7px;
+}
+
+.fulll_stak_menu .partision:first-child {
+  width: 50%;
+  overflow: hidden;
+}
+.fulll_stak_menu .partision.form {
+  width: 50%;
+}
+.fulll_stak_menu .partision:last-child {
+  width: 35%;
+  float: right;
+}
+
+.primary_div {
+    width: 45%;
+    display: inline-block;
+    border-radius: 10px;
+}
+.primary_div:first-child{
+    background: #bcffbc;
+    border: 4px solid #0affaa;
+}
+.primary_div:last-child{
+    background: #fff5bc;
+    border: 4px solid #ff750a;
+}
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+
+
+
+
+

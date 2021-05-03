@@ -1,0 +1,10 @@
+{
+	"config": {
+    "platform": {
+        "php": "5.7"
+    }
+	},
+    "require": {
+        "paypal/paypal-checkout-sdk": "1.0.1"
+    }
+}
