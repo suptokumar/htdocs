@@ -41,18 +41,16 @@ Route::get('/class_history/{ras}', 'mainct@class_history');
 
 Route::group(['prefix' => 'student','middleware' => 'student'], function() {
 Route::get('/', 'mainct@index');
+Route::post('/teacherlist', 'soft@teacherlist');  
+Route::get('/myteachers', 'soft@myteachers');  
 Route::get('/settings', 'mainct@settings');  
-Route::get('/my_class', 'dclient@my_class');  
-Route::get('/manage_class', 'dclient@manage_class');  
+
 });
 
 
 
 Route::group(['prefix' => 'teacher','middleware' => 'teacher'], function() {
 Route::get('/', 'mainct@index');
-Route::get('/my_class', 'dclient@my_classt');  
-Route::get('/manage_class', 'dclient@manage_class');  
-Route::get('/settings', 'mainct@settings');  
 Route::get('/settings', 'mainct@settings');  
 });
 });

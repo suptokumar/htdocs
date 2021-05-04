@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student | classroommoney</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
 body {margin:0;font-family:Arial}
@@ -114,8 +115,8 @@ body {margin:0;font-family:Arial}
 
 <div class="topnav" id="myTopnav">
   <a href="{{ url('/') }}" class="active">Classroom Money</a>
-  <a href="{{ url('/mymarksheet') }}">Marksheet</a>
-  <a href="{{ url('/myteachers') }}">Teachers</a>
+  <a href="{{ url('/student/mymarksheet') }}">Marksheet</a>
+  <a href="{{ url('/student/myteachers') }}">Teachers</a>
   <div class="dropdown">
     <button class="dropbtn">Account 
       <i class="fa fa-caret-down"></i>
