@@ -143,10 +143,10 @@
   <button class="dropbtn" onclick="window.location='{{ url('/accounts') }}'">MY ACCOUNT</button>
   @else
   <button class="dropbtn" onclick="window.location='{{ url('/accounts') }}'">USERS</button>
+  @endif
   <button class="dropbtn" onclick="window.location='{{ url('/admin/expense') }}'">EXPENSE</button>
   <button class="dropbtn" onclick="window.location='{{ url('/admin/reports') }}'">REPORTS</button>
   <button class="dropbtn" onclick="window.location='{{ url('/admin/service') }}'">ADMIN</button>
-  @endif
   <button onclick="window.location='{{ url('/logout') }}'" style="background: #98e497;color: blue;text-shadow: 1px 1px 2px black;font-weight: bold;" class="dropbtn">LOGOUT</button>
 </div>
 

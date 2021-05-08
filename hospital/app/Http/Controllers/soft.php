@@ -23,11 +23,11 @@ use Auth;
 class soft extends Controller
 {
     public function menu(){
-        if (Auth::check()) {
-            return view("menu");
-        }else{
-            return redirect("login");
-        }
+    	if (Auth::check()) {
+    		return view("menu");
+    	}else{
+    		return redirect("login");
+    	}
     }
     public function reports(){
         if (Auth::check()) {
@@ -79,7 +79,7 @@ $day = floor((time()-strtotime($value->date))/86400)+1;
 }else{
     $day = 1;
 }
-        $t1+= intval($value->test_total*$day);
+    $t1+= intval($value->test_total*$day);
         if ($ad->discharge==1) {
     $t1-= intval($value->test_total*$day)-intval($value->test_paid);
 }
@@ -108,20 +108,20 @@ $t1+= intval($value->test_total);
         }
     }
     public function login(){
-        if (!Auth::check()) {
+    	if (!Auth::check()) {
             $admin = User::where("role","=","Admin")->get();
-            return view("login",['admin'=>$admin]);
-        }else{
-            return redirect("/");
-        }
+    		return view("login",['admin'=>$admin]);
+    	}else{
+    		return redirect("/");
+    	}
     }
     public function logout(){
-        if (!Auth::check()) {
-            return redirect("/login");
-        }else{
-            Auth::logout();
-            return redirect("/");
-        }
+    	if (!Auth::check()) {
+    		return redirect("/login");
+    	}else{
+    		Auth::logout();
+    		return redirect("/");
+    	}
     }
     public function apptoken($id){
         if($app = apoinment::find($id)){
@@ -282,7 +282,7 @@ $t1+= intval($value->test_total);
         return json_encode([$token,$find->fees]);
     }
     public function doctor(){
-        return view("doctor");
+    	return view("doctor");
     }
     public function collect($user){
         if($users =  emargency::find($user)){
@@ -723,7 +723,7 @@ $t1+= intval($value->test_total);
     public function logined(Request $request){
         // return Hash::make($request->get("pass"));
         // Auth::loginUsingId(1);
-        if (Auth::check()) {
+    	if (Auth::check()) {
             return redirect('/');
         }else{
             if ($request->get("log")=='Admin') {
@@ -1063,9 +1063,9 @@ WHEN contact LIKE '___________$search%' THEN 12 END, name ASC;
         $page = $request->get("page");
         $limit = 15;
         $from = ($page-1)*$limit;
-        $result = DB::select("SELECT * FROM ".$and." ORDER BY name ASC LIMIT $from,$limit;
+        $result = DB::select("SELECT * FROM ".$and." ORDER BY id DESC LIMIT $from,$limit;
             ");
-        $total = DB::select("SELECT id FROM ".$and." ORDER BY name ASC;
+        $total = DB::select("SELECT id FROM ".$and." ORDER BY id DESC;
             ");
         if ($date!='' && $doctor!='') {
             $due = 0;
@@ -1108,7 +1108,7 @@ WHEN contact LIKE '___________$search%' THEN 12 END, name ASC;
         $page = $request->get("page");
         $limit = 15;
         $from = ($page-1)*$limit;
-        $result = DB::select("SELECT * FROM ".$and." ORDER BY CASE WHEN id='$search' THEN 0  ELSE 1 END, name ASC LIMIT $from,$limit;
+        $result = DB::select("SELECT * FROM ".$and." ORDER BY CASE WHEN id='$search' THEN 0  ELSE 1 END, id DESC LIMIT $from,$limit;
             ");
         foreach ($result as $key => $r) {
             $day = strtotime($r->date);
@@ -1120,7 +1120,7 @@ WHEN contact LIKE '___________$search%' THEN 12 END, name ASC;
             }
             $result[$key]->total = ($result[$key]->total)*((($time-$day)/86400)+1);
         }
-        $total = DB::select("SELECT id FROM ".$and." ORDER BY name ASC;
+        $total = DB::select("SELECT id FROM ".$and." ORDER BY id DESC;
             ");
     return json_encode([$result,[count($total), $page, $limit]]);
     }
@@ -1192,8 +1192,8 @@ WHEN contact LIKE '___________$search%' THEN 12 END, name ASC;
             $resultt[$key]->names = $em_user->name;
             $resultt[$key]->contact = $em_user->contact;
             }else{
-            $results[$key]->names = '';
-            $results[$key]->contact = '';
+            $resultt[$key]->names = '';
+            $resultt[$key]->contact = '';
             }
         }
         $totals = DB::select("SELECT id FROM ".$and." ORDER BY id DESC;

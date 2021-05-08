@@ -42,12 +42,12 @@ body {margin:0;font-family:Arial}
 }
 
 .dropdown-content {
-  display: none;
-  position: absolute;
   background-color: #f9f9f9;
   min-width: 160px;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   z-index: 1;
+  position: fixed;
+  display: none;
 }
 
 .dropdown-content a {
@@ -102,6 +102,20 @@ body {margin:0;font-family:Arial}
     width: 100%;
     text-align: left;
   }
+}
+.gm_mg {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.gm_mg h2 {
+  font-size: 1em;
+  text-align: center;
+}
+.gm_mg div div {
+  margin: 1%;
+  padding: 10px;
+  border: 1px solid green;
+  border-radius: 10px;
 }
 @media(max-width: 606px){
   .table {

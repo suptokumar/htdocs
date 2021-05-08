@@ -2,117 +2,18 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Student | classroommoney</title>
+<title>{{Auth::user()->type==2?"Teacher":"Student"}} | classroommoney</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<style>
-body {margin:0;font-family:Arial}
+    <script src="{{ asset('/public/js/main.js') }}"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 
-.topnav {
-  overflow: hidden;
-  background-color: #333;
-}
+    <script src="{{ asset('/public/js/jquery.js') }}"></script>
 
-.topnav a {
-  float: left;
-  display: block;
-  color: #f2f2f2;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
+    <link rel="stylesheet" href="{{ asset('/public/css/dash.css?d') }}">
 
-.active {
-  background-color: #04AA6D;
-  color: white;
-}
-
-.topnav .icon {
-  display: none;
-}
-
-.dropdown {
-  float: left;
-  overflow: hidden;
-}
-
-.dropdown .dropbtn {
-  font-size: 17px;    
-  border: none;
-  outline: none;
-  color: white;
-  padding: 14px 16px;
-  background-color: inherit;
-  font-family: inherit;
-  margin: 0;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
-  float: none;
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  text-align: left;
-}
-
-.topnav a:hover, .dropdown:hover .dropbtn {
-  background-color: #555;
-  color: white;
-}
-
-.dropdown-content a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
-@media screen and (max-width: 600px) {
-  .topnav a:not(:first-child), .dropdown .dropbtn {
-    display: none;
-  }
-  .topnav a.icon {
-    float: right;
-    display: block;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .topnav.responsive {position: relative;}
-  .topnav.responsive .icon {
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
-  .topnav.responsive a {
-    float: none;
-    display: block;
-    text-align: left;
-  }
-  .topnav.responsive .dropdown {float: none;}
-  .topnav.responsive .dropdown-content {position: relative;}
-  .topnav.responsive .dropdown .dropbtn {
-    display: block;
-    width: 100%;
-    text-align: left;
-  }
-}
-</style>
 </head>
 <body>
-
+@if (Auth::user()->type==3)
 <div class="topnav" id="myTopnav">
   <a href="{{ url('/') }}" class="active">Classroom Money</a>
   <a href="{{ url('/student/mymarksheet') }}">Marksheet</a>
@@ -125,19 +26,60 @@ body {margin:0;font-family:Arial}
       <a href="{{ url('/invest') }}">Invest</a>
       <a href="{{ url('/balance') }}">My balance</a>
       <a href="{{ url('/earning') }}">Earning Records</a>
+      <a href="{{ url('/student/teach') }}">My Teachers</a>
       <a href="{{ url('/settings') }}">Settings</a>
     </div>
   </div> 
   <a href="{{ url('/logout') }}">Logout</a>
   <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
 </div>
-
-<div style="padding-left:16px">
-  <h2>Responsive Topnav with Dropdown</h2>
-  <p>Resize the browser window to see how it works.</p>
-  <p>Hover over the dropdown button to open the dropdown menu.</p>
+@endif
+@if (Auth::user()->type==2)
+  <div class="topnav" id="myTopnav">
+  <a href="{{ url('/') }}" class="active">Classroom Money</a>
+  <a href="{{ url('/teacher/mymarksheet') }}">Marksheet</a>
+  <a href="{{ url('/teacher/mystudents') }}">Students</a>
+  <a href="{{ url('/teacher/requests') }}">Requests</a>
+  <a href="{{ url('/settings') }}">Settings</a>
+  <a href="{{ url('/logout') }}">Logout</a>
+  <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
+</div>
+@endif
+<div class="row gm_mg">
+  <div class="col-sm-3">
+    <div>
+    <h2>My Earning</h2>
+    <h2>$50</h2>
+  </div>
+  </div>
+  <div class="col-sm-3">
+    <div>
+    <h2>Avarage Grades</h2>
+    <h2>3.8</h2>
+  </div>
+  </div>
+  <div class="col-sm-3">
+    <div>
+    <h2>Teachers</h2>
+    <h2>4</h2>
+  </div>
+  </div>
+  <div class="col-sm-3">
+    <div>
+    <h2>Upcoming Tasks</h2>
+    <h2>{{date("Y/m/d",time()+86400*90)}}</h2>
+  </div>
+  </div>
+</div>
+<input type="hidden" value="{{ csrf_token() }}" id="csrf">
+<div style="width: 100%;max-width: 1000px;padding: 20px;margin: 0px auto;">
+<div class="all_payments">
+  
+</div>
 </div>
 
+
+</div>
 <script>
 function myFunction() {
   var x = document.getElementById("myTopnav");
@@ -146,6 +88,93 @@ function myFunction() {
   } else {
     x.className = "topnav";
   }
+}
+</script>
+<script>
+  $(document).ready(function() {
+    veri_teachers(1);
+  });
+  function dp_fun(page){
+    veri_teachers(page);
+    $("body,html").animate({scrollTop:0}, 500);
+  }
+  function veri_teachers(page){
+    $.ajax({
+      url: '{{ url('/notifications') }}',
+      type: 'POST',
+      data: {page: page, search: $("#snod410").val(), _token:'{{csrf_token()}}'},
+    })
+    .done(function(data) {
+      console.log(data);
+     var d = JSON.parse(data);
+     let body = "";
+      for (var i = 0; i < d[0].length; i++) {
+        var row = d[0][i];
+      body += '<div class="row" id="bcmc'+row["id"]+'" style="padding: 15px; border: 1px solid #ccc; margin: 10px">';
+        body+= "<div class='col-sm-8'>"+row['content']+"<br>"+row['created_at']+"</div>";
+        body+="<div class='col-sm-4'>";
+        body+= " <button class='btn btn-danger' onclick=deleteit("+row['id']+",this)>Delete</button>";
+        body+= "</div>";
+      body+= '</div>';
+
+      }
+
+      $page = d[1][1];
+      $total = d[1][0];
+      $limit = d[1][2];
+      if (d[0]!=''){
+      body+=generate_pagination($total, $page, $limit, "dp_fun");
+      }
+      $(".all_payments").html(body);
+    })
+    .fail(function() {
+      veri_teachers(page);
+    })    
+  }
+
+
+
+
+
+
+function accept_student(id,t){
+
+      $.ajax({
+        url: "{{ url('/accept_student') }}",
+        type: 'POST',
+        data: {id: id,_token: $("#csrf").val()},
+      })
+      .done(function(data) {
+        $("#bcmc"+id).css('background',"#F4FCFF");
+        $(t).html(data);
+      })
+      .fail(function() {
+        $("#bcmc"+id).css('background',"#FFCCCC");
+      })
+      .always(function() {
+        console.log("complete");
+      });
+
+}
+
+function deleteit(id,t){
+
+      $.ajax({
+        url: "{{ url('/delete_notifications') }}",
+        type: 'POST',
+        data: {id: id,_token: $("#csrf").val()},
+      })
+      .done(function(data) {
+        $("#bcmc"+id).css('background',"#F4FCFF");
+        $("#bcmc"+id).fadeOut();
+      })
+      .fail(function() {
+        $("#bcmc"+id).css('background',"#FFCCCC");
+      })
+      .always(function() {
+        console.log("complete");
+      });
+
 }
 </script>
 

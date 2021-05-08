@@ -95,7 +95,7 @@
   <div class="form-group row" style="display: none;">
     <label for="inputPassword3" class="col-sm-4 col-form-label">Due Amount</label>
     <div class="col-sm-8">
-      <input type="text" name="contact" class="form-control" readonly="" value="{{$total-$paid}}" id="inputPassword3" placeholder="contact">
+      <input type="text" name="contact" class="form-control" readonly=""  {{Auth::user()->role=="Admin"?'':'min=0'}} value="{{$total-$paid}}" id="inputPassword3" placeholder="contact">
       <input type="submit" name="submit" id="doeo10" value="discharge">
     </div>
   </div>

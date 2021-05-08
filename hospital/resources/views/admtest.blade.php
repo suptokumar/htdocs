@@ -38,16 +38,37 @@
 @csrf
 <ul class="nav nav-tabs">
   <li class="nav-item">
-    <a class="nav-link Services active" href="javascript:void(0)" onclick="run_time('Service', this)">Services</a>
+    <a class="nav-link Services active btn btn-danger" href="javascript:void(0)" onclick="run_time('Service', this)">Services</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link ImageTests" href="javascript:void(0)" onclick="run_time('ImageTest', this)">ImageTest</a>
+    <a class="nav-link ImageTests btn btn-primary mx-1" href="javascript:void(0)" onclick="run_time('ImageTest', this)">ImageTest</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link Pathologys" href="javascript:void(0)" onclick="run_time('Pathology', this)">Pathology</a>
+    <a class="nav-link Pathologys btn btn-secondary" href="javascript:void(0)" onclick="run_time('Pathology', this)">Pathology</a>
   </li>
 </ul>
-  <table class="table">
+      <script>
+function myFunction() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("myInput");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}
+</script>
+<input type="text" onkeyup="myFunction()" placeholder="Search" id="myInput">
+    <table class="table" id="myTable">
     <thead>
       <tr>
         <th>Test Name</th>

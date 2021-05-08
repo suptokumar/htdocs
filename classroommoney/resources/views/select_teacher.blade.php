@@ -8,7 +8,7 @@
     <script src="{{ asset('/public/js/main.js') }}"></script>
 
     <script src="{{ asset('/public/js/jquery.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('/public/css/dash.css') }}">
+    <link rel="stylesheet" href="{{ asset('/public/css/dash.css?d') }}">
 </head>
 <body>
 
@@ -24,6 +24,7 @@
       <a href="{{ url('/invest') }}">Invest</a>
       <a href="{{ url('/balance') }}">My balance</a>
       <a href="{{ url('/earning') }}">Earning Records</a>
+      <a href="{{ url('/student/teach') }}">My Teachers</a>
       <a href="{{ url('/settings') }}">Settings</a>
     </div>
   </div> 
@@ -32,7 +33,7 @@
 </div>
 <div style="background:#D0E8FF;padding:20px;">
 <div style=" width: 100%" class="row">
-  <h2 class=" col-sm-6">My Teachers</h2>
+  <h2 class=" col-sm-6">Find Teachers</h2>
   <div class="rk col-sm-6" style="float: right;">
     Search <input type="search" id="snod410" autocomplete="off" onkeyup="veri_teachers(1)" style="padding: 10px; width: 60%; border: 1px solid #ccc; outline: none;" placeholder="email, school, name">
   </div>
@@ -96,7 +97,11 @@ function myFunction() {
         // body+= '<div class="dropdown"> <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Options <span class="caret"></span></button> <ul class="dropdown-menu"> <li><a href="javascript:void(0)" onclick="pd_view(\''+row['product_id']+'\',\''+row['product_name']+'\')">View Details</a></li> <li><a href="javascript:void(0)" onclick="pd_edit(\''+row['product_id']+'\',\''+row['product_name']+'\')">Edit</a></li> <li><a href="javascript:void(0)" style="background:#FF1B1B; color: white" onclick="pd_delete(\''+row['id']+'\',\''+row['product_name']+'\',\'#bcmc'+row['id']+'\')">Delete</a></li> </ul> </div>';
         
         // body+= " <button class='btn btn-success' onclick='details("+row['id']+",this)'>View Details</button>";
-        body+= " <button class='btn btn-primary' time='5' onclick='request("+row['id']+",this)'  data-do='0'>Request</button>";
+        if (row['text']=='Request Accepted') {
+        body+= " <button class='btn btn-primary'>"+row['text']+"</button>";
+        }else{
+        body+= " <button class='btn btn-primary' onclick='request("+row['id']+",this)' >"+row['text']+"</button>";
+        }
         body+= "</td>";
         body+= "</tr>";
 
@@ -125,46 +130,24 @@ function myFunction() {
 
 
 
-function verify(id,t){
-  let time = $(t).attr('time');
-  if ($(t).attr('data-do')==0) {
-      $(t).attr('data-do', 1);
-  }else{
-      $(t).attr('data-do', 0);
-  }
+function request(id,t){
 
-
-  var x = setInterval(function(){
-  if ($(t).attr('data-do')==0) {
-    $(t).attr('time',5);
-      clearInterval(x);
-    t.innerHTML = "Verify";
-  }else{
-
-    time=time-1;
-    t.innerHTML = "Requesting in "+time;
-    if (time==0) {
       $.ajax({
         url: "{{ url('/request') }}",
         type: 'POST',
         data: {id: id,_token: $("#csrf").val()},
       })
       .done(function(data) {
-        $("#bcmc"+id).css('background',"#9BE4FF");
-        $(t).removeAttr('onclick');
-        $(t).html('Verified');
-        $("#bcmc"+id).fadeOut(2000);
+        $("#bcmc"+id).css('background',"#F4FCFF");
+        $(t).html(data);
       })
       .fail(function() {
-        $("#bcmc"+id).css('background',"#FF9B9B");
+        $("#bcmc"+id).css('background',"#FFCCCC");
       })
       .always(function() {
         console.log("complete");
       });
-      clearInterval(x);
-    }
-  }
-  },1000);
+
 }
 </script>
 </body>

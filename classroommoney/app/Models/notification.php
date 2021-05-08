@@ -9,9 +9,12 @@ class notification extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user',
+        'from',
+        'to',
         'content',
-        'time',
-        'read'
+        'action',
+        'link',
+        'read',
+        'delete'
     ];
 }

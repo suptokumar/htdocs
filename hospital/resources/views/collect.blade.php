@@ -58,7 +58,7 @@
   <div class="form-group row">
     <label for="dfa" class="col-sm-2 col-form-label">Collected Now</label>
     <div class="col-sm-10">
-      <input type="number" step=".001" name="paid" class="form-control" required="" max="{{$total-$paid}}" id="dfa" placeholder="Currently Paid Amount">
+      <input type="number" step=".001" name="paid" class="form-control" {{Auth::user()->role=="Admin"?'':'min=0'}} required="" max="{{$total-$paid}}" id="dfa" placeholder="Currently Paid Amount">
     </div>
   </div>
   
