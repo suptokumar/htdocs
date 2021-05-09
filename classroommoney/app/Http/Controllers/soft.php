@@ -33,6 +33,11 @@ class soft extends Controller
     {
         return view("admin.teachers");
     }
+    public function add_mark($id)
+    {
+        $user = User::find($id);
+        return view("add_mark",["user"=>$user]);
+    }
     public function requestpage()
     {
         return view("requestpage");
@@ -81,6 +86,10 @@ class soft extends Controller
     public function mystudents()
     {
         return view("mystudents");
+    }
+    public function mymarksheet()
+    {
+        return view("mymarksheet");
     }
     public function requestlist(Request $request)
     {
@@ -307,6 +316,39 @@ class soft extends Controller
     }
 
     public function mystudentlist(Request $request)
+    {
+        $search = Auth::id();
+        $and = "relations WHERE (`teacher` = '$search')";
+
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = 15;
+        $from = ($page - 1) * $limit;
+        $result = DB::select("SELECT * FROM " . $and . " ORDER BY id DESC LIMIT $from,$limit;
+            ");
+        $total = DB::select("SELECT id FROM " . $and . " ORDER BY id DESC;
+            ");
+        $status = [];
+        foreach ($result as $c => $value)
+        {
+            $result[$c]->created_at = date("Y/m/d h:i a", strtotime($value->created_at));
+            $teachers = User::where("id", "=", $value->student)
+                ->first();
+            $result[$c]->subject = $teachers->subject;
+            $result[$c]->name = $teachers->name;
+            $result[$c]->email = $teachers->email;
+            $result[$c]->teacher = $teachers->id;
+
+            $student = student::where("email","=",$value->email)->first();
+            $result[$c]->id_number = $student->id_number;
+            $result[$c]->id_proof = $student->id_proof;
+
+
+        }
+        return json_encode([$result, [count($total) , $page, $limit]]);
+    }
+
+    public function mystudentlistofmark(Request $request)
     {
         $search = Auth::id();
         $and = "relations WHERE (`teacher` = '$search')";
