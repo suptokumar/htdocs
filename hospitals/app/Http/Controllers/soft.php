@@ -192,7 +192,14 @@ $t1+= intval($value->test_total);
     public function memo1($user){
         if($tests = test::find($user)){
             $users = emargency::find($tests->em_id);
-            return view("ememo",["user"=>$users,"tests"=>$tests]);
+            $name = explode('```', $tests->test_name);
+            $type  = [];
+            for ($i=1; $i<count($name); $i++) {
+                $nam =$name[$i];
+                $tes = service::where("name","=",$nam)->first();
+                $type[$tes->name]=$tes->type;
+            }
+            return view("ememo",["user"=>$users,"tests"=>$tests,"type"=>$type]);
         }else{
             return back();
         }
@@ -219,7 +226,14 @@ $t1+= intval($value->test_total);
             $tests->test_total = $am;
                 }
             }
-            return view("ememo2",["user"=>$users,"tests"=>$tests]);
+            $type  = [];
+            for ($i=1; $i<count($test); $i++) {
+                $nam =$test[$i];
+                if($tes = service::where("name","=",$nam)->first()){
+                $type[$tes->name]=$tes->type;
+                }
+            }
+            return view("ememo2",["user"=>$users,"tests"=>$tests,"type"=>$type]);
         }else{
             return back();
         }
