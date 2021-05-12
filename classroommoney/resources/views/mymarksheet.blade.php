@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Student | classroommoney</title>
+<title>Marksheet | classroommoney</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="{{ asset('/public/js/main.js') }}"></script>
@@ -13,8 +13,8 @@
 <body>
 @if (Auth::user()->type==2)
   <div class="topnav" id="myTopnav">
-  <a href="{{ url('/') }}" class="active">Classroom Money</a>
-  <a href="{{ url('/teacher/mymarksheet') }}">Marksheet</a>
+  <a href="{{ url('/') }}">Classroom Money</a>
+  <a href="{{ url('/teacher/mymarksheet') }}" class="active">Marksheet</a>
   <a href="{{ url('/teacher/mystudents') }}">Students</a>
   <a href="{{ url('/teacher/requests') }}">Requests</a>
   <a href="{{ url('/settings') }}">Settings</a>

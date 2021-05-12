@@ -40,29 +40,29 @@ class mainct extends Controller
 
             
 
-            $user_details2s = [
-                'email'=>$request->get("login"),
+                $user_details2 = [
+                'phone'=>$request->get("login"),
                 'password'=>$request->get("pass")
             ];
-            if (Auth::attempt($user_details2s, true)) {
-                    // if(Auth::user()->key==1){
-                    //     Auth::logout();
-                    //     return back()->with('error','You are blocked.');
-                    // }
+            if (Auth::attempt($user_details2, true)) {
+                    if(Auth::user()->verify==0){
+                        Auth::logout();
+                        return back()->with('error','You are not varified. Please wait our concern team will contact you soon.');
+                    }
                 if ($request->get("redirect")=='') {
                     return redirect('/');
                 }
                 return new RedirectResponse($request->get("redirect"));
             }else{
-                $user_details2 = [
-                'phone'=>$request->get("login"),
+            $user_details2s = [
+                'name'=>$request->get("login"),
                 'password'=>$request->get("pass")
             ];
-                if (Auth::attempt($user_details2, true)) {
-                    // if(Auth::user()->key==1){
-                    //     Auth::logout();
-                    //     return back()->with('error','You are blocked.');
-                    // }
+                if (Auth::attempt($user_details2s, true)) {
+                     if(Auth::user()->verify==0){
+                        Auth::logout();
+                        return back()->with('error','You are not varified. Please wait our concern team will contact you soon.');
+                    }
                 if ($request->get("redirect")=='') {
 
                     return redirect('/');

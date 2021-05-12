@@ -35,8 +35,8 @@
 @endif
 @if (Auth::user()->type==2)
   <div class="topnav" id="myTopnav">
-  <a href="{{ url('/') }}" class="active">Classroom Money</a>
-  <a href="{{ url('/teacher/mymarksheet') }}">Marksheet</a>
+  <a href="{{ url('/') }}">Classroom Money</a>
+  <a href="{{ url('/teacher/mymarksheet') }}" class="active">Marksheet</a>
   <a href="{{ url('/teacher/mystudents') }}">Students</a>
   <a href="{{ url('/teacher/requests') }}">Requests</a>
   <a href="{{ url('/settings') }}">Settings</a>
@@ -52,7 +52,7 @@
 @if (Auth::user()->type==2)
 
 
-<form style="background: white; padding: 20px; width: 90%; margin: 100px auto; border: 1px solid #ccc;" action="{{ url('/teacher_update') }}" method="POST" enctype="multipart/form-data">
+<form style="background: white; padding: 20px; width: 90%; margin: 100px auto; border: 1px solid #ccc;" action="{{ url('/add_marks') }}" method="POST" enctype="multipart/form-data">
 
   @csrf
   
@@ -75,17 +75,17 @@
   <div class="form-row">
     <div class="form-group col-md-4">
       <label for="subject">Subject<span style="color: red">*</span></label>
-      <input type="text" class="form-control" readonly="" id="subject" name="subject" value="{{Auth::user()->subject}}">
+      <input type="text" class="form-control" readonly="" id="subject" name="subject" value="{{$user->subject}}">
     </div>
     <div class="form-group col-md-4">
       <label for="mark">Marks <span style="color: red">*</span></label>
       <input type="text" class="form-control" required=""  id="mark" name="mark" placeholder="Marks">
     </div>
     <div class="form-group col-md-4">
-      <label for="attent">Attentends <span style="color: red">*</span></label>
-      <input type="text" class="form-control" required="" id="attent" name="attent" placeholder="Attentends">
+      <label for="attend">Miss Attentends <span style="color: red">*</span></label>
+      <input type="text" class="form-control" required="" id="attend" name="attend" placeholder="Attentends">
     </div>
-
+<input type="hidden" name="student" value="{{$id}}">
 
   <button type="submit" class="btn btn-primary">Add</button>
 </form>

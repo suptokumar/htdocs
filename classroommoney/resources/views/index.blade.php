@@ -46,24 +46,26 @@
 </div>
 @endif
 <div class="row gm_mg">
+  @if (Auth::user()->type==3)
   <div class="col-sm-3">
     <div>
     <h2>My Earning</h2>
-    <h2>$50</h2>
+    <h2>${{$earning}}</h2>
   </div>
   </div>
   <div class="col-sm-3">
     <div>
     <h2>Avarage Grades</h2>
-    <h2>3.8</h2>
+    <h2>{{$avggrade}}</h2>
   </div>
   </div>
   <div class="col-sm-3">
     <div>
     <h2>Teachers</h2>
-    <h2>4</h2>
+    <h2>{{$all_teachers}}</h2>
   </div>
   </div>
+  @endif
   <div class="col-sm-3">
     <div>
     <h2>Upcoming Tasks</h2>

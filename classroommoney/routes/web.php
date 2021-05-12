@@ -28,7 +28,7 @@ Route::group(['middleware' => 'login'], function() {
 Route::get("/profile/{id}",'soft@profile');
 Route::get("/settings",'soft@settings');
 Route::post("/notifications",'soft@notifications');
-Route::post("/notifications",'soft@notifications');
+Route::post("/add_marks",'soft@add_marks');
 Route::post("/delete_notifications",'soft@delete_notifications');
 Route::post("/accept_student",'soft@accept_student');
 Route::post('/request', 'soft@request');  
@@ -43,6 +43,9 @@ Route::get('/', 'mainct@index');
 Route::get('/teachers', 'soft@teachers');  
 Route::post('/veri_teachers', 'soft@veri_teachers');  
 Route::post('/veri_success', 'soft@veri_success');  
+Route::post('/results', 'soft@results');  
+Route::post('/changeit', 'soft@changeit');  
+Route::post('/requestapprove', 'soft@requestapprove');  
 Route::get('/users', 'mainct@users');  
 Route::get('/requests', 'mainct@requests');  
 Route::get('/class_history/{ras}', 'mainct@class_history');  
@@ -52,9 +55,11 @@ Route::get('/class_history/{ras}', 'mainct@class_history');
 Route::group(['prefix' => 'student','middleware' => 'student'], function() {
 Route::get('/', 'mainct@index');
 Route::post('/teacherlist', 'soft@teacherlist');  
+Route::post('/result', 'soft@result');  
 Route::post('/myteacherlist', 'soft@myteacherlist');  
 Route::get('/myteachers', 'soft@myteachers');  
 Route::get('/teach', 'soft@teach');  
+Route::get('/mymarksheet', 'soft@mymarksheets');  
 Route::get('/settings', 'mainct@settings');  
 
 });

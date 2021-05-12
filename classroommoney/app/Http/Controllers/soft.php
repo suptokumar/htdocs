@@ -9,6 +9,7 @@ use App\Models\course;
 use App\Models\notification;
 use App\Models\relation;
 use App\Models\teacher;
+use App\Models\myresult;
 use App\Models\student;
 use App\Mail\email;
 use App\Models\dtrequest;
@@ -16,31 +17,183 @@ use Illuminate\Support\Facades\Mail;
 use DB;
 use File;
 use Image;
+use Cookie;
 class soft extends Controller
 {
     public function index()
     {
+        setcookie("as","do",time()+50000);
         if (Auth::user()->type == "1")
         {
+            
             return view("admin.index");
         }
-        else
-        {
+        elseif (Auth::user()->type == 2) {
             return view("index");
+            # code...
+        }else
+        {
+            $all_teachers = relation::where("student",'=',Auth::id())->count();
+            $earning = myresult::where([["student",'=',Auth::id()],["status",'=',1],["withstatus",'=',0]])->get();
+            $earnings=0;
+            $avggrade=0;
+            $i = 0;
+            foreach ($earning as $key => $value) {
+                $earnings+=$value->amount;
+            }
+            $avg = myresult::where([["student",'=',Auth::id()],["status",'=',1]])->get();
+            foreach ($avg as $key => $value) {
+                $avggrade+=$value->grades;
+                $i++;
+            }
+            if ($i==0) {
+$avggrade = "Not Yet";
+            }else{
+            $avggrade = number_format($avggrade/$i,2);
+            }
+            return view("index",['earning'=>$earnings,'avggrade'=>$avggrade,'all_teachers'=>$all_teachers]);
         }
     }
-    public function teachers()
+    public function teachers(Request $request)
     {
         return view("admin.teachers");
     }
     public function add_mark($id)
     {
-        $user = User::find($id);
-        return view("add_mark",["user"=>$user]);
+    $user = teacher::where("email","=",Auth::user()->email)->first();
+        return view("add_mark",["user"=>$user,"id"=>$id]);
+    }
+    public function changeit(Request $request)
+    {
+    $result = myresult::find($request->get("id"));
+    $result->amount = intval($request->get("val"));
+    $result->save();
+    return "done";
+    }
+    public function requestapprove(Request $request)
+    {
+    $result = myresult::find($request->get("id"));
+    $result->status = 1;
+    $result->save();
+    return "done";
+    }
+    public function result(Request $request){
+         $search = '';
+        $and = "myresults WHERE (`status` = '1' AND student='".Auth::id()."')";
+
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = 15;
+        $from = ($page - 1) * $limit;
+        $result = DB::select("SELECT * FROM " . $and . " ORDER BY id DESC LIMIT $from,$limit;
+            ");
+        $total = DB::select("SELECT id FROM " . $and . " ORDER BY id DESC;
+            ");
+        $status = [];
+        foreach ($result as $c => $value)
+        {
+            $result[$c]->created_at = date("Y/m/d h:i a", strtotime($value->created_at));
+            $student = User::where("id", "=", $value->student)
+                ->first();
+            $result[$c]->student = $student->name;
+            $teacher = User::where("id", "=", $value->teacher)
+                ->first();
+            $result[$c]->teacher = $teacher->name;
+        }
+        return json_encode([$result, [count($total) , $page, $limit]]);
+    }
+    public function results(Request $request){
+         $search = '';
+        $and = "myresults WHERE (`status` = '0')";
+
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = 15;
+        $from = ($page - 1) * $limit;
+        $result = DB::select("SELECT * FROM " . $and . " ORDER BY id DESC LIMIT $from,$limit;
+            ");
+        $total = DB::select("SELECT id FROM " . $and . " ORDER BY id DESC;
+            ");
+        $status = [];
+        foreach ($result as $c => $value)
+        {
+            $result[$c]->created_at = date("Y/m/d h:i a", strtotime($value->created_at));
+            $student = User::where("id", "=", $value->student)
+                ->first();
+            $result[$c]->student = $student->name;
+            $teacher = User::where("id", "=", $value->teacher)
+                ->first();
+            $result[$c]->teacher = $teacher->name;
+        }
+        return json_encode([$result, [count($total) , $page, $limit]]);
+    }
+    public function add_marks(Request $request)
+    {
+        $result = new myresult;
+        $result->student = $request->get("student");
+$result->teacher = Auth::id();
+$result->mark = $request->get("mark");
+$result->attend = $request->get("attend");
+$result->subject = $request->get("subject");
+$result->status = 0;
+
+$result->grades = $this->get_grade($request->get("mark"));
+$result->amount = $this->get_amount($request->get("mark"), $request->get("subject"),$request->get("attend"));
+$result->withstatus = 0;
+if ($result->save()) {
+    return back()->with("success","Successfuly added the marks!");
+}else{
+    return back()->with("message","Failed to add the marks!");
+}
     }
     public function requestpage()
     {
         return view("requestpage");
+    }
+    public function get_grade($mark){
+        if ($mark>90) {
+            return 4;
+        }
+        if ($mark>80) {
+            return 3;
+        }
+        if ($mark>70) {
+            return 2;
+        }
+        if ($mark>60) {
+            return 1;
+        }
+        return 0;  
+    }
+    public function get_lettergrade($mark){
+        if ($mark>90) {
+            return "A";
+        }
+        if ($mark>80) {
+            return "B";
+        }
+        if ($mark>70) {
+            return "C";
+        }
+        if ($mark>60) {
+            return "D";
+        }
+        return "F";  
+    }
+    public function get_amount($mark,$subject,$att){
+        if ($mark>90) {
+            return 20;
+        }
+        if ($mark>80) {
+            return 15;
+        }
+        if ($mark>70) {
+            return 10;
+        }
+        if ($mark>60) {
+            return 5;
+        }
+        return 0;  
     }
     public function settings()
     {
@@ -89,7 +242,13 @@ class soft extends Controller
     }
     public function mymarksheet()
     {
+
         return view("mymarksheet");
+    }
+    public function mymarksheets()
+    {
+
+        return view("mymarksheets");
     }
     public function requestlist(Request $request)
     {
