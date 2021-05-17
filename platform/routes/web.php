@@ -34,9 +34,9 @@ Route::get('/notifications', 'mainct@notification');
 Route::post('/notifications', 'mainct@notifications');  
 
 
-Route::get('/request_cancel/{id}', 'mainct@request_cancel');  
+Route::get('/request_cancel/{id}/time/{time}', 'mainct@request_cancel');  
 
-Route::get('/request_change/{id}', 'mainct@request_change'); 
+Route::get('/request_change/{id}/time/{time}', 'mainct@request_change'); 
 
 Route::post('/reqs_t', 'mainct@reqs_t');  
 Route::post('/reqs_d', 'mainct@reqs_d');  

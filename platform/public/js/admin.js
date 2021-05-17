@@ -277,35 +277,38 @@ function manage_class(page){
     data: {_token: token, page: page, search: search},
   })
   .done(function(data) {
+      
       var d = JSON.parse(data);
-      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Title</th> <th scope="col">Subject</th><th scope="col">Details</th><th scope="col">Upcoming Class</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      if (d[1]==2) {
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Teacher</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      }else{
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Student</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      }
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
-        body+= "<tr id='bcmc"+row["id"]+"'>";
+        body+= "<tr id='bcmc"+row[0]+"'>";
         body+= "<td>";
-        body+= row['title']+"<br>";
-        body+= row["ras"];
+        body+= row[1];
         body+= "</td>";
         body+= "<td>";
-        body+= row['subject'];
+        body+= row[2]+"<br>";
         body+= "</td>";
         body+= "<td>";
-        body+= row['description']+"<br>";
-        body+= 'Teacher: '+ row['teacher']+"<br>";
-        body+= 'Student: '+ row['student']+"<br>";
-        body+= 'Repeat: '+ (row['repeat']==''?"No Repeat":row['repeat'] )+"<br>";
-        body+= 'Starting Time: '+ d[2][i][0]+"<br>";
-        body+= 'Timezone: '+ d[2][i][1]+"<br>";
-        body+= 'Duration: '+ row['duration']+" Minutes<br>";
-        body+= 'Status: '+ d[3][i]+"<br>";
+        body+= "<b>"+row[4]+"</b> Minutes"+"<br>";
         body+= "</td>";
         body+= "<td>";
-        body+= d[4][i];
+      if (d[1]==2) {
+        body+= row[5];
+      }else{
+        body+= row[6];
+      }
         body+= "</td>";
         body+= "<td>";
-        // body+= '<div class="dropdown"> <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Options <span class="caret"></span></button> <ul class="dropdown-menu"> <li><a href="javascript:void(0)" onclick="pd_view(\''+row['product_id']+'\',\''+row['product_name']+'\')">View Details</a></li> <li><a href="javascript:void(0)" onclick="pd_edit(\''+row['product_id']+'\',\''+row['product_name']+'\')">Edit</a></li> <li><a href="javascript:void(0)" style="background:#FF1B1B; color: white" onclick="pd_delete(\''+row['id']+'\',\''+row['product_name']+'\',\'#bcmc'+row['id']+'\')">Delete</a></li> </ul> </div>';
-        body+= "<button class='btn btn-success' onclick=\"window.location='"+url("admin/class_history/"+row['ras'])+"'\">View Details</button>";
-        body+= " <button class='btn btn-danger' onclick='delete_class("+row['id']+",this)' data-do='0'>Delete Class</button>";        
+        body+= "<a href='"+row[3]+"' class='btn btn-info'>Go to Link</a>";
+        body+= " <button class='btn btn-danger' onclick='request_cancel("+row[7]['id']+","+row[8]+")' data-do='0'>Cancel</button>";
+        body+= " <button class='btn btn-primary' onclick='request_change_time("+row[7]['id']+","+row[8]+")' data-do='0'>Schedule Change</button>";
+        // }
+        
         body+= "</td>";
         body+= "</tr>";
 
@@ -318,10 +321,7 @@ function manage_class(page){
         body+= "</tr>";
       }
       body+= '</tbody></table>';
-      $page = d[1][1];
-      $total = d[1][0];
-      $limit = d[1][2];
-      body+=generate_pagination($total, $page, $limit, "dp_fun");
+
       $(".all_class").html(body);
   });
 return false; 

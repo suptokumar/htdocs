@@ -38,6 +38,7 @@ flex-direction: column;
   </div>
 @csrf
 
+      <input type="hidden" value="{{$time}}" name="times">
 
  <input type="hidden" name="del" value="{{$id}}">
   <div style="padding: 10px; overflow: hidden">

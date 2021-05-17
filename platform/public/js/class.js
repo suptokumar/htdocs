@@ -8,38 +8,37 @@ function show_class(page){
     data: {_token: token, page: page, search: search},
   })
   .done(function(data) {
+
       var d = JSON.parse(data);
-      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Title</th> <th scope="col">Subject</th><th scope="col">Details</th> <th scope="col">Next Classes</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      if (d[1]==2) {
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Teacher</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      }else{
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Student</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      }
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
-        body+= "<tr id='bcmc"+row["id"]+"'>";
+        body+= "<tr id='bcmc"+row[0]+"'>";
         body+= "<td>";
-        body+= row['title']+"<br>";
-        body+= row["ras"]+"<br>";
-        body+= "<a href='"+row['link']+"' class='btn btn-info'>Go to Link</a>";
+        body+= row[1];
         body+= "</td>";
         body+= "<td>";
-        body+= "<b>"+row['subject']+"</b><br>";
-        body+= row['description'];
+        body+= row[2]+"<br>";
         body+= "</td>";
         body+= "<td>";
-        body+= 'Teacher: '+ d[6][i][1]+"<br>";
-        body+= 'Student: '+ d[6][i][0]+"<br>";
-        body+= 'Repeat: '+ (row['repeat']==''?"No Repeat":row['repeat'] )+"<br>";
-        body+= 'Starting Time: '+ d[2][i][0]+"<br>";
-        body+= 'Timezone: '+ d[2][i][1]+"<br>";
-        body+= 'Duration: '+ row['duration']+" Minutes<br>";
-        body+= 'Status: '+ d[3][i]+"<br>";
+        body+= "<b>"+row[4]+"</b> Minutes"+"<br>";
         body+= "</td>";
         body+= "<td>";
-        body+=d[4][i];
+      if (d[1]==2) {
+        body+= row[5];
+      }else{
+        body+= row[6];
+      }
         body+= "</td>";
         body+= "<td>";
-        if(d[5][i]>(3600*3)){
-        // body+= '<div class="dropdown"> <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Options <span class="caret"></span></button> <ul class="dropdown-menu"> <li><a href="javascript:void(0)" onclick="pd_view(\''+row['product_id']+'\',\''+row['product_name']+'\')">View Details</a></li> <li><a href="javascript:void(0)" onclick="pd_edit(\''+row['product_id']+'\',\''+row['product_name']+'\')">Edit</a></li> <li><a href="javascript:void(0)" style="background:#FF1B1B; color: white" onclick="pd_delete(\''+row['id']+'\',\''+row['product_name']+'\',\'#bcmc'+row['id']+'\')">Delete</a></li> </ul> </div>';
-        body+= " <button class='btn btn-danger' onclick='request_cancel("+row['id']+",this)' data-do='0'>Cancel</button>";
-        body+= " <button class='btn btn-primary' onclick='request_change_time("+row['id']+",this)' data-do='0'>Schedule Change</button>";
-        }
+        body+= "<a href='"+row[3]+"' class='btn btn-info'>Go to Link</a>";
+        body+= " <button class='btn btn-danger' onclick='request_cancel("+row[7]['id']+","+row[8]+")' data-do='0'>Cancel</button>";
+        body+= " <button class='btn btn-primary' onclick='request_change_time("+row[7]['id']+","+row[8]+")' data-do='0'>Schedule Change</button>";
+        // }
         
         body+= "</td>";
         body+= "</tr>";
@@ -53,10 +52,7 @@ function show_class(page){
         body+= "</tr>";
       }
       body+= '</tbody></table>';
-      $page = d[1][1];
-      $total = d[1][0];
-      $limit = d[1][2];
-      body+=generate_pagination($total, $page, $limit, "dp_fun");
+
       $(".all_class").html(body);
   });
 return false; 
@@ -68,12 +64,12 @@ return false;
 
 
 function request_cancel(id, t){
-  window.location = url('request_cancel/'+id);
+  window.location = url('request_cancel/'+id+'/time/'+t);
 }
 
 
 function request_change_time(id, t){
-  window.location = url('request_change/'+id);
+  window.location = url('request_change/'+id+'/time/'+t);
 }
 
 

@@ -157,7 +157,7 @@ window.onclick = function(event) {
 	<div class="dropdown">
 
   <div class="dropdown">
-  <button onclick="myFunction()" class="dropbtn" aria-haspopup="true"><img src='{{asset("/public/image/016191206291160117832FB icon.jpg")}}' style='width: 30px; height: 30px; border-radius: 100px'></button>
+  <button onclick="myFunction()" class="dropbtn" aria-haspopup="true" style="background:url('{{asset("/public/image/016191206291160117832FB icon.jpg")}}') 50% 50% / 100% 100% no-repeat; width: 58px; height: 55px; border-radius: 100px;margin-right: 14px;"></button>
   <div id="myDropdown" class="dropdown-content">
     <a href="
     @if(Auth::user()->type==3)

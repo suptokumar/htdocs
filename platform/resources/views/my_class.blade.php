@@ -66,7 +66,7 @@ flex-direction: column;
 
 @section("script")
 
-  <script src="{{ asset('/public/js/class.js?c') }}"></script>
+  <script src="{{ asset('/public/js/class.js?cdf') }}"></script>
 <script>
 	$(document).ready(function() {
 		show_class(1);

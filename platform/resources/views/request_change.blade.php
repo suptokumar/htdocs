@@ -37,25 +37,27 @@ flex-direction: column;
  <div class="form-group">
     <label for="exampleInputEmail1">{{__("Select Time")}}</label>
     <div style="overflow: hidden;">
-      
-    <div class="dup clockpicker" style="width: 40%"><input type="text" class="form-control" id="time" name="time" aria-describedby="emailHelp"  value="{{ date("H:i",strtotime($course->starting)) }}" placeholder="H:M"></div>
-    <div class="dup" style="width: 40%"><input type="date" class="form-control" id="date" name="date" aria-describedby="emailHelp"  value="{{ date("Y-m-d") }}"></div>
+      @php
+      date_default_timezone_set($course->timezone);
+      $tm = date("Y-m-d H:i:s", $time);
+      // $time = strtotime($time);
+      $tm = strtotime($tm);
+      date_default_timezone_set(Auth::user()->timezone);
+      @endphp
+    <div class="dup clockpicker" style="width: 40%"><input type="text" class="form-control" id="time" name="time" aria-describedby="emailHelp"  value="{{ date("H:i",$tm) }}" placeholder="H:M"></div>
+    <div class="dup" style="width: 40%"><input type="date" class="form-control" id="date" name="date" aria-describedby="emailHelp"  value="{{ date("Y-m-d",$tm) }}"></div>
     </div>
   </div>
   <div class="form-group">
     <label for="exampleInputEmail1">{{__('Set Timezone')}}</label>
     <div style="position: relative;">
-    	
-    <input type="text" class="form-control" id="timezone" name="timezone" aria-describedby="emailHelp"  value="{{ $course->timezone }}" placeholder="Start Typing">
+    <input type="text" class="form-control" id="timezone" name="timezone" aria-describedby="emailHelp"  value="{{Auth::user()->timezone}}" placeholder="Start Typing">
     </div>
   </div>
 @csrf
-    <div class="form-group">
-    <label for="exampleInputEmail1">{{__('Repeat Class')}}</label>
-    <input type="hidden" class="form-control" id="repeat" name="repeat" aria-describedby="emailHelp"  value="{{ $course->repeat }}" placeholder="What class are you in?">
 
-  </div>
 
+    	<input type="hidden" value="{{date("Y-m-d H:i:s",$tm)}}" name="times">
  <input type="hidden" name="del" value="{{$id}}">
   <div style="padding: 10px; overflow: hidden">
   <button type="submit" class="btn btn-success" style="float: right;">Save</button>

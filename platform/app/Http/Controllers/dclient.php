@@ -14,6 +14,8 @@ use App\Models\payment;
 use App\Models\report;
 use App\Models\waiting;
 use App\Mail\email;
+use App\Models\change;
+
 use Illuminate\Support\Facades\Mail;
 use DB;
 use File;
@@ -245,115 +247,115 @@ class dclient extends Controller
 
     public function laod_class(Request $request)
     {
-        $search = $request->get("search");
-        if (Auth::user()->type==2) {
-        $and = "courses WHERE (title LIKE '%$search%' OR ras LIKE '%$search%' OR subject LIKE '%$search%' OR teacher LIKE '%$search%' OR student LIKE '%$search%') AND s_id='".Auth::id()."'";
-        }else if(Auth::user()->type==1){
-        $and = "courses WHERE (title LIKE '%$search%' OR ras LIKE '%$search%' OR subject LIKE '%$search%' OR teacher LIKE '%$search%' OR student LIKE '%$search%') AND t_id='".Auth::id()."'";
+        if (Auth::user()->type==1) {
+        $class = course::where("t_id", "=", Auth::id())->get();
         }else{
-        $and = "courses WHERE (title LIKE '%$search%' OR ras LIKE '%$search%' OR subject LIKE '%$search%' OR teacher LIKE '%$search%' OR student LIKE '%$search%')";
+        $class = course::where("s_id", "=",  Auth::id())->get();
 
         }
-        
-
-        // $page = 1;
-        $page = $request->get("page");
-        $limit = 15;
-        $from = ($page-1)*$limit;
-        $result = DB::select("SELECT * FROM ".$and." ORDER BY title ASC LIMIT $from,$limit;
-            ");
-        $total = DB::select("SELECT id FROM ".$and." ORDER BY title ASC;
-            ");
-        $starting_time = [];
-        $status = [];
-        $upc = [];
-        $upc2 = [];
-        $clin = [];
-        foreach ($result as $key => $value) {
-            $s_d =  user::find($value->s_id);
-            $t_d = user::find($value->t_id);
-            array_push($clin, [$s_d->name, $t_d->name]);
-            $result[$key]->repeat = substr($value->repeat, 1);
+            $data = [];
+            $crt = time();
+            $mxt = time() + 3600 * 24 * 30;
+            foreach ($class as $key => $value)
+            {
             date_default_timezone_set($value->timezone);
-            $pre_v = strtotime($value->starting);
-            $result[$key]->guest = substr($value->guest, 1);
-            date_default_timezone_set(Auth::user()->timezone);
-            array_push($starting_time, [date("D, M d,Y h:ia", $pre_v), date_default_timezone_get()]);
-            if ($value->repeat=='' && strtotime($value->starting)==strtotime($value->lastclass)) {
-            array_push($status, "Finished");
-            }else{
-            array_push($status, "Open");
+                // add the changes
+                if ($value->repeat == '')
+                {
+                    $nst =  date("Y-m-d H:i:s",  strtotime($value->starting));
+                            // date_default_timezone_set($value->timezone);
+                            $mst = strtotime($nst);
+
+                    $change = change::where([["class_id", "=", $value->ras], ["replacetime", "=", $mst ]])->orderBy("id","desc")
+                        ->first();
+                    if ($change)
+                    {
+                        if ($change->status != 0)
+                        {
+                            if ($change->app > $crt && $change->app < $mxt)
+                            {
+                                date_default_timezone_set($change->timezone);
+                                    $nod = date("Y-m-d H:i:s",$change->app);
+                                    // date_default_timezone_set(Auth::user()->timezone);
+                                    $change->app = strtotime($nod);
+                                                                        // date_default_timezone_set($change->timezone);
+
+                                date_default_timezone_set(Auth::user()->timezone);
+                                    array_push($data, [$change->app, date("D, M d,Y h:i a", $change->app) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mxt]);
+                            }
+                        }
+                    }
+                    else
+                    {
+
+                            // date_default_timezone_set($value->timezone);
+                                $ntr = date("Y-m-d H:i:s",strtotime($value->starting));
+                                $nxt = strtotime($ntr);
+
+                                date_default_timezone_set(Auth::user()->timezone);
+                            array_push($data, [$nxt , date("D, M d,Y h:i a", $nxt) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst ]);
+                        }
+                    
+                }
+                else
+                {
+                    $repeat = explode(",", $value->repeat);
+                    $nxt = strtotime(empty($value->lastclass) ? $value->starting : $value->lastclass) + 24 * 3600;
+                    while (true)
+                    {
+                        if ($nxt > $mxt)
+                        {
+                            break;
+                        }
+                        if (in_array(date("l", $nxt) , $repeat))
+                        {
+                            $nst =  date("Y-m-d H:i:s", $nxt);
+                            // date_default_timezone_set($value->timezone);
+                            $mst = strtotime($nst);
+                            // date_default_timezone_set(Auth::user()->timezone);
+                            $change = change::where([["class_id", "=", $value->ras], ["replacetime", "=", $mst]])->orderBy("id","desc")->first();
+                            if ($change)
+                            {
+                                if ($change->status != 0)
+                                {
+                                    if ($crt > $change->app)
+                                    {
+                                        continue;
+                                    }
+                                    // date_default_timezone_set($change->timezone);
+                                    $nod = date("Y-m-d H:i:s",$change->app);
+                                    // date_default_timezone_set(Auth::user()->timezone);
+                                    $change->app = strtotime($nod);
+                                    // date_default_timezone_set($change->timezone);
+                                date_default_timezone_set(Auth::user()->timezone);
+
+                                    array_push($data, [$change->app, date("D, M d,Y h:i a", $change->app) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst]);
+                                }
+                            }
+                            else
+                            {
+                                if ($crt > $nxt)
+                                {
+                                    continue;
+                                }
+                                date_default_timezone_set(Auth::user()->timezone);
+                                array_push($data, [$nxt, date("D, M d,Y h:i a", $nxt) ,$value->subject , $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst]);
+                            }
+                            $nxt += 24 * 3600;
+                        }
+                        else
+                        {
+                            $nxt += 24 * 3600;
+                        }
+                    }
+                }
             }
 
-            // make lst_c
-             date_default_timezone_set($value->timezone);
-
-        $a1 = date("Y-m-d", strtotime(empty($value->lastclass)?$value->starting:$value->lastclass));
-        $a2 = date("H:i:s", strtotime($value->starting));
-        $a3 = strtotime($a1." ".$a2);
-
-        $lst_c = empty($value->lastclass)?$a3:($a3+3600*24);
-        $class_limit = 7;
-        $upcoming_class = '';
-        $upcoming_class2 = [];
-        if (!empty($value->repeat)) { 
-            
-        $repeat = explode(",",$value->repeat);
-        while (true) {
-            if ($class_limit==0) {
-                break;
-            }
-        $next_class = date("l",$lst_c);
-            if(in_array($next_class, $repeat)){
-                $class_limit--;
-                date_default_timezone_set(Auth::user()->timezone);
-               array_push($upcoming_class2, $lst_c-time());
-               if ($lst_c-time() < (3600*24*1)) {
-                $upcoming_class .= "<span style='background:#6cd5cf; padding: 3px; display: block;'>".date("D, M d,Y h:ia", $lst_c)."</span>";
-                   
-               }else if ($lst_c-time() < (3600*24*2)) {
-                $upcoming_class .= "<span style='background:#f4f499; padding: 3px; display: block;'>".date("D, M d,Y h:ia", $lst_c)."</span>";
-                   
-               }else if ($lst_c-time() < (3600*24*3)) {
-                $upcoming_class .= "<span style='background:#ff9f9a; padding: 3px; display: block;'>".date("D, M d,Y h:ia", $lst_c)."</span>";
-                   
-               }else{
-                $upcoming_class .= date("D, M d,Y h:ia", $lst_c)."<br>";
-               }
-             date_default_timezone_set($value->timezone);
-                $lst_c += 86400;
-                continue;
-            }else{
-                $lst_c += 86400;
-                $next_class = date("l",$lst_c);
-            }
-        }
-            
-        }else{
-            date_default_timezone_set(Auth::user()->timezone);
-               array_push($upcoming_class2, $lst_c-time());
-
-            if ($lst_c-time() < (3600*24*1)) {
-                $upcoming_class .= "<span style='background:#6cd5cf; padding: 3px; display: block;'>".date("D, M d,Y h:ia", $lst_c)."</span>";
-                   
-               }else if ($lst_c-time() < (3600*24*2)) {
-                $upcoming_class .= "<span style='background:#f4f499; padding: 3px; display: block;'>".date("D, M d,Y h:ia", $lst_c)."</span>";
-                   
-               }else if ($lst_c-time() < (3600*24*3)) {
-                $upcoming_class .= "<span style='background:#ff9f9a; padding: 3px; display: block;'>".date("D, M d,Y h:ia", $lst_c)."</span>";
-                   
-               }else{
-                $upcoming_class .= date("D, M d,Y h:ia", $lst_c)."<br>";
-               }
-        }        
-            array_push($upc, $upcoming_class);
-            array_push($upc2, $upcoming_class2[0]);
-    
-
-
-
-        }
-    return json_encode([$result,[count($total), $page, $limit],$starting_time,$status,$upc,$upc2,$clin]);
+            usort($data, function ($a, $b)
+            {
+                return $a[0] > $b[0] ? 1 : -1;
+            });
+    return json_encode([$data, Auth::user()->type]);
     }
 
     public function manage_class(){
