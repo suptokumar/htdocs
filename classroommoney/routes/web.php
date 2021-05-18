@@ -27,8 +27,15 @@ Route::group(['middleware' => 'login'], function() {
 
 Route::get("/profile/{id}",'soft@profile');
 Route::get("/settings",'soft@settings');
+Route::get("/invest",'soft@invest');
+Route::get("/balance",'soft@balance');
 Route::post("/notifications",'soft@notifications');
+Route::post("/req_balance",'soft@req_balance');
+Route::post("/amt",'soft@amt');
+Route::post("/accept_with",'soft@accept_with');
+Route::post("/reject_with",'soft@reject_with');
 Route::post("/add_marks",'soft@add_marks');
+Route::post("/rmv_req",'soft@rmv_req');
 Route::post("/delete_notifications",'soft@delete_notifications');
 Route::post("/accept_student",'soft@accept_student');
 Route::post('/request', 'soft@request');  
@@ -43,7 +50,9 @@ Route::get('/', 'mainct@index');
 Route::get('/teachers', 'soft@teachers');  
 Route::post('/veri_teachers', 'soft@veri_teachers');  
 Route::post('/veri_success', 'soft@veri_success');  
+Route::get('/withdrawal', 'soft@withdrawal');  
 Route::post('/results', 'soft@results');  
+Route::post('/amt', 'soft@amts');  
 Route::post('/changeit', 'soft@changeit');  
 Route::post('/requestapprove', 'soft@requestapprove');  
 Route::get('/users', 'mainct@users');  

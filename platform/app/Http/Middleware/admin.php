@@ -38,7 +38,7 @@ class admin
         return $next($request);
         }
         else{
-            return back();
+            return redirect("/");
         }
     }
 }

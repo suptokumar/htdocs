@@ -1379,8 +1379,7 @@ WHEN phone LIKE '___________$search%' THEN 12 END, name ASC;
     // functions for the admin to manage class
     function get_classes(Request $request){
         $class = course::get();
-        
-            $data = [];
+           $data = [];
             $crt = time();
             $mxt = time() + 3600 * 24 * 30;
             foreach ($class as $key => $value)
@@ -1463,7 +1462,7 @@ WHEN phone LIKE '___________$search%' THEN 12 END, name ASC;
                             {
                                 if ($crt > $nxt)
                                 {
-                                    continue;
+                                    break;
                                 }
                                 date_default_timezone_set(Auth::user()->timezone);
                                 array_push($data, [$nxt, date("D, M d,Y h:i a", $nxt) ,$value->subject , $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst]);

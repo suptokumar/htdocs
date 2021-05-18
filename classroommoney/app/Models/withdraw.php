@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class withdraw extends Model
+{
+    use HasFactory;
+    protected $fillalbe=[
+'user',
+'gateway',
+'amount',
+'ac_no',
+'ad_no',
+'status',
+];
+}

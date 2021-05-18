@@ -23,7 +23,7 @@
     <a class="nav-link @yield("2")" href="{{ url('/admin/teachers') }}">Teacher Verifications</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link @yield("3")" href="#">Accounts</a>
+    <a class="nav-link @yield("3")" href="{{ url('/admin/withdrawal') }}">Withdrawal Requests</a>
   </li>
   <li class="nav-item">
     <a class="nav-link @yield("4")" href="#">Reports</a>

@@ -109,12 +109,12 @@ class dclient extends Controller
             if (Auth::loginUsingId($user->id, true)) {
                     if(Auth::user()->key==1){
                         Auth::logout();
-                        return redirect("login")->with('error','You are blocked.');
+                        return;
                     }
-                    return redirect('/');
+                    return;
                 
             }
-            return redirect("login")->with('error','Wrong Login Details.');
+            return 'Wrong Login Details.';
             
     
     }
@@ -336,7 +336,7 @@ class dclient extends Controller
                             {
                                 if ($crt > $nxt)
                                 {
-                                    continue;
+                                    break;
                                 }
                                 date_default_timezone_set(Auth::user()->timezone);
                                 array_push($data, [$nxt, date("D, M d,Y h:i a", $nxt) ,$value->subject , $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst]);
@@ -452,7 +452,13 @@ class dclient extends Controller
         if ($result->t_id != Auth::id()) {
             return back();
         }
-        }
-        return view("note_upload",["report"=>$id]);
+        
+        date_default_timezone_set($result->timezone);
+        if((time()-strtotime($result->lastclass))<(3600*36)){
+        return view("note_upload",["report"=>$id,"d"=>0]);
+    }else{
+        return view("note_upload",["report"=>$id,"d"=>1]);
     }
+}
+}
 }

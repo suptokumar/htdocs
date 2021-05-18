@@ -54,7 +54,7 @@
 		}
 		function submit(){
 			var number = $("#number").val();
-			if (number=='' || number.length<2) {
+			if (number=='' || number.length<4) {
 				$(".numberchecker").html("<div class='alert alert-danger'>The number is not valid</div><br>");
 				return false;
 			}else{
@@ -70,19 +70,19 @@
 				var pt1 = i1;
 				var pt2 =i2%80;
 			$.ajax({
-					url: '{{ url('/resources/json/int1.json') }}',
+					url: '{{ url('/resources/json/int1.json?'.rand()) }}',
 					type: 'GET',
 					dataType: "json",
 					success:function(data){
 					pt1=data[pt1];
 			$.ajax({
-					url: '{{ url('/resources/json/int2.json') }}',
+					url: '{{ url('/resources/json/int2.json?'.rand()) }}',
 					type: 'GET',
 					dataType: "json",
 					success:function(data){
 					pt2=data[pt2];
 			$.ajax({
-					url: '{{ url('/resources/json/int3.json') }}',
+					url: '{{ url('/resources/json/int3.json?'.rand()) }}',
 					type: 'GET',
 					dataType: "json",
 					success:function(data){

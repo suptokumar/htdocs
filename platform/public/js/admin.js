@@ -168,14 +168,14 @@ function login(id, t){
     data: {id: id, _token: $("#token").val()},
   })
   .done(function(data) {
-    window.location = url();
+    window.location = url("");
   });
   
 }
 
 
 function load_gt(page){
-  var urls = url("student_list");
+  var urls = url("platform/student_list");
   var token = $("#csrf").val();
   var order = 1;
   var search = $("#snod410").val();
@@ -277,12 +277,12 @@ function manage_class(page){
     data: {_token: token, page: page, search: search},
   })
   .done(function(data) {
-      
+
       var d = JSON.parse(data);
       if (d[1]==2) {
-      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Teacher</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Teacher</th>  <th scope="col">Student</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
       }else{
-      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Student</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Teacher</th>  <th scope="col">Student</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
       }
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
@@ -297,11 +297,13 @@ function manage_class(page){
         body+= "<b>"+row[4]+"</b> Minutes"+"<br>";
         body+= "</td>";
         body+= "<td>";
-      if (d[1]==2) {
+      // if (d[1]==2) {
         body+= row[5];
-      }else{
+        body+= "</td>";
+        body+= "<td>";
+      // }else{
         body+= row[6];
-      }
+      // }
         body+= "</td>";
         body+= "<td>";
         body+= "<a href='"+row[3]+"' class='btn btn-info'>Go to Link</a>";
@@ -326,6 +328,9 @@ function manage_class(page){
   });
 return false; 
 }
+
+
+
 
 function get_requests(page){
   var urls = url("admin/get_requests");

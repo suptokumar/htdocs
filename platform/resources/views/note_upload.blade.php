@@ -29,7 +29,11 @@ flex-direction: column;
   {{$new_client}}
 </div>
 @endif
+@if ($d==1)
+Sorry The Time is up. You can't upload the Progress Note now.
+@endif
 
+@if ($d==0)
  <div class="form-group">
     <label for="exampleInputEmail1">{{__('Update Progress Notes')}}</label>
     <textarea class="form-control" id="assignment" name="assignment" style="height: 250px;">
@@ -47,6 +51,7 @@ flex-direction: column;
   <div style="padding: 10px; overflow: hidden">
   <button type="submit" class="btn btn-success" style="float: right;">Save</button>
   </div>
+@endif
 </form>
 
 

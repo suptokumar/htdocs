@@ -13,6 +13,7 @@ use App\Models\myresult;
 use App\Models\student;
 use App\Mail\email;
 use App\Models\dtrequest;
+use App\Models\withdraw;
 use Illuminate\Support\Facades\Mail;
 use DB;
 use File;
@@ -20,6 +21,19 @@ use Image;
 use Cookie;
 class soft extends Controller
 {
+    public function getbalance($user){
+        $earnings = 0;
+        $earning = myresult::where([["student",'=',$user->id],["status",'=',1],["withstatus",'=',0]])->get();
+            foreach ($earning as $key => $value) {
+                $earnings+=$value->amount;
+            }
+
+            $with = withdraw::where([["user",'=',$user->id],["status",'!=',2]])->get();
+            foreach ($with as $key => $value) {
+                $earnings-=$value->amount;
+            }
+            return $earnings;
+    }
     public function index()
     {
         setcookie("as","do",time()+50000);
@@ -34,13 +48,10 @@ class soft extends Controller
         }else
         {
             $all_teachers = relation::where("student",'=',Auth::id())->count();
-            $earning = myresult::where([["student",'=',Auth::id()],["status",'=',1],["withstatus",'=',0]])->get();
-            $earnings=0;
+            $earnings=$this->getbalance(Auth::user());
             $avggrade=0;
             $i = 0;
-            foreach ($earning as $key => $value) {
-                $earnings+=$value->amount;
-            }
+            
             $avg = myresult::where([["student",'=',Auth::id()],["status",'=',1]])->get();
             foreach ($avg as $key => $value) {
                 $avggrade+=$value->grades;
@@ -57,6 +68,34 @@ $avggrade = "Not Yet";
     public function teachers(Request $request)
     {
         return view("admin.teachers");
+    }
+    public function invest(Request $request)
+    {
+        return view("invest");
+    }
+    public function withdrawal(Request $request)
+    {
+        return view("admin.withdrawal");
+    }
+    public function balance(Request $request)
+    {
+        $balance = $this->getbalance(Auth::user());
+        return view("balance",["balance"=>$balance]);
+    }
+    public function req_balance(Request $request)
+    {
+        if ($request->get("balance")>$this->getbalance(Auth::user())) {
+            return back()->with("message","The Balance is not Supported to withdraw.");
+        }
+        $withdraw =  new withdraw;
+        $withdraw->user = Auth::id();
+        $withdraw->gateway = $request->get("method");
+        $withdraw->amount = $request->get("balance");
+        $withdraw->ac_no = $request->get("ac_no");
+        $withdraw->ad_no = $request->get("ad_no");
+        $withdraw->status = 0;
+        $withdraw->save();
+        return back()->with("success","Withdraw request is pending.");
     }
     public function add_mark($id)
     {
@@ -469,6 +508,79 @@ if ($result->save()) {
             $result[$c]->name = $teachers->name;
             $result[$c]->email = $teachers->email;
             $result[$c]->teacher = $teachers->id;
+
+        }
+        return json_encode([$result, [count($total) , $page, $limit]]);
+    }
+    public function rmv_req(Request $request)
+    {
+        $id = $request->get("id");
+        $withdraw = withdraw::find($id);
+        if ($withdraw->status==1) {
+            return "Request already Accepted";
+        }else{
+            $withdraw->delete();
+            return "Deleted";
+        }
+    }
+    public function accept_with(Request $request)
+    {
+        $id = $request->get("id");
+        $withdraw = withdraw::find($id);
+            $withdraw->status=1;
+            $withdraw->save();
+            return "Accepted";
+        
+    }
+    public function reject_with(Request $request)
+    {
+        $id = $request->get("id");
+        $withdraw = withdraw::find($id);
+            $withdraw->status=2;
+            $withdraw->save();
+            return "Rejected";
+        
+    }
+
+    public function amt(Request $request)
+    {
+        $search = Auth::id();
+        $and = "withdraws WHERE (`user` = '".Auth::id()."')";
+
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = 15;
+        $from = ($page - 1) * $limit;
+        $result = DB::select("SELECT * FROM " . $and . " ORDER BY id DESC LIMIT $from,$limit;
+            ");
+        $total = DB::select("SELECT id FROM " . $and . " ORDER BY id DESC;
+            ");
+        $status = [];
+        foreach ($result as $c => $value)
+        {
+            $result[$c]->created_at = date("Y/m/d h:i a", strtotime($value->created_at));
+            $result[$c]->updated_at = date("Y/m/d h:i a", strtotime($value->updated_at));
+
+        }
+        return json_encode([$result, [count($total) , $page, $limit]]);
+    }
+    public function amts(Request $request)
+    {
+        $search = Auth::id();
+        $and = "withdraws WHERE (`status` = '0')";
+
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = 15;
+        $from = ($page - 1) * $limit;
+        $result = DB::select("SELECT * FROM " . $and . " ORDER BY id DESC LIMIT $from,$limit;
+            ");
+        $total = DB::select("SELECT id FROM " . $and . " ORDER BY id DESC;
+            ");
+        $status = [];
+        foreach ($result as $c => $value)
+        {
+            $result[$c]->created_at = date("Y/m/d h:i a", strtotime($value->created_at));
 
         }
         return json_encode([$result, [count($total) , $page, $limit]]);
