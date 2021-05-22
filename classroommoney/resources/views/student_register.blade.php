@@ -18,7 +18,7 @@
     <span style="font-size: 25px !important; margin: 10px;float: left;font-weight: bold;text-shadow: 1px 1px 1px red;color: lightgreen;">Classroom Money</span>
   <a href="{{url('/')}}" class="btn btn-success"><span class="fa fa-location-arrow"></span> <span class="wo">{{ __('Login') }}</span></a>
   <a href="{{url('/student_register')}}" class="btn btn-success"><span class="fa fa-user"></span>  <span class="wo">{{ __('Student Register') }}</span></a>
-  <a href="{{url('/teacher_register')}}" class="btn btn-success"><span class="fa fa-user"></span> <span class="wo">{{ __('Teacher Register') }}</span></a>
+  <a href="{{url('/teacher_register')}}" class="btn btn-success"><span class="fa fa-user"></span> <span class="wo">{{ __('Teacher/Tutor Register') }}</span></a>
 </header>
 <style>
     header#bg_no {

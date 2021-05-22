@@ -32,7 +32,7 @@ flex-direction: column;
 
 @section("script")
 
-  <script src="{{ asset('/public/js/admin.js?e') }}"></script>
+  <script src="{{ asset('/public/js/admin.js?fse') }}"></script>
 <script>
 	$(document).ready(function() {
 		manage_class(1);

@@ -52,49 +52,51 @@
 		function removeit(){
 			$(".numberchecker").html("");
 		}
+		
 		function submit(){
-			var number = $("#number").val();
-			if (number=='' || number.length<4) {
+			var number = $("#number").val().toString().padStart(4, "0");
+			if (number=='') {
 				$(".numberchecker").html("<div class='alert alert-danger'>The number is not valid</div><br>");
 				return false;
+				
 			}else{
 				$(".form2").fadeOut('slow', function() {
-				var last2 = number.slice(-2);
-				var i1 = Number(last2)%80;
-				var i2 = Number(0);
-				for(var i=0; i<number.length; i++){
-					i2+=Number(number.charAt(i));
-				}
-				var i3 = number.slice(-4)/80;
-				var pt3 = Math.round((i3-(Math.floor(i3)))*80)%80;
-				var pt1 = i1;
-				var pt2 =i2%80;
+				
+			// $.ajax({
+			// 		url: '{{ url('/resources/json/int1.json?'.rand()) }}',
+			// 		type: 'GET',
+			// 		dataType: "json",
+			// 		success:function(data){
+			// 		pt1=data[pt1];
+			// $.ajax({
+			// 		url: '{{ url('/resources/json/int2.json?'.rand()) }}',
+			// 		type: 'GET',
+			// 		dataType: "json",
+			// 		success:function(data){
+			// 		pt2=data[pt2];
+			// $.ajax({
+			// 		url: '{{ url('/resources/json/int3.json?'.rand()) }}',
+			// 		type: 'GET',
+			// 		dataType: "json",
+			// 		success:function(data){
+			// 		pt3=data[pt3];
+			// var sum = "<br>"+pt1+"<br>"+pt2+"<br>"+pt3+"<br>";
+			// $(".interputer").html("<h2 style='text-align: center; font-family: tahoma; font-size: 18px;'>Entered Number: "+number+"</h2><br><div class='alert alert-success'>Interpretation 1: "+pt1+"</div><div class='alert alert-success'>Interpretation 2: "+pt2+"</div><div class='alert alert-success'>Interpretation 3: "+pt3+"</div><div class='alert alert-primary'>Overall Interpretation: "+sum+"</div><div style='text-align: center;'><button onclick='back()' class='btn btn-info' style='width: 330px;'>Back</button></div>");
+			// 	}
+			// });
+			// 	}
+			// });
+			// 	}
+			// });
 			$.ajax({
-					url: '{{ url('/resources/json/int1.json?'.rand()) }}',
-					type: 'GET',
-					dataType: "json",
-					success:function(data){
-					pt1=data[pt1];
-			$.ajax({
-					url: '{{ url('/resources/json/int2.json?'.rand()) }}',
-					type: 'GET',
-					dataType: "json",
-					success:function(data){
-					pt2=data[pt2];
-			$.ajax({
-					url: '{{ url('/resources/json/int3.json?'.rand()) }}',
-					type: 'GET',
-					dataType: "json",
-					success:function(data){
-					pt3=data[pt3];
-			var sum = "<br>"+pt1+"<br>"+pt2+"<br>"+pt3+"<br>";
-			$(".interputer").html("<h2 style='text-align: center; font-family: tahoma; font-size: 18px;'>Entered Number: "+number+"</h2><br><div class='alert alert-success'>Interpretation 1: "+pt1+"</div><div class='alert alert-success'>Interpretation 2: "+pt2+"</div><div class='alert alert-success'>Interpretation 3: "+pt3+"</div><div class='alert alert-primary'>Overall Interpretation: "+sum+"</div><div style='text-align: center;'><button onclick='back()' class='btn btn-info' style='width: 330px;'>Back</button></div>");
-				}
+				url: '{{ url('/get_result') }}',
+				type: 'POST',
+				data: {number: number,_token: "{{csrf_token()}}"},
+			})
+			.done(function(data) {
+				$(".interputer").html(data);
 			});
-				}
-			});
-				}
-			});
+			
 				
 					
 				});

@@ -55,7 +55,7 @@ class mainct extends Controller
                 return new RedirectResponse($request->get("redirect"));
             }else{
             $user_details2s = [
-                'name'=>$request->get("login"),
+                'email'=>$request->get("login"),
                 'password'=>$request->get("pass")
             ];
                 if (Auth::attempt($user_details2s, true)) {

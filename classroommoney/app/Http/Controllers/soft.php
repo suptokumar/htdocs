@@ -271,6 +271,10 @@ if ($result->save()) {
     {
         return view("select_teacher");
     }
+    public function mytutor()
+    {
+        return view("mytutor");
+    }
     public function teach()
     {
         return view("teach");
@@ -424,7 +428,7 @@ if ($result->save()) {
     public function veri_teachers(Request $request)
     {
         $search = $request->get("search");
-        $and = "users WHERE (`name` LIKE '%$search%' OR `email` LIKE '%$search%' OR `school` LIKE '%$search%' OR `phone` LIKE '%$search%') And verify=0 AND type=2";
+        $and = "users WHERE (`name` LIKE '%$search%' OR `email` LIKE '%$search%' OR `school` LIKE '%$search%' OR `phone` LIKE '%$search%') And verify=0 AND (type=2 OR type=4)";
 
         // $page = 1;
         $page = $request->get("page");
@@ -449,6 +453,44 @@ if ($result->save()) {
     {
         $search = $request->get("search");
         $and = "users WHERE (`name` LIKE '%$search%' OR `email` LIKE '%$search%' OR `school` LIKE '%$search%') And verify=1 AND type=2";
+
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = 15;
+        $from = ($page - 1) * $limit;
+        $result = DB::select("SELECT * FROM " . $and . " ORDER BY name ASC LIMIT $from,$limit;
+            ");
+        $total = DB::select("SELECT id FROM " . $and . " ORDER BY name ASC;
+            ");
+        $status = [];
+        foreach ($result as $c => $value)
+        {
+            $result[$c]->created_at = date("Y/m/d h:i a", strtotime($value->created_at));
+            $teachers = teacher::where([["email", "=", $value->email], ["phone", "=", $value
+                ->phone]])
+                ->first();
+            array_push($status, $teachers);
+
+            if($dtrequest = dtrequest::where([["from", "=", Auth::id()], ["to", "=", $value
+                ->id]])
+                ->first()){
+                if ($dtrequest->status==1) {
+                $result[$c]->text = "Request Accepted";
+                }else{
+                $result[$c]->text = "Undo Request";
+                }
+            }else{
+                $result[$c]->text = "Request";
+            }
+
+        }
+        return json_encode([$result, [count($total) , $page, $limit], $status]);
+    }
+
+    public function mytutors(Request $request)
+    {
+        $search = $request->get("search");
+        $and = "users WHERE (`name` LIKE '%$search%' OR `email` LIKE '%$search%' OR `school` LIKE '%$search%') And verify=1 AND type=4";
 
         // $page = 1;
         $page = $request->get("page");
@@ -512,6 +554,8 @@ if ($result->save()) {
         }
         return json_encode([$result, [count($total) , $page, $limit]]);
     }
+
+
     public function rmv_req(Request $request)
     {
         $id = $request->get("id");
@@ -673,6 +717,7 @@ if ($result->save()) {
     }
     public function teacher_registered(Request $request)
     {
+        $type = $request->get("type");
         $name = $request->get("name");
         $email = $request->get("email");
         $password = $request->get("password");
@@ -713,7 +758,7 @@ if ($result->save()) {
         if ($teacher->save())
         {
             $user = new User;
-            $user->type = 2;
+            $user->type = $type;
             $user->email = $email;
             $user->phone = $phone;
             $user->school = $school;

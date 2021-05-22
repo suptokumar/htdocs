@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teacher Register</title>
+  <title>Login into Classroommoney</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     {{-- <link rel="stylesheet" href="https:////code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> --}}
@@ -18,7 +18,7 @@
     <span style="font-size: 25px !important; margin: 10px;float: left;font-weight: bold;text-shadow: 1px 1px 1px red;color: lightgreen;">Classroom Money</span>
   <a href="{{url('/')}}" class="btn btn-success"><span class="fa fa-location-arrow"></span> <span class="wo">{{ __('Login') }}</span></a>
   <a href="{{url('/student_register')}}" class="btn btn-success"><span class="fa fa-user"></span>  <span class="wo">{{ __('Student Register') }}</span></a>
-  <a href="{{url('/teacher_register')}}" class="btn btn-success"><span class="fa fa-user"></span> <span class="wo">{{ __('Teacher Register') }}</span></a>
+  <a href="{{url('/teacher_register')}}" class="btn btn-success"><span class="fa fa-user"></span> <span class="wo">{{ __('Teacher/Tutor Register') }}</span></a>
 </header>
 <style>
     header#bg_no {

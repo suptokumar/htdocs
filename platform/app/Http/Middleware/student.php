@@ -62,8 +62,7 @@ class student
                                     $nod = date("Y-m-d H:i:s",$change->app);
                                     // date_default_timezone_set(Auth::user()->timezone);
                                     $change->app = strtotime($nod);
-                                                                        // date_default_timezone_set($change->timezone);
-
+                                        
                                 date_default_timezone_set(Auth::user()->timezone);
                                     array_push($data, [$change->app, date("D, M d,Y h:i a", $change->app) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mxt]);
                             }
@@ -75,9 +74,10 @@ class student
                             // date_default_timezone_set($value->timezone);
                                 $ntr = date("Y-m-d H:i:s",strtotime($value->starting));
                                 $nxt = strtotime($ntr);
-
+                                if ($nxt>$crt) {
                                 date_default_timezone_set(Auth::user()->timezone);
                             array_push($data, [$nxt , date("D, M d,Y h:i a", $nxt) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst ]);
+                                }
                         }
                     
                 }
@@ -100,12 +100,9 @@ class student
                             $change = change::where([["class_id", "=", $value->ras], ["replacetime", "=", $mst]])->orderBy("id","desc")->first();
                             if ($change)
                             {
-                                if ($change->status != 0)
+                                if ($change->status != 0 && $change->app>$crt)
                                 {
-                                    if ($crt > $change->app)
-                                    {
-                                        continue;
-                                    }
+                                
                                     // date_default_timezone_set($change->timezone);
                                     $nod = date("Y-m-d H:i:s",$change->app);
                                     // date_default_timezone_set(Auth::user()->timezone);
@@ -118,12 +115,10 @@ class student
                             }
                             else
                             {
-                                if ($crt > $nxt)
-                                {
-                                    continue;
-                                }
+                                if( $nxt>$crt){
                                 date_default_timezone_set(Auth::user()->timezone);
                                 array_push($data, [$nxt, date("D, M d,Y h:i a", $nxt) ,$value->subject , $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst]);
+                                }
                             }
                             $nxt += 24 * 3600;
                         }
@@ -134,6 +129,7 @@ class student
                     }
                 }
             }
+
 
             usort($data, function ($a, $b)
             {

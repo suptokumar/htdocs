@@ -4,6 +4,28 @@ load_users(page, 1);
 function load_teacher(page){
 load_users(page, 2);
 }
+function request_change_time(id, t){
+  window.location = url('request_change/'+id+'/time/'+t);
+}
+function cancel_all(id,t){
+  var token = $("#csrf").val();
+  if (confirm("Are you sure you want to cancel all the class of this Schedule?")) {
+    $.ajax({
+      url: url("delete_class"),
+      type: "POST",
+      data: {id: id, _token: token},
+    })
+    .done(function(data) {
+      $(".bcmc"+id).fadeOut('slow');
+    });
+    
+  }
+}
+
+
+
+
+
 function load_users(page, order){
 	var urls = url("admin/user_list");
 	var token = $("#token").val();
@@ -190,7 +212,7 @@ function load_gt(page){
       var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Name</th> <th scope="col">Country</th></tr> </thead> <tbody>';
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
-        body+= "<tr id='bcmc"+row["id"]+"'>";
+        body+= "<tr class='bcmc"+row["id"]+"'>";
         body+= "<td>";
         body+= (i+1);
         body+= "</td>";
@@ -280,15 +302,18 @@ function manage_class(page){
 
       var d = JSON.parse(data);
       if (d[1]==2) {
-      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Teacher</th>  <th scope="col">Student</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Title</th><th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Teacher</th>  <th scope="col">Student</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
       }else{
-      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Teacher</th>  <th scope="col">Student</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Title</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Teacher</th>  <th scope="col">Student</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
       }
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
-        body+= "<tr id='bcmc"+row[0]+"'>";
+        body+= "<tr class='bcmc"+row[7]['id']+"'>";
         body+= "<td>";
         body+= row[1];
+        body+= "</td>";
+        body+= "<td>";
+        body+= row[7]['title'];
         body+= "</td>";
         body+= "<td>";
         body+= row[2]+"<br>";
@@ -307,7 +332,7 @@ function manage_class(page){
         body+= "</td>";
         body+= "<td>";
         body+= "<a href='"+row[3]+"' class='btn btn-info'>Go to Link</a>";
-        body+= " <button class='btn btn-danger' onclick='request_cancel("+row[7]['id']+","+row[8]+")' data-do='0'>Cancel</button>";
+        body+= " <button class='btn btn-danger' onclick='cancel_all("+row[7]['id']+","+row[8]+")' data-do='0'>Cancel All</button>";
         body+= " <button class='btn btn-primary' onclick='request_change_time("+row[7]['id']+","+row[8]+")' data-do='0'>Schedule Change</button>";
         // }
         

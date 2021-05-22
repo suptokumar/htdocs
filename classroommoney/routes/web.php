@@ -67,6 +67,8 @@ Route::post('/teacherlist', 'soft@teacherlist');
 Route::post('/result', 'soft@result');  
 Route::post('/myteacherlist', 'soft@myteacherlist');  
 Route::get('/myteachers', 'soft@myteachers');  
+Route::post('/mytutors', 'soft@mytutors');  
+Route::get('/tutors', 'soft@mytutor');  
 Route::get('/teach', 'soft@teach');  
 Route::get('/mymarksheet', 'soft@mymarksheets');  
 Route::get('/settings', 'mainct@settings');  

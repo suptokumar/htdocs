@@ -56,7 +56,7 @@ flex-direction: column;
     })
     .done(function(data) {
      var d = JSON.parse(data);
-      var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Name</th> <th scope="col">Email</th><th scope="col">Phone number</th><th scope="col">School</th><th scope="col">School Address</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Name</th> <th scope="col">Type</th> <th scope="col">Email</th><th scope="col">Phone number</th><th scope="col">School</th><th scope="col">School Address</th> <th scope="col">Educational Qualifications</th><th scope="col">Subject</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
         body+= "<tr id='bcmc"+row["id"]+"'>";
@@ -64,7 +64,12 @@ flex-direction: column;
         body+= (i+1);
         body+= "</td>";
         body+= "<td>";
-        body+= row['name'];
+        body+= row['name']+"<br>";
+        body+= "<a href='{{ url('/public/image/') }}/0"+  d[2][i]['id_proof']+"' target='_blank'><img style='width: 100px' src='{{ url('/public/image/') }}/0"+d[2][i]['id_proof']+"'></a>";
+
+        body+= "</td>";
+        body+= "<td>";
+        body+= row['type']==2?'Teacher':'Tutor';
         body+= "</td>";
         body+= "<td>";
         body+= row['email'];
@@ -77,6 +82,12 @@ flex-direction: column;
         body+= "</td>";
         body+= "<td>";
         body+= d[2][i]['school_address'];
+        body+= "</td>";
+        body+= "<td>";
+        body+= d[2][i]['educational_qualifications'];
+        body+= "</td>";
+        body+= "<td>";
+        body+= d[2][i]['subject'];
         body+= "</td>";
 
         body+= "<td>";

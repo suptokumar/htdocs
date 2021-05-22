@@ -18,7 +18,7 @@
     <span style="font-size: 25px !important; margin: 10px;float: left;font-weight: bold;text-shadow: 1px 1px 1px red;color: lightgreen;">Classroom Money</span>
   <a href="{{url('/')}}" class="btn btn-success"><span class="fa fa-location-arrow"></span> <span class="wo">{{ __('Login') }}</span></a>
   <a href="{{url('/student_register')}}" class="btn btn-success"><span class="fa fa-user"></span>  <span class="wo">{{ __('Student Register') }}</span></a>
-  <a href="{{url('/teacher_register')}}" class="btn btn-success"><span class="fa fa-user"></span> <span class="wo">{{ __('Teacher Register') }}</span></a>
+  <a href="{{url('/teacher_register')}}" class="btn btn-success"><span class="fa fa-user"></span> <span class="wo">{{ __('Teacher/Tutor Register') }}</span></a>
 </header>
 <style>
     header#bg_no {
@@ -61,7 +61,14 @@
 
   <h4 style="text-align: center">Personal Details</h4>
   <div class="form-row">
-    <div class="form-group col-md-4">
+    <div class="form-group col-md-2">
+      <label for="type">Tutor/Teacher? <span style="color: red">*</span></label>
+      <select name="type" id="type" class="form-control" required="">
+        <option value="2">Teacher</option>
+        <option value="4">Tutor</option>
+      </select>
+    </div>
+    <div class="form-group col-md-2">
       <label for="name">Teacher's Name <span style="color: red">*</span></label>
       <input type="text" class="form-control" required="" id="name" name="name" placeholder="full name">
     </div>
@@ -86,7 +93,7 @@
       <input type="file" class="form-control" required="" id="id_proof" name="id_proof">
     </div>
     <div class="form-group col-md-4">
-      <label for="school">School Name <span style="color: red">*</span></label>
+      <label for="school">School Name/Collage <span style="color: red">*</span></label>
       <input type="text" class="form-control" required="" id="school" name="school" placeholder="Use full name of your school">
     </div>
     <div class="form-group col-md-4">

@@ -16,3 +16,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('appstart');
 });
+Route::post("/get_result","soft@get_result");
+Route::get("/get_result","soft@get_result");

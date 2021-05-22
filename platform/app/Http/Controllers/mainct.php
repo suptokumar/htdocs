@@ -91,10 +91,6 @@ class mainct extends Controller
                             {
                                 if ($change->status != 0)
                                 {
-                                    if ($crt > $change->app)
-                                    {
-                                        continue;
-                                    }
                                     // date_default_timezone_set($change->timezone);
                                     $nod = date("Y-m-d H:i:s",$change->app);
                                     // date_default_timezone_set(Auth::user()->timezone);
@@ -107,10 +103,6 @@ class mainct extends Controller
                             }
                             else
                             {
-                                if ($crt > $nxt)
-                                {
-                                    continue;
-                                }
                                 date_default_timezone_set(Auth::user()->timezone);
                                 array_push($data, [$nxt, date("D, M d,Y h:i a", $nxt) ,$value->subject , $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst]);
                             }
@@ -1404,8 +1396,7 @@ WHEN phone LIKE '___________$search%' THEN 12 END, name ASC;
                                     $nod = date("Y-m-d H:i:s",$change->app);
                                     // date_default_timezone_set(Auth::user()->timezone);
                                     $change->app = strtotime($nod);
-                                                                        // date_default_timezone_set($change->timezone);
-
+                                        
                                 date_default_timezone_set(Auth::user()->timezone);
                                     array_push($data, [$change->app, date("D, M d,Y h:i a", $change->app) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mxt]);
                             }
@@ -1417,9 +1408,10 @@ WHEN phone LIKE '___________$search%' THEN 12 END, name ASC;
                             // date_default_timezone_set($value->timezone);
                                 $ntr = date("Y-m-d H:i:s",strtotime($value->starting));
                                 $nxt = strtotime($ntr);
-
+                                if ($nxt>$crt) {
                                 date_default_timezone_set(Auth::user()->timezone);
                             array_push($data, [$nxt , date("D, M d,Y h:i a", $nxt) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst ]);
+                                }
                         }
                     
                 }
@@ -1442,12 +1434,9 @@ WHEN phone LIKE '___________$search%' THEN 12 END, name ASC;
                             $change = change::where([["class_id", "=", $value->ras], ["replacetime", "=", $mst]])->orderBy("id","desc")->first();
                             if ($change)
                             {
-                                if ($change->status != 0)
+                                if ($change->status != 0 && $change->app>$crt)
                                 {
-                                    if ($crt > $change->app)
-                                    {
-                                        continue;
-                                    }
+                                
                                     // date_default_timezone_set($change->timezone);
                                     $nod = date("Y-m-d H:i:s",$change->app);
                                     // date_default_timezone_set(Auth::user()->timezone);
@@ -1460,12 +1449,10 @@ WHEN phone LIKE '___________$search%' THEN 12 END, name ASC;
                             }
                             else
                             {
-                                if ($crt > $nxt)
-                                {
-                                    break;
-                                }
+                                if( $nxt>$crt){
                                 date_default_timezone_set(Auth::user()->timezone);
                                 array_push($data, [$nxt, date("D, M d,Y h:i a", $nxt) ,$value->subject , $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst]);
+                                }
                             }
                             $nxt += 24 * 3600;
                         }
