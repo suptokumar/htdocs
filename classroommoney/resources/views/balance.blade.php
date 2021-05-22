@@ -71,6 +71,7 @@
       <label for="method">Payment Method <span style="color: red">*</span></label>
       <select name="method" id="method" class="form-control">
       	<option value="PayPal">PayPal</option>
+        <option value="Stripe">Stripe</option>
       	<option value="Coinpayment">Coinpayment</option>
       	<option value="Credit Card">Credit Card</option>
       	<option value="Debit Card">Debit Card</option>
