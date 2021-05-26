@@ -27,6 +27,13 @@ Route::group(['middleware' => 'login'], function() {
 
 Route::get("/profile/{id}",'soft@profile');
 Route::get("/settings",'soft@settings');
+Route::get("/add_live",'soft@add_live');
+Route::post("/my_class",'soft@my_class');
+Route::post("/livesearch",'soft@livesearch');
+Route::post("/sohwofsddfiusdfssddgfuawidfhwae",'soft@sohwofsddfiusdfssddgfuawidfhwae');
+Route::post("/liveadd",'soft@liveadd');
+Route::post("/mylivelist",'soft@mylivelist');
+Route::post("/deleteclass",'soft@deleteclass');
 Route::get("/invest",'soft@invest');
 Route::get("/balance",'soft@balance');
 Route::post("/notifications",'soft@notifications');
@@ -47,8 +54,12 @@ Route::get('/', 'soft@index');
 
 Route::group(['prefix' => 'admin','middleware' => 'admin'], function() {
 Route::get('/', 'mainct@index');
+Route::get('/live', 'soft@live');  
 Route::get('/teachers', 'soft@teachers');  
 Route::post('/veri_teachers', 'soft@veri_teachers');  
+Route::post('/livelist', 'soft@livelist');  
+Route::post('/rejectict', 'soft@rejectict');  
+Route::post('/approveict', 'soft@approveict');  
 Route::post('/veri_success', 'soft@veri_success');  
 Route::get('/withdrawal', 'soft@withdrawal');  
 Route::post('/results', 'soft@results');  

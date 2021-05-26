@@ -26,10 +26,10 @@
     <a class="nav-link @yield("3")" href="{{ url('/admin/withdrawal') }}">Withdrawal Requests</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link @yield("4")" href="#">Reports</a>
+    <a class="nav-link @yield("4")" href="{{ url('/admin/live') }}">Live</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link @yield("4")" href="{{ url('/logout') }}">Logout</a>
+    <a class="nav-link @yield("5")" href="{{ url('/logout') }}">Logout</a>
   </li>
 </ul>
 

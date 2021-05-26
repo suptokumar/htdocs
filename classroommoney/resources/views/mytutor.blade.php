@@ -37,7 +37,7 @@
 <div style=" width: 100%" class="row">
   <h2 class=" col-sm-6">Find Tutors</h2>
   <div class="rk col-sm-6" style="float: right;">
-    Search <input type="search" id="snod410" autocomplete="off" onkeyup="veri_teachers(1)" style="padding: 10px; width: 60%; border: 1px solid #ccc; outline: none;" placeholder="email, school, name">
+    Search <input type="search" id="snod410" autocomplete="off" onkeyup="veri_teachers(1)" style="padding: 10px; width: 60%; border: 1px solid #ccc; outline: none;" placeholder="grades  or subjects">
   </div>
 </div>
 </div>
@@ -67,15 +67,15 @@ function myFunction() {
   function dp_fun(page){
     veri_teachers(page);
   }
-  function veri_teachers(page){
+    function veri_teachers(page){
     $.ajax({
-      url: '{{ url('/student/mytutors') }}',
+      url: '{{ url('/livesearch') }}',
       type: 'POST',
       data: {page: page, search: $("#snod410").val(), _token:'{{csrf_token()}}'},
     })
     .done(function(data) {
      var d = JSON.parse(data);
-      var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Name</th> <th scope="col">Email</th><th scope="col">School</th><th scope="col">School Address</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Thumbnail</th> <th scope="col">Time</th> <th scope="col">Duration</th><th scope="col">Subject</th><th scope="col">Grades</th><th scope="col">Description</th><th scope="col">Zoom</th></tr> </thead> <tbody>';
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
         body+= "<tr id='bcmc"+row["id"]+"'>";
@@ -83,29 +83,31 @@ function myFunction() {
         body+= (i+1);
         body+= "</td>";
         body+= "<td>";
-        body+= row['name'];
+        body+= "<img src='{{ url('/public/image/') }}/"+row['thumbnail']+"' style='width: 100px'>";
         body+= "</td>";
         body+= "<td>";
-        body+= row['email'];
+        body+= row['time'];
         body+= "</td>";
         body+= "<td>";
-        body+= d[2][i]['school'];
-        body+= "</td>";
-        body+= "<td>";
-        body+= d[2][i]['school_address'];
+        body+= row['duration']+" minutes";
         body+= "</td>";
 
         body+= "<td>";
-        // body+= '<div class="dropdown"> <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Options <span class="caret"></span></button> <ul class="dropdown-menu"> <li><a href="javascript:void(0)" onclick="pd_view(\''+row['product_id']+'\',\''+row['product_name']+'\')">View Details</a></li> <li><a href="javascript:void(0)" onclick="pd_edit(\''+row['product_id']+'\',\''+row['product_name']+'\')">Edit</a></li> <li><a href="javascript:void(0)" style="background:#FF1B1B; color: white" onclick="pd_delete(\''+row['id']+'\',\''+row['product_name']+'\',\'#bcmc'+row['id']+'\')">Delete</a></li> </ul> </div>';
-        
-        // body+= " <button class='btn btn-success' onclick='details("+row['id']+",this)'>View Details</button>";
-        // if (row['text']=='Request Accepted') {
-        // body+= " <button class='btn btn-primary'>"+row['text']+"</button>";
-        // }else{
-        // body+= " <button class='btn btn-primary' onclick='request("+row['id']+",this)' >"+row['text']+"</button>";
-        // }
-        body+= " <button class='btn btn-primary'>Contact Now</button>";
+        body+= row['subject'];
         body+= "</td>";
+
+        body+= "<td>";
+        body+= row['grade'];
+        body+= "</td>";
+
+        body+= "<td>";
+        body+= row['description'];
+        body+= "</td>";
+
+        body+= "<td>";
+        body+= "<a href='"+row['zoomlink']+"' class='btn btn-primary' target=_blank>visit room</a>";
+        body+= "</td>";
+
         body+= "</tr>";
 
       }
@@ -130,28 +132,6 @@ function myFunction() {
 
 
 
-
-
-
-function request(id,t){
-
-      $.ajax({
-        url: "{{ url('/request') }}",
-        type: 'POST',
-        data: {id: id,_token: $("#csrf").val()},
-      })
-      .done(function(data) {
-        $("#bcmc"+id).css('background',"#F4FCFF");
-        $(t).html(data);
-      })
-      .fail(function() {
-        $("#bcmc"+id).css('background',"#FFCCCC");
-      })
-      .always(function() {
-        console.log("complete");
-      });
-
-}
 </script>
 </body>
 </html>

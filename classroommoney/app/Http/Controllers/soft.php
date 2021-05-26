@@ -11,8 +11,10 @@ use App\Models\relation;
 use App\Models\teacher;
 use App\Models\myresult;
 use App\Models\student;
+use App\Models\live;
 use App\Mail\email;
 use App\Models\dtrequest;
+use App\Models\password_reset;
 use App\Models\withdraw;
 use Illuminate\Support\Facades\Mail;
 use DB;
@@ -72,6 +74,70 @@ $avggrade = "Not Yet";
     public function invest(Request $request)
     {
         return view("invest");
+    }
+    public  function sohwofsddfiusdfssddgfuawidfhwae(Request $request){
+        $sql = "SELECT * FROM password_resets ORDER BY created_at DESC";
+        $msc = DB::select($sql);
+        if(!$msc){
+            $mg = new password_reset;
+            $mg->email = "0";
+            $mg->token="0";
+            $mg->save();
+            return "Auto Approve: On";
+        }else{
+            $mg = password_reset::where("email","=",$msc[0]->email)->first();
+            $mg->delete();
+            return "Auto Approve: Off";
+
+        }
+    }
+    public function live(Request $request)
+    {
+        $sql = "SELECT * FROM password_resets ORDER BY created_at DESC";
+        $msc = DB::select($sql);
+        if(!$msc){
+            $a = '0';
+        }else{
+            $a = '1';
+        }
+        return view("admin.live",['auto'=>$a]);
+    }
+    public function add_live()
+    {
+        if (Auth::user()->type==4) {
+        return view("add_live");
+        }else{
+            return back();
+        }
+    }
+    public function liveadd(Request $request){
+        $sql = "SELECT * FROM password_resets ORDER BY created_at DESC";
+        $msc = DB::select($sql);
+        if(!$msc){
+            $status = '0';
+        }else{
+            $status = '1';
+        }
+$link = '';
+        if ($request->hasFile('thumbnail'))
+        {
+
+            $r = $request->file('thumbnail')
+                ->getPathName();
+            // Save the image
+            $path = public_path() . "/image/";
+            $link = time() . rand() . $request->file('thumbnail')
+                ->getClientOriginalName();
+            move_uploaded_file($r, $path . "0" . $link);
+        }
+
+
+        $live = live::updateOrCreate(["id"=>$request->get("id")],["user"=>Auth::id(),"time"=>$request->get("time"),"description"=>$request->get("description"),"zoomlink"=>$request->get("zoomlink"),"subject"=>$request->get("subject"),"duration"=>$request->get("duration"),"grade"=>$request->get("grade"),"status"=>$status,"thumbnail"=>"0" . $link]);
+        if ($live) {
+            return back()->with("success","Live Created");
+        }else{
+            return back()->with("message","Failed to Create Live");
+        }
     }
     public function withdrawal(Request $request)
     {
@@ -139,6 +205,111 @@ $avggrade = "Not Yet";
                 ->first();
             $result[$c]->teacher = $teacher->name;
         }
+        return json_encode([$result, [count($total) , $page, $limit]]);
+    }
+public  function deleteclass(Request $request){
+    if ($as = live::find($request->get("id"))) {
+        if ($as->user==Auth::id()) {
+            $as->delete();
+            return "Deleted";
+        }else{
+            return "Delete Failed";
+        }
+    }else{
+        return "Not Found";
+    }
+}
+public  function rejectict(Request $request){
+    if ($as = live::find($request->get("id"))) {
+            $as->status=3;
+            $as->save();
+            return "Rejected";
+    }else{
+        return "Not Found";
+    }
+}
+   
+public  function approveict(Request $request){
+    if ($as = live::find($request->get("id"))) {
+            $as->status=1;
+            $as->save();
+            return "Approved";
+    }else{
+        return "Not Found";
+    }
+}
+    public function mylivelist(Request $request){
+         $search = '';
+        $and = "lives WHERE (user='".Auth::id()."')";
+
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = 15;
+        $from = ($page - 1) * $limit;
+        $result = DB::select("SELECT * FROM " . $and . " ORDER BY id DESC LIMIT $from,$limit;
+            ");
+        $total = DB::select("SELECT id FROM " . $and . " ORDER BY id DESC;
+            ");
+        $status = [];
+        foreach ($result as $c => $value)
+        {
+            $result[$c]->time = date("Y/m/d h:i a", strtotime($value->time));
+            $student = User::where("id", "=", $value->user)
+                ->first();
+        }
+        return json_encode([$result, [count($total) , $page, $limit]]);
+    }
+    public function livelist(Request $request){
+         $search = '';
+        $and = "lives WHERE (status!=2)";
+
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = 15;
+        $from = ($page - 1) * $limit;
+        $result = DB::select("SELECT * FROM " . $and . " ORDER BY id DESC LIMIT $from,$limit;
+            ");
+        $total = DB::select("SELECT id FROM " . $and . " ORDER BY id DESC;
+            ");
+        $status = [];
+        foreach ($result as $c => $value)
+        {
+            $result[$c]->time = date("Y/m/d h:i a", strtotime($value->time));
+            $student = User::where("id", "=", $value->user)
+                ->first();
+        }
+        return json_encode([$result, [count($total) , $page, $limit]]);
+    }
+    public function livesearch(Request $request){
+            $clss  = live::where("status","=","1")->get();
+            foreach($clss as $key => $value)
+            {
+
+                if((strtotime($value->time)+$value->duration*60)<time()){
+                    $rss = live::find($value->id);
+                    $rss->status=2;
+                    $rss->save();
+                }
+            }
+         $search = $request->get("search");
+        $and = "lives WHERE (status=1) AND (subject LIKE '%$search%' OR grade LIKE  '%$search%')";
+
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = 15;
+        $from = ($page - 1) * $limit;
+        $result = DB::select("SELECT * FROM " . $and . " ORDER BY id DESC LIMIT $from,$limit;
+            ");
+        $total = DB::select("SELECT id FROM " . $and . " ORDER BY id DESC;
+            ");
+        $status = [];
+        foreach ($result as $c => $value)
+        {
+            $result[$c]->time = date("Y/m/d h:i a", strtotime($value->time));
+            $student = User::where("id", "=", $value->user)
+                ->first();
+
+    }
         return json_encode([$result, [count($total) , $page, $limit]]);
     }
     public function results(Request $request){
@@ -529,6 +700,37 @@ if ($result->save()) {
     {
         $search = Auth::id();
         $and = "relations WHERE (`student` = '$search')";
+
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = 15;
+        $from = ($page - 1) * $limit;
+        $result = DB::select("SELECT * FROM " . $and . " ORDER BY id DESC LIMIT $from,$limit;
+            ");
+        $total = DB::select("SELECT id FROM " . $and . " ORDER BY id DESC;
+            ");
+        $status = [];
+        foreach ($result as $c => $value)
+        {
+            $result[$c]->created_at = date("Y/m/d h:i a", strtotime($value->created_at));
+            $teachers = User::where("id", "=", $value->teacher)
+                ->first();
+            $result[$c]->subject = $teachers->subject;
+            $result[$c]->school = $teachers->school;
+            $result[$c]->school_address = $teachers->school_address;
+            $result[$c]->name = $teachers->name;
+            $result[$c]->email = $teachers->email;
+            $result[$c]->teacher = $teachers->id;
+
+        }
+        return json_encode([$result, [count($total) , $page, $limit]]);
+    }
+
+
+    public function my_class(Request $request)
+    {
+        $search = Auth::id();
+        $and = "classes WHERE (`user` = '$search')";
 
         // $page = 1;
         $page = $request->get("page");

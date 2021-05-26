@@ -4,7 +4,7 @@
 @section("content")
 
 <div class="container">
-	
+  
 <div class="all_payments" style="width: 100%">
   
 </div>
@@ -81,8 +81,8 @@
       $total = d[1][0];
       $limit = d[1][2];
       if (d[0]!='') {
-      	body+=generate_pagination($total, $page, $limit, "dp_fun");
-  		}
+        body+=generate_pagination($total, $page, $limit, "dp_fun");
+      }
       $(".all_payments").html(body);
     })
     .fail(function() {
@@ -91,19 +91,19 @@
   }
 
 function changeit(t,val,id){
-	if (confirm("Are you sure you want to change the amount")) {
-		$.ajax({
-			url: '{{ url('/admin/changeit') }}',
-			type: 'POST',
-			data: {val: val,id:id,_token:'{{csrf_token()}}'},
-		})
-		.done(function(data) {
-			$(t).attr('before', val);
-		});
-	}else{
-			$(t).val($(t).attr("before"));
+  if (confirm("Are you sure you want to change the amount")) {
+    $.ajax({
+      url: '{{ url('/admin/changeit') }}',
+      type: 'POST',
+      data: {val: val,id:id,_token:'{{csrf_token()}}'},
+    })
+    .done(function(data) {
+      $(t).attr('before', val);
+    });
+  }else{
+      $(t).val($(t).attr("before"));
 
-	}
+  }
 }
 
 function request(id,t){
