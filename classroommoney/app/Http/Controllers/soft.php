@@ -36,6 +36,13 @@ class soft extends Controller
             }
             return $earnings;
     }
+    public function library(){
+        return view("library");
+    }
+    public function books(){
+        $sql = db::select("SELECT * FROM books  ORDER BY id,grade DESC");
+        return view("admin.books",["books"=>$sql]);
+    }
     public function index()
     {
         setcookie("as","do",time()+50000);

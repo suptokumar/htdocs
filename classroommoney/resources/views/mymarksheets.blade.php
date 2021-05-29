@@ -16,6 +16,7 @@
   <a href="{{ url('/student/mymarksheet') }}" class="active">Marksheet</a>
   <a href="{{ url('/student/myteachers') }}">Teachers</a>
     <a href="{{ url('/student/tutors') }}">Tutors</a>
+  <a href="{{ url('/student/library') }}">Library</a>
 
   <div class="dropdown">
     <button class="dropbtn">Account 

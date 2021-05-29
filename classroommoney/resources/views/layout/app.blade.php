@@ -29,6 +29,12 @@
     <a class="nav-link @yield("4")" href="{{ url('/admin/live') }}">Live</a>
   </li>
   <li class="nav-item">
+    <a class="nav-link @yield("6")" href="{{ url('/admin/books') }}">Add Books</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link @yield("7")" href="{{ url('/admin/bookrequest') }}">Book Request</a>
+  </li>
+  <li class="nav-item">
     <a class="nav-link @yield("5")" href="{{ url('/logout') }}">Logout</a>
   </li>
 </ul>

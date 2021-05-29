@@ -67,6 +67,7 @@ Route::post('/amt', 'soft@amts');
 Route::post('/changeit', 'soft@changeit');  
 Route::post('/requestapprove', 'soft@requestapprove');  
 Route::get('/users', 'mainct@users');  
+Route::get('/books', 'soft@books');  
 Route::get('/requests', 'mainct@requests');  
 Route::get('/class_history/{ras}', 'mainct@class_history');  
 
@@ -83,6 +84,7 @@ Route::get('/tutors', 'soft@mytutor');
 Route::get('/teach', 'soft@teach');  
 Route::get('/mymarksheet', 'soft@mymarksheets');  
 Route::get('/settings', 'mainct@settings');  
+Route::get('/library', 'soft@library');  
 
 });
 
