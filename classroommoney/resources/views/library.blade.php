@@ -45,13 +45,48 @@
 
 <div class="all_payments" style="width: 100%">
 
-		<div class="row">
-	@for ($i = 0; $i < 10; $i++)
-			<div class="col col-lg-6 col-md-4 col-sm-2">
-				
-			</div>
-	@endfor
-		</div>
+<form action="" method="GET">
+  <input type="text" name="s" style="padding: 10px" placeholder="search"><input type="submit" style="padding: 10px;" value="search">
+</form>
+<style>
+  .book {
+  width: 300px;
+  float: left;
+  height: 530px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  padding: 1%;
+  margin: 1%;
+}
+.book .imgs1 {
+  width: 100%;
+  height: 300px;
+}
+</style>
+<div class="mainct">
+  @foreach ($books as $book)
+    <div class="book a{{$book->id}}">
+      <button class="btn btn-primary float-right" onclick="delte_it({{$book->id}},this)">Request Purchase</button>
+      <img src="{{ url('/public/image/'.$book->thumb) }}" class="imgs1" alt="">
+      <h3>{{$book->title}}</h3>
+      <p>{{$book->description}}</p>
+    </div>
+  @endforeach
+</div>
+<script>
+  function delte_it(id,t){
+      $.ajax({
+        url: '{{ url('/request_perchage') }}',
+        type: 'POST',
+        data: {id:id,_token:'{{csrf_token()}}'},
+      })
+      .done(function(data) {
+        $(t).html(data);
+        $(".a"+t).css('background', '#FFD4D4');
+      });
+      
+    }
+</script>
   
 </div>
 

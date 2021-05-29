@@ -47,8 +47,10 @@ Route::post("/delete_notifications",'soft@delete_notifications');
 Route::post("/accept_student",'soft@accept_student');
 Route::post('/request', 'soft@request');  
 Route::post('/delete_request', 'soft@delete_request');  
+Route::post('/hammba', 'soft@hammba');  
 Route::get('/delete_noti', 'mainct@delete_noti');  
 Route::post('/remove_teacher', 'soft@remove_teacher');  
+Route::post('/delteanoe', 'soft@delteanoe');  
 
 Route::get('/', 'soft@index');
 

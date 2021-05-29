@@ -12,6 +12,7 @@ use App\Models\teacher;
 use App\Models\myresult;
 use App\Models\student;
 use App\Models\live;
+use App\Models\book;
 use App\Mail\email;
 use App\Models\dtrequest;
 use App\Models\password_reset;
@@ -36,11 +37,51 @@ class soft extends Controller
             }
             return $earnings;
     }
-    public function library(){
-        return view("library");
-    }
-    public function books(){
+    public function library(Request $request){
+        if (!empty($request->get("s"))) {
+        $sql = db::select("SELECT * FROM books WHERE title LIKE '%".$request->get("s")."%'  ORDER BY id,grade DESC");
+        }else{
         $sql = db::select("SELECT * FROM books  ORDER BY id,grade DESC");
+
+        }
+        return view("library",["books"=>$sql]);
+    }
+    public function delteanoe(Request $request){
+        if($book =  book::find($request->id)){
+
+        $book->delete();
+        return "Deleted";
+        }else{
+            return "Not Found";
+        }
+    }
+    public function hammba(Request $request){
+        $book = new book;
+$cv = '';
+if ($request->hasFile('thumb')) {
+$r =  $request->file('thumb')->getPathName();
+$path = public_path()."/image/";
+$cv = time().rand().$request->file('thumb')->getClientOriginalName();
+move_uploaded_file($r, $path."0".$cv);
+}
+$book->title = $request->title;
+$book->thumb = "0".$cv;
+$book->description = $request->description;
+$book->link =  $request->link;
+$book->grade = $request->grade;
+if ($book->save()) {
+    return back()->with("success","Successfuly Added.");
+}else{
+    return back()->with("message","Failed to add.");
+}
+    }
+    public function books(Request $request){
+        if (!empty($request->get("s"))) {
+        $sql = db::select("SELECT * FROM books WHERE title LIKE '%".$request->get("s")."%'  ORDER BY id,grade DESC");
+        }else{
+        $sql = db::select("SELECT * FROM books  ORDER BY id,grade DESC");
+
+        }
         return view("admin.books",["books"=>$sql]);
     }
     public function index()

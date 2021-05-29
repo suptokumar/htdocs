@@ -80,12 +80,17 @@ $day = floor((time()-strtotime($value->date))/86400)+1;
     $day = 1;
 }
     $t1+= intval($value->test_total*$day);
-        if ($ad->discharge==1) {
+    if(isset($ad->discharge))
+   {     if  ($ad->discharge==1) {
     $t1-= intval($value->test_total*$day)-intval($value->test_paid);
 }
+}
 }else{
+    if(isset($ad->discharge))
+{
     if ($ad->discharge==1) {
     $t1-= intval($value->test_total)-intval($value->test_paid);
+}
 }
 $t1+= intval($value->test_total);
 }
@@ -1266,6 +1271,9 @@ if (!isset($value->date)) {
             if ($value->date!='') {
                 $em_id = $value->em_id;
                 $ad = admission::find($em_id);
+                    if(isset($ad->discharge))
+{
+    
                 if ($ad->discharge==1) {
                 $day = floor((strtotime($ad->updated_at)-strtotime($value->date))/86400)+1;
                 $result[$key]->test_total = ($result[$key]->test_total*$day)-(($result[$key]->test_total)-($result[$key]->test_paid));
@@ -1274,14 +1282,19 @@ if (!isset($value->date)) {
                 $day = floor((time()-strtotime($value->date))/86400)+1;
                 $result[$key]->test_total = $result[$key]->test_total*$day;
                 }
+}
             }else{
                 $em_id = $value->em_id;
                 $ad = admission::find($em_id);
+                    if(isset($ad->discharge))
+{
+
                 if ($ad->discharge==1) {
                 $result[$key]->test_total = ($result[$key]->test_total)-(($result[$key]->test_total)-($result[$key]->test_paid));
 
             }
             }
+}
 
         }
 
@@ -1571,7 +1584,7 @@ if ($date1!='') {
             ");
     return json_encode([$result,[count($total), $page, $limit]]);
     }
-
-
-
 }
+
+
+

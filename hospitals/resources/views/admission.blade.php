@@ -48,7 +48,7 @@
   <div class="form-group row">
     <label for="name" class="col-sm-3 col-form-label"> Name</label>
     <div class="col-sm-9">
-      <input type="text" name="name" autofocus="" autocomplete="off" class="form-control" value="{{isset($doctor)?$doctor->name:''}}" id="name" placeholder=" Name">
+      <input type="text" name="name" autofocus="" autocomplete="off" class="form-control" value="{{isset($doctor)?$doctor->name:''}}" id="name" placeholder=" Name" required="">
     </div>
   </div>
   <div class="form-group row">
@@ -130,7 +130,7 @@
   <div class="form-group row">
     <label for="consultant" class="col-sm-3 col-form-label">Room</label>
     <div class="col-sm-9">
-      <select name="room" onchange="avg(this.value)" class="form-control" id="room">
+      <select name="room" onchange="avg(this.value)" class="form-control" id="room" required="">
                 <option value="" {{isset($doctor)?($doctor->room_id==''?'selected':''):''}}>--Select--</option>
 
       	
