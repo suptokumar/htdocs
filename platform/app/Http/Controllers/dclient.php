@@ -47,6 +47,159 @@ class dclient extends Controller
         }
         
     }
+
+
+
+
+
+
+
+
+public function upcoming_cls($sql,$start)
+{
+$class = DB::select($sql);
+
+            $data = [];
+            $crt = strtotime($start);
+            $mxt = strtotime($start) + 3600 * 24 * 30;
+            foreach ($class as $key => $value)
+            {
+            date_default_timezone_set($value->timezone);
+                 // add the changes
+                if ($value->repeat == '')
+                {
+                    $nst =  date("Y-m-d H:i:s",  strtotime($value->starting));
+                            // date_default_timezone_set($value->timezone);
+                            $mst = strtotime($nst);
+
+                    $change = change::where([["class_id", "=", $value->ras], ["replacetime", "=", $mst ]])->orderBy("id","desc")
+                        ->first();
+                    if ($change)
+                    {
+                        if ($change->status != '0')
+                        {
+                            if ($change->app > $crt && $change->app < $mxt)
+                            {
+                                date_default_timezone_set($change->timezone);
+                                    $nod = date("Y-m-d H:i:s",$change->app);
+                                    // date_default_timezone_set(Auth::user()->timezone);
+                                    $change->app = strtotime($nod);
+                                        
+                                date_default_timezone_set(Auth::user()->timezone);
+                                    array_push($data, [$change->app, date("D, M d,Y h:i a", $change->app) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mxt]);
+                            }
+                        }
+                    }
+                    else
+                    {
+
+                            // date_default_timezone_set($value->timezone);
+                                $ntr = date("Y-m-d H:i:s",strtotime($value->starting));
+                                $nxt = strtotime($ntr);
+                                if ($nxt>$crt) {
+                                date_default_timezone_set(Auth::user()->timezone);
+                            array_push($data, [$nxt , date("D, M d,Y h:i a", $nxt) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst ]);
+                                }
+                        }
+                    
+                }
+                else
+                {
+                    $repeat = explode(",", $value->repeat);
+                    $nxt = strtotime(empty($value->lastclass) ? $value->starting : $value->lastclass) + 24 * 3600;
+                    while (true)
+                    {
+                        if ($nxt > $mxt)
+                        {
+                            break;
+                        }
+                        if (in_array(date("l", $nxt) , $repeat))
+                        {
+                            $nst =  date("Y-m-d H:i:s", $nxt);
+                            // date_default_timezone_set($value->timezone);
+                            $mst = strtotime($nst);
+                            // date_default_timezone_set(Auth::user()->timezone);
+                            $change = change::where([["class_id", "=", $value->ras], ["replacetime", "=", $mst]])->orderBy("id","desc")->first();
+                            if ($change)
+                            {
+                                if ($change->status != '0' && $change->app>$crt)
+                                {
+                                
+                                    // date_default_timezone_set($change->timezone);
+                                    $nod = date("Y-m-d H:i:s",$change->app);
+                                    // date_default_timezone_set(Auth::user()->timezone);
+                                    $change->app = strtotime($nod);
+                                    // date_default_timezone_set($change->timezone);
+                                date_default_timezone_set(Auth::user()->timezone);
+
+                                    array_push($data, [$change->app, date("D, M d,Y h:i a", $change->app) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst]);
+                                }
+                            }
+                            else
+                            {
+                                if( $nxt>$crt){
+                                date_default_timezone_set(Auth::user()->timezone);
+                                array_push($data, [$nxt, date("D, M d,Y h:i a", $nxt) ,$value->subject , $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst]);
+                                }
+                            }
+                            $nxt += 24 * 3600;
+                        }
+                        else
+                        {
+                            $nxt += 24 * 3600;
+                        }
+                    }
+                }
+            }
+
+
+            usort($data, function ($a, $b)
+            {
+                return $a[0] > $b[0] ? 1 : -1;
+            });
+    return $data;
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+    public function reports($year,$month)
+    {
+        $total_student = User::where("type","=","2")->count();
+        $total_teacher = User::where("type","=","1")->count();
+        $total_active = User::where([["type","=","2"],["status","=","active"]])->count();
+        $total_inactive = User::where([["type","=","2"],["status","!=","active"]])->count();
+        $waitings = waiting::where("done","=","0")->count();
+
+        $doneclass = count(DB::select("SELECT * FROM `reports` WHERE year(`starting`)='$year' AND month(`starting`)='$month'"));
+        $total_deleted = count(DB::select("SELECT * FROM `changes` WHERE year(`created_at`)='$year' AND month(`created_at`)='$month' AND status='0'"));
+        $total_changed = count(DB::select("SELECT * FROM `changes` WHERE year(`created_at`)='$year' AND month(`created_at`)='$month' AND status=''"));
+        $missed_class = count(DB::select("SELECT * FROM `reports` WHERE year(`starting`)='$year' AND month(`starting`)='$month' AND status='0'"));
+        $total_clients = count(DB::select("SELECT * FROM `clients`"));
+        $numberofpaidinvoice = count(DB::select("SELECT * FROM `payments`  WHERE year(`created_at`)='$year' AND month(`created_at`)='$month' group by `invoice`"));
+        $feeandtransfer = DB::select("SELECT SUM(fees) as fees,SUM(transfer_fees) as transfer FROM `payments`  WHERE year(`created_at`)='$year' AND month(`created_at`)='$month' group by `invoice`");
+        $transfer = empty($feeandtransfer[0]->transfer)?"0":$feeandtransfer[0]->transfer;
+        $fees = empty($feeandtransfer[0]->fees)?"0":$feeandtransfer[0]->fees;
+        $total_remaining_hours = DB::select("SELECT SUM(hours) as sm FROM `users` WHERE type=2")[0]->sm/60;
+        $upcoming_cls = count($this->upcoming_cls("SELECT * FROM courses", "$year-$month-01"));
+        $total_cls = $doneclass+$upcoming_cls;
+        $qm = count(DB::SELECT("select * from courses where subject='Quran Memorization' AND year(`updated_at`)='$year' AND month(`updated_at`)='$month'  GROUP BY s_id"));
+        $qr = count(DB::SELECT("select * from courses where subject='Quran Recitation' AND year(`updated_at`)='$year' AND month(`updated_at`)='$month'  GROUP BY s_id"));
+        $al = count(DB::SELECT("select * from courses where subject='Arabic language' AND year(`updated_at`)='$year' AND month(`updated_at`)='$month'  GROUP BY s_id"));
+        $is = count(DB::SELECT("select * from courses where subject='Islamic Studies' AND year(`updated_at`)='$year' AND month(`updated_at`)='$month'  GROUP BY s_id"));
+        
+
+        return view("reports",["total_student"=>$total_student,"total_teacher"=>$total_teacher,"total_active"=>$total_active,"total_inactive"=>$total_inactive,"waitings"=>$waitings,"doneclass"=>$doneclass,"total_deleted"=>$total_deleted,"total_changed"=>$total_changed,"missed_class"=>$missed_class,"total_clients"=>$total_clients,"numberofpaidinvoice"=>$numberofpaidinvoice,"transfer"=>$transfer,"fees"=>$fees,"total_remaining_hours"=>$total_remaining_hours,"upcoming_cls"=>$upcoming_cls,"total_cls"=>$total_cls,"qm"=>$qm,"qr"=>$qr,"al"=>$al,"is"=>$is]);
+    }
     public function delete_waiting(Request $request){
         if($waiting = waiting::find($request->get("id"))){
             $waiting->delete();

@@ -11,9 +11,9 @@ function show_class(page){
 
       var d = JSON.parse(data);
       if (d[1]==2) {
-      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Teacher</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Teacher</th> <th scope="col">Title</th> <th scope="col">ID</th> </tr> </thead> <tbody>';
       }else{
-      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Student</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Student</th> <th scope="col">Title</th> <th scope="col">ID</th> </tr> </thead> <tbody>';
       }
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
@@ -35,13 +35,21 @@ function show_class(page){
       }
         body+= "</td>";
         body+= "<td>";
-        body+= "<a href='"+row[3]+"' class='btn btn-info'>Go to Link</a>";
-        body+= " <button class='btn btn-danger' onclick='request_cancel("+row[7]['id']+","+row[8]+")' data-do='0'>Cancel</button>";
-        body+= " <button class='btn btn-primary' onclick='request_change_time("+row[7]['id']+","+row[8]+")' data-do='0'>Schedule Change</button>";
+        body+=row[7]['title'];
         // }
+        body+= "</td>";
+        body+= "<td>";
+        body+=row[7]['ras'];
         
         body+= "</td>";
         body+= "</tr>";
+        body+="<tr>";
+        body+="<td colspan=6 style='text-align: center; border-top: none !important;'>";
+         body+= "<a href='"+row[3]+"' class='btn btn-info'>Go to Class</a>";
+        body+= " <button class='btn btn-danger' onclick='request_cancel("+row[7]['id']+","+row[8]+")' data-do='0'>Cancel</button>";
+        body+= " <button class='btn btn-primary' onclick='request_change_time("+row[7]['id']+","+row[8]+")' data-do='0'>Reschedule</button>";
+        body+="</td>";
+        body+="</tr>";
 
       }
       if (data=='') {
@@ -73,9 +81,9 @@ function awgafasdfew(page){
 
       var d = JSON.parse(data);
       if (d[1]==2) {
-      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Student</th><th scope="col">Teacher</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Student</th><th scope="col">Teacher</th> <th scope="col">Title</th><th scope="col">ID</th> </tr> </thead> <tbody>';
       }else{
-      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Student</th> <th scope="col">Teacher</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Student</th> <th scope="col">Teacher</th> <th scope="col">Title</th><th scope="col">ID</th> </tr> </thead> <tbody>';
       }
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
@@ -96,13 +104,19 @@ function awgafasdfew(page){
         body+= row[5];
         body+= "</td>";
         body+= "<td>";
-        body+= "<a href='"+row[3]+"' class='btn btn-info'>Go to Link</a>";
-        body+= " <button class='btn btn-danger' onclick='request_cancel("+row[7]['id']+","+row[8]+")' data-do='0'>Cancel</button>";
-        body+= " <button class='btn btn-primary' onclick='request_change_time("+row[7]['id']+","+row[8]+")' data-do='0'>Schedule Change</button>";
-        // }
-        
+        body+= row[7]['title'];
+        body+= "</td>";
+        body+= "<td>";
+        body+= row[7]['ras'];
         body+= "</td>";
         body+= "</tr>";
+        body+="<tr>";
+        body+="<td colspan=7 style='text-align: center; border-top: none !important;'>";
+         body+= "<a href='"+row[3]+"' class='btn btn-info'>Go to Class</a>";
+        body+= " <button class='btn btn-danger' onclick='request_cancel("+row[7]['id']+","+row[8]+")' data-do='0'>Cancel</button>";
+        body+= " <button class='btn btn-primary' onclick='request_change_time("+row[7]['id']+","+row[8]+")' data-do='0'>Reschedule</button>";
+        body+="</td>";
+        body+="</tr>";
 
       }
       if (data=='') {

@@ -91,6 +91,7 @@ Route::get('/waitings/add', 'dclient@add_waitings');
 Route::get('/waitings/add/{id}', 'dclient@add_waitings_id');  
 Route::get('/add_class', 'mainct@add_class');  
 Route::get('/clients', 'mainct@clients');  
+Route::get('/reports/{year}/{month}', 'dclient@reports');  
 Route::get('/editclient/{id}', 'mainct@editclient');  
 Route::post('/get_payment', 'dclient@get_payment');  
 Route::post('/clients', 'mainct@get_clients');  

@@ -41,9 +41,9 @@ function load_users(page, order){
 			var d = JSON.parse(data);
       if (order==1) {
 
-			     var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Name</th> <th scope="col">Email</th><th scope="col">Phone number</th><th scope="col">Remaining Hours</th><th scope="col">ClientID</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+			     var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Name</th> <th scope="col">Email</th><th scope="col">Phone number</th><th scope="col">Remaining Hours</th><th scope="col">ClientID</th>  </tr> </thead> <tbody>';
       }else{
-           var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Name</th> <th scope="col">Email</th><th scope="col">Phone number</th><th scope="col">Done Hours</th><th scope="col">Cancel Requests</th><th scope="col">Zoom Link</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+           var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Name</th> <th scope="col">Email</th><th scope="col">Phone number</th><th scope="col">Done Hours</th><th scope="col">Cancel Requests</th><th scope="col">Zoom Link</th> </tr> </thead> <tbody>';
       }
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
@@ -85,21 +85,24 @@ if (order==2) {
         body+= row['zoom_link'];
         body+= "</td>";
 }
-				body+= "<td>";
-				// body+= '<div class="dropdown"> <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Options <span class="caret"></span></button> <ul class="dropdown-menu"> <li><a href="javascript:void(0)" onclick="pd_view(\''+row['product_id']+'\',\''+row['product_name']+'\')">View Details</a></li> <li><a href="javascript:void(0)" onclick="pd_edit(\''+row['product_id']+'\',\''+row['product_name']+'\')">Edit</a></li> <li><a href="javascript:void(0)" style="background:#FF1B1B; color: white" onclick="pd_delete(\''+row['id']+'\',\''+row['product_name']+'\',\'#bcmc'+row['id']+'\')">Delete</a></li> </ul> </div>';
-				body+= " <button class='btn btn-primary' onclick='login("+row['id']+",this)'>Login</button>";
-				if (row['key']==0) {
-				    body+= " <button class='btn btn-success' onclick='details("+row['id']+",this)'>View Details</button>";
-				body+= "<button class='btn btn-danger' onclick='block("+row['id']+",this)'>Block</button>";
-        
-				}else{
-				    body+= " <button class='btn btn-success' onclick='details("+row['id']+",this)'>View Details</button>";
-				body+= "<button class='btn btn-info' onclick='block("+row['id']+",this)'>Unlock</button>";
-        
-				}
-        
-				body+= "</td>";
+
 				body+= "</tr>";
+        body+= "<tr>";
+        body+= "<td style='text-align: center; border-top: none;' colspan=7>";
+        // body+= '<div class="dropdown"> <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Options <span class="caret"></span></button> <ul class="dropdown-menu"> <li><a href="javascript:void(0)" onclick="pd_view(\''+row['product_id']+'\',\''+row['product_name']+'\')">View Details</a></li> <li><a href="javascript:void(0)" onclick="pd_edit(\''+row['product_id']+'\',\''+row['product_name']+'\')">Edit</a></li> <li><a href="javascript:void(0)" style="background:#FF1B1B; color: white" onclick="pd_delete(\''+row['id']+'\',\''+row['product_name']+'\',\'#bcmc'+row['id']+'\')">Delete</a></li> </ul> </div>';
+        body+= " <button class='btn btn-primary' style='font-size: 18px;' onclick='login("+row['id']+",this)'>Login</button>";
+        if (row['key']==0) {
+            body+= " <button class='btn btn-success' style='font-size: 15px;padding-top:8px' onclick='details("+row['id']+",this)'>View Details</button>";
+        body+= "<button class='btn btn-danger' onclick='block("+row['id']+",this)'>Block</button>";
+        
+        }else{
+            body+= " <button class='btn btn-success' style='font-size: 15px;padding-top:8px' onclick='details("+row['id']+",this)'>View Details</button>";
+        body+= "<button class='btn btn-info' onclick='block("+row['id']+",this)'>Unlock</button>";
+        
+        }
+        
+        body+= "</td>";
+        body+= "</tr>";
 
 			}
 			if (data=='') {
@@ -311,9 +314,9 @@ function manage_class(page){
 
       var d = JSON.parse(data);
       if (d[1]==2) {
-      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Title</th><th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Teacher</th>  <th scope="col">Student</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Title</th><th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Teacher</th>  <th scope="col">Student</th> <th scope="col">ID</th> </tr> </thead> <tbody>';
       }else{
-      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Title</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Teacher</th>  <th scope="col">Student</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Title</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Teacher</th>  <th scope="col">Student</th> <th scope="col">ID</th> </tr> </thead> <tbody>';
       }
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
@@ -340,13 +343,18 @@ function manage_class(page){
       // }
         body+= "</td>";
         body+= "<td>";
-        body+= "<a href='"+row[3]+"' class='btn btn-info'>Go to Link</a>";
-        body+= " <button class='btn btn-danger' onclick='cancel_all("+row[7]['id']+","+row[8]+")' data-do='0'>Cancel All</button>";
-        body+= " <button class='btn btn-primary' onclick='request_change_time("+row[7]['id']+","+row[8]+")' data-do='0'>Schedule Change</button>";
-        // }
-        
+      // }else{
+        body+= row[7]['ras'];
+      // }
         body+= "</td>";
         body+= "</tr>";
+        body+="<tr>";
+        body+="<td colspan=7 style='text-align: center; border-top: none !important;'>";
+         body+= "<a href='"+row[3]+"' class='btn btn-info'>Go to Class</a>";
+        body+= " <button class='btn btn-danger' onclick='request_cancel("+row[7]['id']+","+row[8]+")' data-do='0'>Cancel</button>";
+        body+= " <button class='btn btn-primary' onclick='request_change_time("+row[7]['id']+","+row[8]+")' data-do='0'>Reschedule</button>";
+        body+="</td>";
+        body+="</tr>";
 
       }
       if (data=='') {

@@ -50,10 +50,14 @@ flex-direction: column;
 <div class="all_users" style="width: 100%">
   
 </div>
-<button onclick="from_show()" class="btn btn-success">Create Students</button>
+<button onclick="from_show()" class="btn btn-success" style="position: fixed; width: 100px !important; height: 100px; padding-top: 8px; top: 50px;">Create Students</button>
 <script>
   function from_show(){
-    $("form").slideToggle(400);
+    $("form").slideToggle(400,function(){
+    $("body,html").animate({
+      scrollTop:$("body").innerHeight()}, 1000);
+
+    });
   }
 </script>
 <form style="width: 90%; margin: 0 auto; display: none;" action="{{ url('/create') }}" method="POST" enctype="multipart/form-data"><br>

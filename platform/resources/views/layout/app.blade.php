@@ -40,6 +40,9 @@
 	    n();
 	</script>
 <style>
+
+
+
 .mg-red{
     padding: 4px; border-radius: 15px; background:red; color: white; margin: 4px; 
 }
@@ -50,16 +53,33 @@
         font-size: 18px;
         border-radius: 16px;
         margin: 5px;
-        width: 175px;
-        
+        height: 90px;
+border-radius: 100px !important;
+line-height: 21px;
+width: 90px !important;
+white-space: pre-wrap;
+padding-top: 22px;
+font-weight: bold;
+border: 2px solid yellow;
     }
     .btn-danger{
+padding-top: 8px;
         background-color:#f45161;
     }
     .btn-primary{
         background-color: #b0aeae;
         border-color: #b0aeae;
+padding-top: 7px;
+        
+        padding-left: 3px;
+        font-size: 16px;
     }
+.table th {
+    text-align: center;
+}
+.table td{
+    text-align: center;
+}
     .btn-success{
         background-color: #87cefa;
         border-color: #87cefa;
@@ -117,6 +137,8 @@
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 .show {display:block;}
+
+
 
 </style>
 <script>
@@ -338,15 +360,6 @@ window.onclick = function(event) {
 
  --}}
 
-
-{{--       <li class="library">
-        <a href="{{ url('/admin/notifications') }}">
-          <svg>
-            <use xlink:href="#collection"></use>
-          </svg>
-          <span>{{__('Library')}}</span>
-        </a>
-      </li> --}}
       <li class="payment">
         <a href="{{ url('/admin/payments') }}">
           <svg>
@@ -363,18 +376,16 @@ window.onclick = function(event) {
           <span>{{__('Waiting List')}}</span>
         </a>
       </li>
-      <!--<li class="menu-heading">-->
-      <!--  <h3>{{__('Settings')}}</h3>-->
-      <!--</li>-->
-      <!--<li class="settings">-->
-      <!--  <a href="{{ asset('/admin/settings') }}">-->
-      <!--    <svg>-->
-      <!--      <use xlink:href="#settings"></use>-->
-      <!--    </svg>-->
-      <!--    <span>{{__('Settings')}}</span>-->
-      <!--  </a>-->
-      <!--</li>-->
 
+
+      <li class="reports">
+        <a href="{{ url('/admin/reports/'.date("Y")."/".date("m")) }}">
+          <svg>
+            <use xlink:href="#settings"></use>
+          </svg>
+          <span>{{__('Reports')}}</span>
+        </a>
+      </li>
 
       @endif
 

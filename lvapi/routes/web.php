@@ -14,3 +14,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', "soft@index");
+
+Route::group(['prefix' => 'admin'], function() {
+    Route::get("/paymentdetails","soft@paymentdetails");
+    Route::get("/addnewpayment","soft@addnewpayment");
+});
