@@ -220,7 +220,7 @@ function emargency(page){
       var body = '<table class="table" id="bmw"> <thead class="thead-light"> <tr> <th scope="col">ID</th> <th scope="col">Full name</th> <th scope="col">Contact</th><th scope="col">Age</th><th scope="col">Gender</th><th scope="col">Address</th><th scope="col">Doctor</th><th scope="col">Refference</th><th scope="col">Date</th> <th scope="col" class="opt">Options</th> </tr> </thead> <tbody>';
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
-        body+= "<tr id='bcmc"+row["id"]+"'>";
+        body+= "<tr id='bcmc"+row["id"]+"' "+(row['due']!=0?" style='background:#FFD9D9'":"")+">";
         body+= "<td style='color: green; font-weight: bold;'>";
         body+= row['id'];
         body+= "</td>";
@@ -420,7 +420,7 @@ function admission(page){
       var body = '<table class="table" id="bmw"> <thead class="thead-light"> <tr> <th scope="col">ID</th> <th scope="col">Full name</th> <th scope="col">Details</th><th scope="col">Room</th><th scope="col">Day</th><th scope="col">Doctor</th><th scope="col">Refference</th><th scope="col">Admitted</th> <th scope="col" class="opt">Options</th> </tr> </thead> <tbody>';
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
-        body+= "<tr id='bcmc"+row["id"]+"'>";
+        body+= "<tr id='bcmc"+row["id"]+"' "+(row['due']!=0?" style='background:#FFD9D9'":"")+">";
         body+= "<td style='color: green; font-weight: bold;'>";
         body+= row['id'];
         body+= "</td>";

@@ -27,9 +27,10 @@ Route::post("/user_get",'mainct@user_get');
 Route::post("/update",'mainct@update');
 Route::get("/upcoming/{id}",'mainct@upcoming');
 Route::post("/add_class",'mainct@add_classes');
-Route::post("/student_list",'mainct@student_list');
+Route::post("/student_list",'dclient@student_list');
 
 Route::post('/load_reports', 'dclient@load_reports');  
+Route::post('/reportstseet', 'dclient@reportstseet');  
 Route::get('/notifications', 'mainct@notification');  
 Route::post('/notifications', 'mainct@notifications');  
 
@@ -55,6 +56,7 @@ Route::get('/teachers', 'mainct@teachersgt');
 Route::get('/assignment/{id}', 'dclient@assignment');  
 Route::post('/create_client', 'mainct@create_clients');  
 Route::post('/laod_class', 'dclient@laod_class');  
+Route::post('/awgafasdfew', 'dclient@awgafasdfew');  
 Route::post('/upload', 'mainct@upload');  
 Route::post('/upload_note', 'mainct@upload_note');  
 Route::post('/mark_attendence', 'dclient@mark_attendence');  
@@ -99,6 +101,8 @@ Route::get('/', 'mainct@index');
 Route::get('/settings', 'mainct@settings');  
 Route::get('/my_class', 'dclient@my_class');  
 Route::get('/manage_class', 'dclient@manage_class');  
+Route::get('/allpreclass', 'dclient@allpreclass');  
+Route::get('/allclass', 'dclient@allclass');  
 });
 
 

@@ -1,6 +1,6 @@
 @extends("layout.app")
 @section("title","Manage Class | School management software")
-@section("active","manage_class")
+@section("active","allpreclass")
 @section("content")
 <style>
 .page-content .grid > article{
@@ -107,10 +107,10 @@ flex-direction: column;
   <script src="{{ asset('/public/js/class.js?ee') }}"></script>
 <script>
 	$(document).ready(function() {
-		reports(1);
+		reportst(1);
 	});
 	function dp_fun(page){
-		reports(page);
+		reportst(page);
 
 	}
 </script>

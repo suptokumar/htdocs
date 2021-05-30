@@ -304,7 +304,7 @@ window.onclick = function(event) {
       <li class="teachers">
         <a href="{{ url('/admin/teachers') }}">
           <svg>
-            <use xlink:href="#users"></use>
+            <use xlink:href="#charts"></use>
           </svg>
           <span>{{__('Teachers')}}</span>
         </a>
@@ -313,7 +313,7 @@ window.onclick = function(event) {
       <li class="students">
         <a href="{{ url('/admin/students') }}">
           <svg>
-            <use xlink:href="#users"></use>
+            <use xlink:href="#comments"></use>
           </svg>
           <span>{{__('Students')}}</span>
         </a>
@@ -321,7 +321,7 @@ window.onclick = function(event) {
       <li class="clients">
         <a href="{{ url('/admin/clients') }}">
           <svg>
-            <use xlink:href="#users"></use>
+            <use xlink:href="#options"></use>
           </svg>
           <span>{{__('Clients')}}</span>
         </a>
@@ -405,7 +405,7 @@ window.onclick = function(event) {
       <li class="students">
         <a href="{{ url('/students') }}">
           <svg>
-            <use xlink:href="#collection"></use>
+            <use xlink:href="#search"></use>
           </svg>
           <span>{{__('Students')}}</span>
         </a>
@@ -462,20 +462,36 @@ window.onclick = function(event) {
       <li class="manage_class">
         <a href="{{ url('/student/manage_class') }}">
           <svg>
-            <use xlink:href="#pages"></use>
+            <use xlink:href="#options"></use>
           </svg>
           <span>{{__('Previous Classes')}}</span>
         </a>
       </li>
-{{-- 
+      <li class="allclass">
+        <a href="{{ url('/student/allclass') }}">
+          <svg>
+            <use xlink:href="#charts"></use>
+          </svg>
+          <span>{{__('Family Classes')}}</span>
+        </a>
+      </li>
+      <li class="allpreclass">
+        <a href="{{ url('/student/allpreclass') }}">
+          <svg>
+            <use xlink:href="#pages"></use>
+          </svg>
+          <span>{{__('All Previous Classes')}}</span>
+        </a>
+      </li>
+
       <li class="students">
         <a href="{{ url('/students') }}">
           <svg>
-            <use xlink:href="#collection"></use>
+            <use xlink:href="#search"></use>
           </svg>
-          <span>{{__('Students')}}</span>
+          <span>{{__('Family Students')}}</span>
         </a>
-      </li> --}}
+      </li>
       <li class="teachers">
         <a href="{{ url('/teachers') }}">
           <svg>
@@ -487,7 +503,7 @@ window.onclick = function(event) {
       <li class="notifications">
         <a href="{{ url('/notifications') }}">
           <svg>
-            <use xlink:href="#collection"></use>
+            <use xlink:href="#comments"></use>
           </svg>
           <span>{{__('Notifications')}}</span>
         </a>

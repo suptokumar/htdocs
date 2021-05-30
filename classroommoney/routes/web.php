@@ -28,6 +28,7 @@ Route::group(['middleware' => 'login'], function() {
 Route::get("/profile/{id}",'soft@profile');
 Route::get("/settings",'soft@settings');
 Route::get("/add_live",'soft@add_live');
+Route::post("/request_perchage",'soft@request_perchage');
 Route::post("/my_class",'soft@my_class');
 Route::post("/livesearch",'soft@livesearch');
 Route::post("/sohwofsddfiusdfssddgfuawidfhwae",'soft@sohwofsddfiusdfssddgfuawidfhwae');
@@ -60,6 +61,10 @@ Route::get('/live', 'soft@live');
 Route::get('/teachers', 'soft@teachers');  
 Route::post('/veri_teachers', 'soft@veri_teachers');  
 Route::post('/livelist', 'soft@livelist');  
+Route::post('/bookreqeusts', 'soft@bookreqeusts');  
+Route::post('/acceptreader', 'soft@acceptreader');  
+Route::post('/deletesreader', 'soft@deletesreader');  
+Route::get('/bookrequest', 'soft@bookrequest');  
 Route::post('/rejectict', 'soft@rejectict');  
 Route::post('/approveict', 'soft@approveict');  
 Route::post('/veri_success', 'soft@veri_success');  
@@ -87,6 +92,7 @@ Route::get('/teach', 'soft@teach');
 Route::get('/mymarksheet', 'soft@mymarksheets');  
 Route::get('/settings', 'mainct@settings');  
 Route::get('/library', 'soft@library');  
+Route::get('/mybooks', 'soft@mybooks');  
 
 });
 

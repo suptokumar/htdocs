@@ -60,6 +60,67 @@ return false;
 
 
 
+function awgafasdfew(page){
+  var urls = url("awgafasdfew");
+  var token = $("#csrf").val();
+  var search = $("#snod410").val();
+  $.ajax({
+    url: urls,
+    type: "POST",
+    data: {_token: token, page: page, search: search},
+  })
+  .done(function(data) {
+
+      var d = JSON.parse(data);
+      if (d[1]==2) {
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Student</th><th scope="col">Teacher</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      }else{
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Student</th> <th scope="col">Teacher</th> <th scope="col">Options</th> </tr> </thead> <tbody>';
+      }
+      for (var i = 0; i < d[0].length; i++) {
+        var row = d[0][i];
+        body+= "<tr id='bcmc"+row[0]+"'>";
+        body+= "<td>";
+        body+= row[1];
+        body+= "</td>";
+        body+= "<td>";
+        body+= row[2]+"<br>";
+        body+= "</td>";
+        body+= "<td>";
+        body+= "<b>"+row[4]+"</b> Minutes"+"<br>";
+        body+= "</td>";
+        body+= "<td>";
+        body+= row[6];
+        body+= "</td>";
+        body+= "<td>";
+        body+= row[5];
+        body+= "</td>";
+        body+= "<td>";
+        body+= "<a href='"+row[3]+"' class='btn btn-info'>Go to Link</a>";
+        body+= " <button class='btn btn-danger' onclick='request_cancel("+row[7]['id']+","+row[8]+")' data-do='0'>Cancel</button>";
+        body+= " <button class='btn btn-primary' onclick='request_change_time("+row[7]['id']+","+row[8]+")' data-do='0'>Schedule Change</button>";
+        // }
+        
+        body+= "</td>";
+        body+= "</tr>";
+
+      }
+      if (data=='') {
+        body+= "<tr colspan='6'>";
+        body+= "<td>";
+        body+= "No Users Found";
+        body+= "</td>";
+        body+= "</tr>";
+      }
+      body+= '</tbody></table>';
+
+      $(".all_class").html(body);
+  });
+return false; 
+}
+
+
+
 
 
 
@@ -112,7 +173,98 @@ function reports(page){
         body+= "<td>";
         body+= d[2][i][0];
         body+= "</td>";
+        body+= "<td style='white-space:pre-line'>";
+        if (d[2][i][2]=='2') {
+          if (row['notes']=='') {
+        body+="Not Submited";
+          }else{
+        body+=row['notes'];
+          }
+        }else{
+          if (row['notes']=='') {
+        body+="<a class='btn btn-primary' href='"+url("notes/"+row['id'])+"'>Add Progress Note</a><br> You can't Update Notes After "+d[2][i][3];
+          }else{
+body+=row['notes'];          }
+        }
+        body+= "</td>";
         body+= "<td>";
+        if (d[2][i][2]=='1') {
+          if (row['assignment']=='') {
+        body+="Not Published";
+          }else{
+        body+="<a class='btn btn-primary' href='"+url("public/image/"+row['assignment'])+"' download>Download Assignments</a>";
+          }
+        }else{
+          if (row['assignment']=='') {
+        body+="<a class='btn btn-primary' href='"+url("assignment/"+row['id'])+"'>Upload Assignments</a>";
+          }else{
+        body+="<a class='btn btn-primary' href='"+url("public/image/"+row['assignment'])+"' download>Download Assignments</a>";
+          }
+        }
+        body+= "</td>";
+        body+= "<td>";
+        if(d[2][i][2]!='2'){
+
+        
+        body+= '<label class="container">Student <input onchange="mark('+row['id']+',2)" type="checkbox" '+(row['guest']==0?"":"checked='checked'")+'> <span class="checkmark"></span> </label>';
+        body+= '<label class="container">Teacher <input onchange="mark('+row['id']+',1)" type="checkbox" '+(row['guest_active']==0?"":"checked='checked'")+'> <span class="checkmark"></span> </label>';
+      }
+      body+= "</td>";
+        body+= "</tr>";
+
+      }
+      if (data=='') {
+        body+= "<tr colspan='6'>";
+        body+= "<td>";
+        body+= "No Users Found";
+        body+= "</td>";
+        body+= "</tr>";
+      }
+      body+= '</tbody></table>';
+      $page = d[1][1];
+      $total = d[1][0];
+      $limit = d[1][2];
+      body+=generate_pagination($total, $page, $limit, "dp_fun");
+      $(".all_class").html(body);
+  });
+return false; 
+}
+
+
+
+
+
+
+function reportst(page){
+  var urls = url("reportstseet");
+  var token = $("#csrf").val();
+  var search = $("#snod410").val();
+  $.ajax({
+    url: urls,
+    type: "POST",
+    data: {_token: token, page: page, search: search},
+  })
+  .done(function(data) {
+      var d = JSON.parse(data);
+      console.log(data);
+      var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Class No.</th><th scope="col">Title</th> <th scope="col">Subject</th><th scope="col">Class Time</th> <th scope="col">Notes</th> <th scope="col">Assignments</th> <th scope="col">Attendance</th> </tr> </thead> <tbody>';
+      for (var i = 0; i < d[0].length; i++) {
+        var row = d[0][i];
+        body+= "<tr id='bcmc"+row["id"]+"'>";
+        body+= "<td>";
+        body+= d[2][i][1];
+        body+= "</td>";
+        body+= "<td>";
+        body+= row['title']+"<br>";
+        body+= row["ras"];
+        body+= "</td>";
+        body+= "<td>";
+        body+= row['subject'];
+        body+= "</td>";
+        body+= "<td>";
+        body+= d[2][i][0];
+        body+= "</td>";
+        body+= "<td style='white-space:pre-line'>";
         if (d[2][i][2]=='2') {
           if (row['notes']=='') {
         body+="Not Submited";

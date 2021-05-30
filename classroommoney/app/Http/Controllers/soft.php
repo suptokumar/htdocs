@@ -13,6 +13,7 @@ use App\Models\myresult;
 use App\Models\student;
 use App\Models\live;
 use App\Models\book;
+use App\Models\bookreader;
 use App\Mail\email;
 use App\Models\dtrequest;
 use App\Models\password_reset;
@@ -24,6 +25,83 @@ use Image;
 use Cookie;
 class soft extends Controller
 {
+    public function bookrequest(){
+        return view("admin.bookrequest");
+    }
+    public function mybooks(){
+        $books = bookreader::where("user","=",Auth::id())->get();
+        return view("mybooks",["books"=>$books]);
+    }
+    public function acceptreader(Request $request)
+    {
+        if ($bookreader = bookreader::find($request->id)) {
+            $bookreader->status="1";
+            $bookreader->save();
+            return "Approved";
+        }else{
+            return "Not found.";
+        }
+    }
+    public function deletesreader(Request $request)
+    {
+        if ($bookreader = bookreader::find($request->id)) {
+            $bookreader->delete();
+            return "Deleted";
+        }else{
+            return "Not found.";
+        }
+    }
+    public function bookreqeusts(Request $request){
+         $search = '';
+        $and = "bookreaders WHERE (`status` = '0')";
+
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = 15;
+        $from = ($page - 1) * $limit;
+        $result = DB::select("SELECT * FROM " . $and . " ORDER BY id DESC LIMIT $from,$limit;
+            ");
+        $total = DB::select("SELECT id FROM " . $and . " ORDER BY id DESC;
+            ");
+        $status = [];
+        foreach ($result as $c => $value)
+        {
+            $result[$c]->created_at = date("Y/m/d h:i a", strtotime($value->created_at));
+            $result[$c]->users = User::where("id", "=", $value->user)
+                ->first();
+            $result[$c]->books = book::where("id", "=", $value->title)
+                ->first();
+        }
+        return json_encode([$result, [count($total) , $page, $limit]]);
+
+    }
+    public function request_perchage(Request $request)
+    {
+        $id = $request->get("id");
+        if ($book = book::find($id)) {
+            if ($user = bookreader::where([["user","=",Auth::id()],["status","=",'0'],["title","=",$id]])->first()) {
+                return "Request Pending";
+            }
+            if ($user = bookreader::where([["user","=",Auth::id()],["status","=",'1'],["title","=",$id]])->first()) {
+                return "Book already in your library";
+            }
+            $bookreader = new bookreader;
+            $bookreader->user = Auth::id();
+            $bookreader->link = $book->link;
+            $bookreader->exam = '';
+            $bookreader->title = $book->id;
+            $bookreader->description = $book->description;
+            $bookreader->grade = $book->grade;
+            $bookreader->thumb = $book->thumb;
+            $bookreader->status = 0;
+            $bookreader->save();
+            return "Request sent";
+
+            
+        }else{
+            return "Book Not Found";
+        }
+    }
     public function getbalance($user){
         $earnings = 0;
         $earning = myresult::where([["student",'=',$user->id],["status",'=',1],["withstatus",'=',0]])->get();

@@ -43,7 +43,7 @@ class mainct extends Controller
                         ->first();
                     if ($change)
                     {
-                        if ($change->status != 0)
+                        if ($change->status != '0')
                         {
                             if ($change->app > $crt && $change->app < $mxt)
                             {
@@ -89,7 +89,7 @@ class mainct extends Controller
                             $change = change::where([["class_id", "=", $value->ras], ["replacetime", "=", $mst]])->orderBy("id","desc")->first();
                             if ($change)
                             {
-                                if ($change->status != 0)
+                                if ($change->status != '0')
                                 {
                                     // date_default_timezone_set($change->timezone);
                                     $nod = date("Y-m-d H:i:s",$change->app);
@@ -1261,113 +1261,7 @@ WHEN phone LIKE '___________$search%' THEN 12 END, name ASC;
         return json_encode([$result, [count($total) , $page, $limit]]);
     }
 
-    // functions for the admin
-    function student_list(Request $request)
-    {
-        $search = $request->get("search");
-        $order = $request->get("order");
-        $and = '';
-        if ($order == 0)
-        {
-            $and = "users WHERE (name LIKE '%$search%' OR country LIKE '%$search%') AND type!=3";
-        }
-        if ($order == 1)
-        {
-            $and = "users WHERE (name LIKE '%$search%' OR country LIKE '%$search%') AND type=2";
-        }
-        if ($order == 2)
-        {
-            $and = "users WHERE (name LIKE '%$search%' OR country LIKE '%$search%') AND type=1";
-        }
-        // $page = 1;
-        $page = $request->get("page");
-        $limit = 30;
-        $from = ($page - 1) * $limit;
-        $result = DB::select("SELECT * FROM " . $and . " ORDER BY CASE
-WHEN name='$search' THEN 0
-WHEN email='$search' THEN 0
-WHEN phone='$search' THEN 0
-WHEN name LIKE '$search%' THEN 1
-WHEN email LIKE '$search%' THEN 1
-WHEN phone LIKE '$search%' THEN 1
-WHEN name LIKE '_$search%' THEN 2
-WHEN email LIKE '_$search%' THEN 2
-WHEN phone LIKE '_$search%' THEN 2
-WHEN name LIKE '__$search%' THEN 3
-WHEN email LIKE '__$search%' THEN 3
-WHEN phone LIKE '__$search%' THEN 3
-WHEN name LIKE '___$search%' THEN 4
-WHEN email LIKE '___$search%' THEN 4
-WHEN phone LIKE '___$search%' THEN 4
-WHEN name LIKE '____$search%' THEN 5
-WHEN email LIKE '____$search%' THEN 5
-WHEN phone LIKE '____$search%' THEN 5
-WHEN name LIKE '_____$search%' THEN 6
-WHEN email LIKE '_____$search%' THEN 6
-WHEN phone LIKE '_____$search%' THEN 6
-WHEN name LIKE '______$search%' THEN 7
-WHEN email LIKE '______$search%' THEN 7
-WHEN phone LIKE '______$search%' THEN 7
-WHEN name LIKE '_______$search%' THEN 8
-WHEN email LIKE '_______$search%' THEN 8
-WHEN phone LIKE '_______$search%' THEN 8
-WHEN name LIKE '________$search%' THEN 9
-WHEN email LIKE '________$search%' THEN 9
-WHEN phone LIKE '________$search%' THEN 9
-WHEN name LIKE '_________$search%' THEN 10
-WHEN email LIKE '_________$search%' THEN 10
-WHEN phone LIKE '_________$search%' THEN 10
-WHEN name LIKE '__________$search%' THEN 11
-WHEN email LIKE '__________$search%' THEN 11
-WHEN phone LIKE '__________$search%' THEN 11
-WHEN name LIKE '___________$search%' THEN 12
-WHEN email LIKE '___________$search%' THEN 12
-WHEN phone LIKE '___________$search%' THEN 12 END, name ASC LIMIT $from,$limit;
-            ");
-        $total = DB::select("SELECT id FROM " . $and . " ORDER BY CASE
-WHEN name='$search' THEN 0
-WHEN email='$search' THEN 0
-WHEN phone='$search' THEN 0
-WHEN name LIKE '$search%' THEN 1
-WHEN email LIKE '$search%' THEN 1
-WHEN phone LIKE '$search%' THEN 1
-WHEN name LIKE '_$search%' THEN 2
-WHEN email LIKE '_$search%' THEN 2
-WHEN phone LIKE '_$search%' THEN 2
-WHEN name LIKE '__$search%' THEN 3
-WHEN email LIKE '__$search%' THEN 3
-WHEN phone LIKE '__$search%' THEN 3
-WHEN name LIKE '___$search%' THEN 4
-WHEN email LIKE '___$search%' THEN 4
-WHEN phone LIKE '___$search%' THEN 4
-WHEN name LIKE '____$search%' THEN 5
-WHEN email LIKE '____$search%' THEN 5
-WHEN phone LIKE '____$search%' THEN 5
-WHEN name LIKE '_____$search%' THEN 6
-WHEN email LIKE '_____$search%' THEN 6
-WHEN phone LIKE '_____$search%' THEN 6
-WHEN name LIKE '______$search%' THEN 7
-WHEN email LIKE '______$search%' THEN 7
-WHEN phone LIKE '______$search%' THEN 7
-WHEN name LIKE '_______$search%' THEN 8
-WHEN email LIKE '_______$search%' THEN 8
-WHEN phone LIKE '_______$search%' THEN 8
-WHEN name LIKE '________$search%' THEN 9
-WHEN email LIKE '________$search%' THEN 9
-WHEN phone LIKE '________$search%' THEN 9
-WHEN name LIKE '_________$search%' THEN 10
-WHEN email LIKE '_________$search%' THEN 10
-WHEN phone LIKE '_________$search%' THEN 10
-WHEN name LIKE '__________$search%' THEN 11
-WHEN email LIKE '__________$search%' THEN 11
-WHEN phone LIKE '__________$search%' THEN 11
-WHEN name LIKE '___________$search%' THEN 12
-WHEN email LIKE '___________$search%' THEN 12
-WHEN phone LIKE '___________$search%' THEN 12 END, name ASC;
-            ");
-        return json_encode([$result, [count($total) , $page, $limit]]);
-    }
-
+    
     // functions for the admin to manage class
     function get_classes(Request $request){
         $class = course::get();
@@ -1388,7 +1282,7 @@ WHEN phone LIKE '___________$search%' THEN 12 END, name ASC;
                         ->first();
                     if ($change)
                     {
-                        if ($change->status != 0)
+                        if ($change->status != '0')
                         {
                             if ($change->app > $crt && $change->app < $mxt)
                             {
@@ -1434,7 +1328,7 @@ WHEN phone LIKE '___________$search%' THEN 12 END, name ASC;
                             $change = change::where([["class_id", "=", $value->ras], ["replacetime", "=", $mst]])->orderBy("id","desc")->first();
                             if ($change)
                             {
-                                if ($change->status != 0 && $change->app>$crt)
+                                if ($change->status != '0' && $change->app>$crt)
                                 {
                                 
                                     // date_default_timezone_set($change->timezone);

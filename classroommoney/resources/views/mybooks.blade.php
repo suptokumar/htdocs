@@ -69,28 +69,18 @@
 <div class="mainct">
   @foreach ($books as $book)
     <div class="book a{{$book->id}}">
-      <button class="btn btn-primary float-right" onclick="delte_it({{$book->id}},this)">Request Purchase</button>
       <img src="{{ url('/public/image/'.$book->thumb) }}" class="imgs1" alt="">
       <h3>{{$book->title}}</h3>
+      <p>
+      	@if ($book->status==0)
+      	Pending
+      	@else
+      	<a href='{{ $book->link }}' class='btn btn-link'>download book</a>
+      @endif</p>
       <p>{{$book->description}}</p>
     </div>
   @endforeach
-</div>
-<script>
-  function delte_it(id,t){
-      $.ajax({
-        url: '{{ url('/request_perchage') }}',
-        type: 'POST',
-        data: {id:id,_token:'{{csrf_token()}}'},
-      })
-      .done(function(data) {
-        $(t).html(data);
-        $(".a"+t).css('background', '#FFD4D4');
-      });
-      
-    }
-</script>
-  
+</div>  
 </div>
 
 </body>

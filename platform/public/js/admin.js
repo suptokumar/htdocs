@@ -209,7 +209,7 @@ function load_gt(page){
   .done(function(data) {
       console.log(data);
       var d = JSON.parse(data);
-      var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Name</th> <th scope="col">Country</th></tr> </thead> <tbody>';
+      var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Name</th> <th scope="col">Email</th> <th scope="col">Country</th> <th scope="col">Gender</th> <th scope="col">Birth date</th></tr> </thead> <tbody>';
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
         body+= "<tr class='bcmc"+row["id"]+"'>";
@@ -220,7 +220,16 @@ function load_gt(page){
         body+= row['name'];
         body+= "</td>";
         body+= "<td>";
+        body+= row['email'];
+        body+= "</td>";
+        body+= "<td>";
         body+= row['country'];
+        body+= "</td>";
+        body+= "</td>";
+        body+= "<td>";
+        body+= row['gender'];
+        body+= "<td>";
+        body+= row['dateofbirth'];
         body+= "</td>";
         body+= "</tr>";
 

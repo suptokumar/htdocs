@@ -46,7 +46,7 @@ class teacher
                         ->first();
                     if ($change)
                     {
-                        if ($change->status != 0)
+                        if ($change->status != '0')
                         {
                             if ($change->app > $crt && $change->app < $mxt)
                             {
@@ -92,7 +92,7 @@ class teacher
                             $change = change::where([["class_id", "=", $value->ras], ["replacetime", "=", $mst]])->orderBy("id","desc")->first();
                             if ($change)
                             {
-                                if ($change->status != 0 && $change->app>$crt)
+                                if ($change->status != '0' && $change->app>$crt)
                                 {
                                 
                                     // date_default_timezone_set($change->timezone);

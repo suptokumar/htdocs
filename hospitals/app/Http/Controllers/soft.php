@@ -1156,6 +1156,36 @@ public function tick(Request $request){
             $result[$key]->day = floor(($time-$day)/86400)+1;                
             }
             $result[$key]->total = ($result[$key]->total)*((($time-$day)/86400)+1);
+
+
+                    $user= $r->id;
+        $sql = DB::select("SELECT * FROM admissions WHERE id='$user'");
+        $count1 = 0;
+        $sq = DB::select("SELECT * FROM adtests WHERE em_id='$user'");
+        foreach ($sq as $key => $value) {
+            $name = explode('```',$value->test_name);
+            $count1+= count($name)-1;
+        }
+        $total = DB::select("SELECT total,room_register,date FROM addpayments WHERE em_id='$user'");
+        $paid = DB::select("SELECT paid FROM addpayments WHERE em_id='$user'");
+        $t = 0;
+        $p = 0;
+        foreach ($total as $key => $value) {
+            if ($value->room_register!=0) {
+                $day = floor((time()-strtotime($value->date))/86400)+1;
+                $t+=$value->total * $day;
+            }else{
+            $t+=intval($value->total);
+            }
+        }
+        foreach ($paid as $key => $value) {
+            $p+=intval($value->paid);
+        }
+
+            $result[$key]->due = $t-$p;
+
+
+
         }
         $total = DB::select("SELECT id FROM ".$and." ORDER BY id DESC;
             ");
@@ -1485,7 +1515,30 @@ $amount = 0;
         $result = DB::select("SELECT * FROM ".$and."  ORDER BY CASE WHEN id='$search' THEN 0 ELSE 1 END, id DESC LIMIT $from,$limit;
             ");
         foreach ($result as $key => $value) {
+
+$user= $value->id;
+        $sql = DB::select("SELECT * FROM emargencies WHERE id='$user'");
+        $count1 = 0;
+
+        $total = DB::select("SELECT total FROM testpayments WHERE em_id='$user'");
+        $paid = DB::select("SELECT paid FROM testpayments WHERE em_id='$user'");
+        $t = 0;
+        $p = 0;
+        foreach ($total as $egse => $dfrf) {
+            $t+=intval($dfrf->total);
+        }
+        foreach ($paid as $egse => $dfrf) {
+            $p+=intval($dfrf->paid);
+        }
+
+
+
+
+
+
+
             $result[$key]->date = date("D, M d, Y h:i a", $value->date);
+            $result[$key]->due =$t-$p;
         }
         $total = DB::select("SELECT id FROM ".$and." ORDER BY id DESC;
             ");

@@ -244,15 +244,146 @@ class dclient extends Controller
         $not_attendeds = DB::select("SELECT * FROM reports WHERE t_id='$me' AND guest_active=0 AND month(`starting`)='$m' AND year(`starting`)='$y'");
         return view("my_class",["attend"=>[count($attend), count($attends)],"not_attended"=>[count($not_attended), count($not_attendeds)]]);
     }
-
-    public function laod_class(Request $request)
+    // functions for the admin
+    function student_list(Request $request)
     {
-        if (Auth::user()->type==1) {
-        $class = course::where("t_id", "=", Auth::id())->get();
-        }else{
-        $class = course::where("s_id", "=",  Auth::id())->get();
+        $search = $request->get("search");
+        $order = $request->get("order");
+        $and = '';
+                $members = $this->get_family_members(Auth::id());
+        $mem_script = "(";
+        $i = 1;
+        foreach ($members as $key => $value) {
+            $mem_script.=" id='".$value."'";
+            if ($i!=count($members)) {
+                $mem_script.=" OR ";
+            }
+            $i++;
+        }
+        $mem_script.= ") ";
+
+
+        if ($order == 0)
+        {
+            $and = "users WHERE (name LIKE '%$search%' OR country LIKE '%$search%') AND type!=3";
+        }
+        if ($order == 1)
+        {
+            $and = "users WHERE (name LIKE '%$search%' OR country LIKE '%$search%') AND $mem_script";
+        }
+        if ($order == 2)
+        {
+            $and = "users WHERE (name LIKE '%$search%' OR country LIKE '%$search%') AND type=1";
+        }
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = 30;
+        $from = ($page - 1) * $limit;
+        $result = DB::select("SELECT * FROM " . $and . " ORDER BY CASE
+WHEN name='$search' THEN 0
+WHEN email='$search' THEN 0
+WHEN phone='$search' THEN 0
+WHEN name LIKE '$search%' THEN 1
+WHEN email LIKE '$search%' THEN 1
+WHEN phone LIKE '$search%' THEN 1
+WHEN name LIKE '_$search%' THEN 2
+WHEN email LIKE '_$search%' THEN 2
+WHEN phone LIKE '_$search%' THEN 2
+WHEN name LIKE '__$search%' THEN 3
+WHEN email LIKE '__$search%' THEN 3
+WHEN phone LIKE '__$search%' THEN 3
+WHEN name LIKE '___$search%' THEN 4
+WHEN email LIKE '___$search%' THEN 4
+WHEN phone LIKE '___$search%' THEN 4
+WHEN name LIKE '____$search%' THEN 5
+WHEN email LIKE '____$search%' THEN 5
+WHEN phone LIKE '____$search%' THEN 5
+WHEN name LIKE '_____$search%' THEN 6
+WHEN email LIKE '_____$search%' THEN 6
+WHEN phone LIKE '_____$search%' THEN 6
+WHEN name LIKE '______$search%' THEN 7
+WHEN email LIKE '______$search%' THEN 7
+WHEN phone LIKE '______$search%' THEN 7
+WHEN name LIKE '_______$search%' THEN 8
+WHEN email LIKE '_______$search%' THEN 8
+WHEN phone LIKE '_______$search%' THEN 8
+WHEN name LIKE '________$search%' THEN 9
+WHEN email LIKE '________$search%' THEN 9
+WHEN phone LIKE '________$search%' THEN 9
+WHEN name LIKE '_________$search%' THEN 10
+WHEN email LIKE '_________$search%' THEN 10
+WHEN phone LIKE '_________$search%' THEN 10
+WHEN name LIKE '__________$search%' THEN 11
+WHEN email LIKE '__________$search%' THEN 11
+WHEN phone LIKE '__________$search%' THEN 11
+WHEN name LIKE '___________$search%' THEN 12
+WHEN email LIKE '___________$search%' THEN 12
+WHEN phone LIKE '___________$search%' THEN 12 END, name ASC LIMIT $from,$limit;
+            ");
+        $total = DB::select("SELECT id FROM " . $and . " ORDER BY CASE
+WHEN name='$search' THEN 0
+WHEN email='$search' THEN 0
+WHEN phone='$search' THEN 0
+WHEN name LIKE '$search%' THEN 1
+WHEN email LIKE '$search%' THEN 1
+WHEN phone LIKE '$search%' THEN 1
+WHEN name LIKE '_$search%' THEN 2
+WHEN email LIKE '_$search%' THEN 2
+WHEN phone LIKE '_$search%' THEN 2
+WHEN name LIKE '__$search%' THEN 3
+WHEN email LIKE '__$search%' THEN 3
+WHEN phone LIKE '__$search%' THEN 3
+WHEN name LIKE '___$search%' THEN 4
+WHEN email LIKE '___$search%' THEN 4
+WHEN phone LIKE '___$search%' THEN 4
+WHEN name LIKE '____$search%' THEN 5
+WHEN email LIKE '____$search%' THEN 5
+WHEN phone LIKE '____$search%' THEN 5
+WHEN name LIKE '_____$search%' THEN 6
+WHEN email LIKE '_____$search%' THEN 6
+WHEN phone LIKE '_____$search%' THEN 6
+WHEN name LIKE '______$search%' THEN 7
+WHEN email LIKE '______$search%' THEN 7
+WHEN phone LIKE '______$search%' THEN 7
+WHEN name LIKE '_______$search%' THEN 8
+WHEN email LIKE '_______$search%' THEN 8
+WHEN phone LIKE '_______$search%' THEN 8
+WHEN name LIKE '________$search%' THEN 9
+WHEN email LIKE '________$search%' THEN 9
+WHEN phone LIKE '________$search%' THEN 9
+WHEN name LIKE '_________$search%' THEN 10
+WHEN email LIKE '_________$search%' THEN 10
+WHEN phone LIKE '_________$search%' THEN 10
+WHEN name LIKE '__________$search%' THEN 11
+WHEN email LIKE '__________$search%' THEN 11
+WHEN phone LIKE '__________$search%' THEN 11
+WHEN name LIKE '___________$search%' THEN 12
+WHEN email LIKE '___________$search%' THEN 12
+WHEN phone LIKE '___________$search%' THEN 12 END, name ASC;
+            ");
+        return json_encode([$result, [count($total) , $page, $limit]]);
+    }
+
+
+    public function awgafasdfew(Request $request)
+    {
+$members = $this->get_family_members(Auth::id());
+        $mem_script = "(";
+        $i = 1;
+        foreach ($members as $key => $value) {
+            $mem_script.=" s_id='".$value."'";
+            if ($i!=count($members)) {
+                $mem_script.=" OR ";
+            }
+            $i++;
 
         }
+        $mem_script.= ") ";
+
+
+
+        $class = DB::select("select * from courses WHERE $mem_script");
+
             $data = [];
             $crt = time();
             $mxt = time() + 3600 * 24 * 30;
@@ -270,7 +401,7 @@ class dclient extends Controller
                         ->first();
                     if ($change)
                     {
-                        if ($change->status != 0)
+                        if ($change->status != '0')
                         {
                             if ($change->app > $crt && $change->app < $mxt)
                             {
@@ -316,7 +447,117 @@ class dclient extends Controller
                             $change = change::where([["class_id", "=", $value->ras], ["replacetime", "=", $mst]])->orderBy("id","desc")->first();
                             if ($change)
                             {
-                                if ($change->status != 0 && $change->app>$crt)
+                                if ($change->status != '0' && $change->app>$crt)
+                                {
+                                
+                                    // date_default_timezone_set($change->timezone);
+                                    $nod = date("Y-m-d H:i:s",$change->app);
+                                    // date_default_timezone_set(Auth::user()->timezone);
+                                    $change->app = strtotime($nod);
+                                    // date_default_timezone_set($change->timezone);
+                                date_default_timezone_set(Auth::user()->timezone);
+
+                                    array_push($data, [$change->app, date("D, M d,Y h:i a", $change->app) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst]);
+                                }
+                            }
+                            else
+                            {
+                                if( $nxt>$crt){
+                                date_default_timezone_set(Auth::user()->timezone);
+                                array_push($data, [$nxt, date("D, M d,Y h:i a", $nxt) ,$value->subject , $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst]);
+                                }
+                            }
+                            $nxt += 24 * 3600;
+                        }
+                        else
+                        {
+                            $nxt += 24 * 3600;
+                        }
+                    }
+                }
+            }
+
+
+            usort($data, function ($a, $b)
+            {
+                return $a[0] > $b[0] ? 1 : -1;
+            });
+    return json_encode([$data, Auth::user()->type]);
+    }
+
+
+    public function laod_class(Request $request)
+    {
+        if (Auth::user()->type==1) {
+        $class = course::where("t_id", "=", Auth::id())->get();
+        }else{
+        $class = course::where("s_id", "=",  Auth::id())->get();
+
+        }
+            $data = [];
+            $crt = time();
+            $mxt = time() + 3600 * 24 * 30;
+            foreach ($class as $key => $value)
+            {
+            date_default_timezone_set($value->timezone);
+                 // add the changes
+                if ($value->repeat == '')
+                {
+                    $nst =  date("Y-m-d H:i:s",  strtotime($value->starting));
+                            // date_default_timezone_set($value->timezone);
+                            $mst = strtotime($nst);
+
+                    $change = change::where([["class_id", "=", $value->ras], ["replacetime", "=", $mst ]])->orderBy("id","desc")
+                        ->first();
+                    if ($change)
+                    {
+                        if ($change->status != '0')
+                        {
+                            if ($change->app > $crt && $change->app < $mxt)
+                            {
+                                date_default_timezone_set($change->timezone);
+                                    $nod = date("Y-m-d H:i:s",$change->app);
+                                    // date_default_timezone_set(Auth::user()->timezone);
+                                    $change->app = strtotime($nod);
+                                        
+                                date_default_timezone_set(Auth::user()->timezone);
+                                    array_push($data, [$change->app, date("D, M d,Y h:i a", $change->app) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mxt]);
+                            }
+                        }
+                    }
+                    else
+                    {
+
+                            // date_default_timezone_set($value->timezone);
+                                $ntr = date("Y-m-d H:i:s",strtotime($value->starting));
+                                $nxt = strtotime($ntr);
+                                if ($nxt>$crt) {
+                                date_default_timezone_set(Auth::user()->timezone);
+                            array_push($data, [$nxt , date("D, M d,Y h:i a", $nxt) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst ]);
+                                }
+                        }
+                    
+                }
+                else
+                {
+                    $repeat = explode(",", $value->repeat);
+                    $nxt = strtotime(empty($value->lastclass) ? $value->starting : $value->lastclass) + 24 * 3600;
+                    while (true)
+                    {
+                        if ($nxt > $mxt)
+                        {
+                            break;
+                        }
+                        if (in_array(date("l", $nxt) , $repeat))
+                        {
+                            $nst =  date("Y-m-d H:i:s", $nxt);
+                            // date_default_timezone_set($value->timezone);
+                            $mst = strtotime($nst);
+                            // date_default_timezone_set(Auth::user()->timezone);
+                            $change = change::where([["class_id", "=", $value->ras], ["replacetime", "=", $mst]])->orderBy("id","desc")->first();
+                            if ($change)
+                            {
+                                if ($change->status != '0' && $change->app>$crt)
                                 {
                                 
                                     // date_default_timezone_set($change->timezone);
@@ -357,8 +598,66 @@ class dclient extends Controller
     public function manage_class(){
         return view("manage_class");
     }
+    public function allpreclass(){
+        return view("allpreclass");
+    }
+    public function get_family_members($id){
+        $client = User::find($id)->gurdain_id;
+        $users = [];
+        if ($client=='') {
+            array_push($users, $id);
+            return $users;
+        }else{
+            $user = User::where("gurdain_id","=",$client)->get();
+            foreach($user as $u){
+                array_push($users, $u->id);
+            }
+            return $users;
+        }
+    }
+    public function allclass(){
+        $me = Auth::id();
+        $m = date("m");
+        $y = date("Y");
+        $members = $this->get_family_members(Auth::id());
+        $mem_script = "(";
+        $i = 1;
+        foreach ($members as $key => $value) {
+            $mem_script.=" s_id='".$value."'";
+            if ($i!=count($members)) {
+                $mem_script.=" OR ";
+            }
+            $i++;
+        }
+        $mem_script.= ") AND ";
 
 
+        $asofhnweo = "(";
+        $i = 1;
+        foreach ($members as $key => $value) {
+            $asofhnweo.=" user='".$value."'";
+            if ($i!=count($members)) {
+                $asofhnweo.=" OR ";
+            }
+            $i++;
+
+        }
+        $asofhnweo.= ") AND ";
+        $attend = DB::select("SELECT * FROM reports WHERE $mem_script  guest=1");
+        $attends = DB::select("SELECT * FROM reports WHERE $mem_script guest=1 AND month(`starting`)='$m' AND year(`starting`)='$y'");
+        $not_attended = DB::select("SELECT * FROM reports WHERE $mem_script  guest=0");
+        $not_attendeds = DB::select("SELECT * FROM reports WHERE $mem_script  guest=0 AND month(`starting`)='$m' AND year(`starting`)='$y'");
+        $last_payment_date = DB::select("SELECT * FROM payments WHERE $asofhnweo type='Student' ORDER BY id DESC LIMIT 1");
+        if (!empty($last_payment_date)) {
+        $last_payment = date("D, M d,Y",strtotime($last_payment_date[0]->date) + 3600*24*30);
+        $dt = $last_payment_date[0]->date;
+        }else{
+            $dt = "Not Yet";
+            $last_payment = date("D, M d,Y");
+        }
+        
+        return view("allclass",["attend"=>[count($attend), count($attends)],"not_attended"=>[count($not_attended), count($not_attendeds)],"last_payment"=>[$dt,$last_payment]]);
+    }
 
 
 
@@ -366,6 +665,54 @@ class dclient extends Controller
         $search = $request->get("search");
         if (Auth::user()->type==2) {
         $and = "reports WHERE (title LIKE '%$search%' OR subject LIKE '%$search%' OR teacher LIKE '%$search%' OR student LIKE '%$search%' OR ras LIKE '%$search%') AND s_id='".Auth::id()."'";
+        }else if(Auth::user()->type==1){
+        $and = "reports WHERE (title LIKE '%$search%' OR subject LIKE '%$search%' OR teacher LIKE '%$search%' OR student LIKE '%$search%' OR ras LIKE '%$search%') AND t_id='".Auth::id()."'";
+        }else{
+        $and = "reports WHERE (title LIKE '%$search%' OR subject LIKE '%$search%' OR teacher LIKE '%$search%' OR student LIKE '%$search%' OR ras LIKE '%$search%')";
+
+        }
+        
+
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = 15;
+        $from = ($page-1)*$limit;
+        $result = DB::select("SELECT * FROM ".$and." ORDER BY id DESC LIMIT $from,$limit;
+            ");
+        $total = DB::select("SELECT id FROM ".$and." ORDER BY id DESC;
+            ");
+        $starting_time = [];
+        $status = [];
+        foreach ($result as $key => $value) {
+            $result[$key]->repeat = substr($value->repeat, 1);
+            date_default_timezone_set($value->timezone);
+            $pre_v = strtotime($value->starting);
+            $sql = "SELECT * FROM reports WHERE ras='$value->ras' AND id<$value->id";
+            $res = count(DB::select($sql));
+            date_default_timezone_set(Auth::user()->timezone);
+            array_push($starting_time, [date("D, M d,Y h:ia", $pre_v), (($res)+1),Auth::user()->type,Date("D, M d,Y h:ia", strtotime($value->starting)+(3600*36))]);   
+        }
+    return json_encode([$result,[count($total), $page, $limit],$starting_time]);
+    }
+
+    public function reportstseet(Request $request){
+        $search = $request->get("search");
+
+        $members = $this->get_family_members(Auth::id());
+        $mem_script = "(";
+        $i = 1;
+        foreach ($members as $key => $value) {
+            $mem_script.=" s_id='".$value."'";
+            if ($i!=count($members)) {
+                $mem_script.=" OR ";
+            }
+            $i++;
+        }
+        $mem_script.= ") ";
+
+
+        if (Auth::user()->type==2) {
+        $and = "reports WHERE (title LIKE '%$search%' OR subject LIKE '%$search%' OR teacher LIKE '%$search%' OR student LIKE '%$search%' OR ras LIKE '%$search%') AND $mem_script";
         }else if(Auth::user()->type==1){
         $and = "reports WHERE (title LIKE '%$search%' OR subject LIKE '%$search%' OR teacher LIKE '%$search%' OR student LIKE '%$search%' OR ras LIKE '%$search%') AND t_id='".Auth::id()."'";
         }else{
