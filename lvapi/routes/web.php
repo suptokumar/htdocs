@@ -17,5 +17,12 @@ Route::get('/', "soft@index");
 
 Route::group(['prefix' => 'admin'], function() {
     Route::get("/paymentdetails","soft@paymentdetails");
+    Route::get("/editgateway/{id}","soft@editgateway");
+    Route::get("/editgateway",function(){return back();});
     Route::get("/addnewpayment","soft@addnewpayment");
+    Route::post("/statuschanger","soft@statuschanger");
+    Route::post("/load_gateway","soft@load_gateway");
+    Route::post("/deletepaymentgateway","soft@deletepaymentgateway");
+    Route::post("/createapi/addpaymentgateway","soft@addgateway");
+    Route::post("/createapi/editpaymentgateway","soft@editpaymentgateway");
 });

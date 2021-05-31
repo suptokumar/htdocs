@@ -7,7 +7,7 @@
 	<a href="{{ url('/admin/paymentdetails') }}" class="btn btn-danger float-left">Gateway List</a>
 </header>
 <section class="gateway_view">
-	<form action="{{ url('/admin/createapi/addpaymentgateway') }}" method="POST" enctype="multipart/form-data">
+	<form action="{{ url('/admin/createapi/editpaymentgateway') }}" method="POST" enctype="multipart/form-data">
 
 <br>
 @if ($message = session("message"))
@@ -24,37 +24,57 @@
 
 
 		@csrf
+		<input type="hidden" value="{{$gateway->id}}" name="id">
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for="name">Gateway Name</label>
-      <input type="text" class="form-control" name="name" id="name" required="" placeholder="eg: PayPal">
+      <input type="text" class="form-control" name="name" id="name" value="{{$gateway->name}}" required="" placeholder="eg: PayPal">
     </div>
     <div class="form-group col-md-6">
-      <label for="icon">Gateway Icon</label>
-      <input type="file" class="form-control" name="file" id="icon" required="" placeholder="eg: Icon">
+      <label for="icon">Gateway Icon<br>
+      <input type="file" style="display: none;" class="form-control" name="file" id="icon" required="" placeholder="eg: Icon">
+      <img src="{{ url('/public/') }}{{$gateway->icon}}" alt="" style="width: 100px; height:100px;  float: left; border-radius: 100px;">
+      </label>
     </div>
   </div>
-  <div class="form-row">
+  @php
+  	$details = explode(",", $gateway->details_name);
+  	$values = explode(",", $gateway->details_value);
+  	$msg = '';
+  	$msgs = '';
+  @endphp
+  @for ($i=0; $i<count($details); $i++)
+  @php
+  	$mcglist=rand();
+  	$msg .="1".$mcglist.",";
+  	$msgs .="2".$mcglist.",";
+  @endphp
+  <div class="form-row ac{{$mcglist}}">
     <div class="form-group col-md-5">
       <label for="details_name">Name of Details</label>
-      <input type="text" class="form-control" name="gc1" for="details_name" placeholder="eg: Email">
+      <input type="text" class="form-control" value="{{$details[$i]}}" name="gc1{{$mcglist}}" for="details_name" placeholder="eg: Email">
     </div>
     <div class="form-group col-md-4">
       <label for="details_value">Value of Details</label>
-      <input type="text" class="form-control" name="gc2" for="details_value" placeholder="eg: jobdc14@gmail.com">
+      <input type="text" class="form-control" value="{{$values[$i]}}" name="gc2{{$mcglist}}" for="details_value" placeholder="eg: jobdc14@gmail.com">
     </div>
     <div class="form-group col-md-3" style="display: flex; justify-content: center; align-items: center;">
       <a type="button" href="javascript:void(0)" class="btn btn-info" onclick="new_data()" style="margin-right: 5px;">Add Field</a> 
+      @if ($i!=0)
+            <a type="button" class="btn btn-danger" onclick="removedata('{{$mcglist}}')">Remove Field</a>
+
+      @endif
     </div>
   </div>
+  @endfor
   <div class="cpnel">
   	
   </div>
   <br>
   <div style="text-align: center;">
-  	<input type="hidden" name="name_cls" class="name_cls" value="1">
-  	<input type="hidden" name="value_cls" class="value_cls" value="2">
-  <button type="submit" class="btn btn-primary">Create Gateway</button>
+  	<input type="hidden" name="name_cls" class="name_cls" value="{{substr($msg,0,-1)}}">
+  	<input type="hidden" name="value_cls" class="value_cls" value="{{substr($msgs,0,-1)}}">
+  <button type="submit" class="btn btn-primary">Update Gateway</button>
   </div>
 </form>
 </section>

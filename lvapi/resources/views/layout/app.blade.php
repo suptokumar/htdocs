@@ -14,7 +14,14 @@
     <script src="{{ asset('/public/js/jquery.js') }}"></script>
 	<link rel="icon" href="{{asset("/public/logo/fav.png")}}">
 <style>
-
+.form-control:focus{
+  color: #fff;
+  background-color: #3e3e3e;
+}
+.form-control{
+  background-color: #242222;
+  color: #ccc;
+}
 
     /* Dropdown Button */
 .dropbtn {

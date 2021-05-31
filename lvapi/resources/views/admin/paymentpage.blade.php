@@ -17,6 +17,17 @@
     grid-column: 1 / -1;
     display: block;
 }
+.card-view {
+  margin:2px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  animation: .4s moving;
+}
+@keyframes moving {
+    from{
+      margin-top: 30px;
+    }
+}
 </style>
 
 <script>
@@ -34,88 +45,151 @@
     })
     .done(function(data) {
      var d = JSON.parse(data);
-      var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Status</th> <th scope="col">Gateway Icon</th><th scope="col">Gateway Name</th><th scope="col">Gateway Informations</th><th scope="col">Options</th> </tr> </thead> <tbody>';
+      var body =  `<div class="row" style="text-align: center;">
+        <div class="col-1" style='padding-top: 15px;'>
+        <h5>Logo</h5>
+        </div>
+        <div class="col-3" style='padding-top: 15px;'>
+        <h5>Name</h5>
+        </div>
+        <div class="col-3" style='padding-top: 15px;'><h5>Details</h5>
+        </div>
+        <div class="col-2" style='padding-top: 15px;'><h5>Status</h5>
+        </div>
+        <div class="col-2" style='padding-top: 15px;'><h5>Options</h5></div></div>`;
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
-        body+= "<tr id='bcmc"+row["id"]+"'>";
-        body+= "<td>";
-        body+= (i+1);
-        body+= "</td>";
-        body+= "<td>";
-        body+= row['users']['name'];
-        body+= "</td>";
-        body+= "<td>";
-        body+=row['books']['title'];
-        body+= "</td>";
-        body+= "<td>";
-        body+=row['books']['grade']+"th";
-        body+= "</td>";
-        body+= "<td>";
-        body+= row['grade']+"th";
-        body+= "</td>";
-        body+= "<td>";
-        body+= row['users']['email'];
-        body+= "</td>";
-        body+= "<td>";
-        body+= row['created_at'];
-        body+= "</td>";
+        body+=`
 
-
-        body+= "<td>";
+        <div class="card-view row acd`+row['id']+`">
+        <div class="col-1">
+        <img src="{{ url('public') }}`+row['icon']+`" alt="`+row['name']+`" style="width: 100px; border-radius: 100px; heigh:100px">
+        </div>
+        <div class="col-3 center" style='padding-top: 15px;'>
+        <h3>`+row['name']+`</h3>
+        </div>
+        <div class="col-3" style='padding-top: 15px;'>
+        `;
+        $details = row['details_name'].split(",");
+        $value = row['details_value'].split(",");
+        for (var j = 0; j < $details.length; j++) {
+        body+=`<p><b>`+$details[j]+`</b>: `+$value[j]+`</p>`
+        }
         
-        body+= " <button class='btn btn-success' onclick='accept("+row['id']+",this)'>Accept</button>";
+        body+=`</div>
+        <div class="col-2 center" style='padding-top: 15px;'>
+        <label class="switch">
+  <input type="checkbox" `+(row['status']==1?'checked':'')+` onchange="fc_this(this,`+row['id']+`)">
+  <span class="slider round"></span>
+</label>
+        </div>
 
-        body+= " <button class='btn btn-danger' onclick='deletes("+row['id']+",this)'>Delete</button>";
-        
-        body+= "</td>";
-        body+= "</tr>";
+        <div class="col-2 center" style='padding-top: 15px;'>
+<button onclick='edit(`+row['id']+`)' class='btn btn-success'>Edit</button>
+<button onclick='deletes(`+row['id']+`)' class='btn btn-danger'>Delete</button>
+        </div>
+        </div>
 
-      }
-      if (d[0]=='') {
-        body+= "<tr colspan='6'>";
-        body+= "<td>";
-        body+= "Nothing Found";
-        body+= "</td>";
-        body+= "</tr>";
-      }
-      body+= '</tbody></table>';
-      $page = d[1][1];
-      $total = d[1][0];
-      $limit = d[1][2];
-      if (d[0]!='') {
-        body+=generate_pagination($total, $page, $limit, "dp_fun");
-      }
-      $(".gateway_view").html(body);
+
+        `;
+        }
+       $(".gateway_view").html(body);
     })
     .fail(function() {
       $(".gateway_view").html("Network error!");
     })    
   }
-function accept(id,th){
-	if (confirm("Accept?")) {
+  function edit(id)
+  {
+    window.location = '{{ url('/admin/editgateway/') }}/'+id;
+  }
+function fc_this(th,id){
 		$.ajax({
-			url: '{{ url('/admin/acceptreader') }}',
+			url: '{{ url('/admin/statuschanger') }}',
 			type: 'POST',
 			data: {id: id,_token:"{{csrf_token()}}"},
 		})
 		.done(function(data) {
-			$(th).html(data);
 		});
-		
-	}
 }
-function deletes(id,th){
-	if (confirm("Delete?")) {
-		$.ajax({
-			url: '{{ url('/admin/deletesreader') }}',
-			type: 'POST',
-			data: {id: id,_token:"{{csrf_token()}}"},
-		})
-		.done(function(data) {
-			$(th).html(data);
-		});
-		
-	}
+function deletes(id){
+    $.ajax({
+      url: '{{ url('/admin/deletepaymentgateway') }}',
+      type: 'POST',
+      data: {id: id,_token:"{{csrf_token()}}"},
+    })
+    .done(function(data) {
+      $(".acd"+id).fadeOut('slow');
+    });
 }
+$('#toggle-demo').bootstrapToggle();
+
 </script>
+<style>
+   /* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+} 
+.center{
+  text-align: center;
+}
+</style>
 @endsection
