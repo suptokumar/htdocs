@@ -24,6 +24,7 @@ flex-direction: column;
 <div class="all_class" style="width: 100%">
 	
 </div>
+<input type="hidden" id="today" value="{{time()}}">
 
 <style>
 	
@@ -104,7 +105,7 @@ flex-direction: column;
 
 @section("script")
 
-  <script src="{{ asset('/public/js/class.js?ee') }}"></script>
+  <script src="{{ asset('/public/js/class.js?eawere') }}"></script>
 <script>
 	$(document).ready(function() {
 		reports(1);

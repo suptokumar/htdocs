@@ -36,20 +36,21 @@ class student
 
         $class = course::where("s_id", "=",  Auth::id())->get();
 
-        
-            $data = [];
-            $crt = time();
+                 $data = [];
+            $crt = time()-24*3600*20;
             $mxt = time() + 3600 * 24 * 30;
             foreach ($class as $key => $value)
             {
             date_default_timezone_set($value->timezone);
-                // add the changes
+                 // add the changes
                 if ($value->repeat == '')
                 {
                     $nst =  date("Y-m-d H:i:s",  strtotime($value->starting));
                             // date_default_timezone_set($value->timezone);
                             $mst = strtotime($nst);
-
+                    if(!empty($value->lastclass)){
+                        continue;
+                    }
                     $change = change::where([["class_id", "=", $value->ras], ["replacetime", "=", $mst ]])->orderBy("id","desc")
                         ->first();
                     if ($change)
@@ -84,7 +85,7 @@ class student
                 else
                 {
                     $repeat = explode(",", $value->repeat);
-                    $nxt = strtotime(empty($value->lastclass) ? $value->starting : $value->lastclass) + 24 * 3600;
+                    $nxt = empty($value->lastclass) ? (strtotime($value->starting)) : (strtotime($value->lastclass) + 24 * 3600);
                     while (true)
                     {
                         if ($nxt > $mxt)
@@ -135,15 +136,13 @@ class student
             {
                 return $a[0] > $b[0] ? 1 : -1;
             });
-            $starting_in = empty($data[0])?545445454:$data[0][0]-time();
-            // dd($starting_in);
+            
+            for ($i=0; $i < count($data); $i++) { 
+                
+            $starting_in = empty($data[0])?545445454:$data[$i][0]-time();
                 if($starting_in<0){
         $class = $data[0][7];
 $st_dt = User::find($class->s_id);
-if($st_dt->key==1){
-    $class->lastclass = $upcoming_class;
-$class->save();
-}
 $hours = $st_dt->hours;
 $class_time = $class->duration;
 $now_t = intval($hours) - intval($class_time);
@@ -152,18 +151,18 @@ $st_dt->hours = $now_t;
 $st_dt->save();
 
 if ($st_dt->hours<1 OR $st_dt->hours=='') {
-    mainct::send($st_dt->id,"You have ".$st_dt->hours." minutes in your account. You should Purchase hour now.");
-    mainct::send("Admin",$st_dt->name." has ".$st_dt->hours." minutes remaining. You can contact him by ".$st_dt->email." or ". $st_dt->phone);
-    mainct::send($class->t_id,$st_dt->name." has ".$st_dt->hours." minutes remaining. You can contact him by ".$st_dt->email." or ". $st_dt->phone);
+    mainct::send($st_dt->id,"You have ".($st_dt->hours>0?(floor(intval($st_dt->hours) / 60) .':'. intval($st_dt->hours) % 60):("-".floor(intval(-1*$st_dt->hours) / 60) .':'. intval(-1*$st_dt->hours) % 60))." Hours in your account. You should Purchase hour now.");
+    mainct::send("Admin",$st_dt->name." has ".($st_dt->hours>0?(floor(intval($st_dt->hours) / 60) .':'. intval($st_dt->hours) % 60):("-".floor(intval(-1*$st_dt->hours) / 60) .':'. intval(-1*$st_dt->hours) % 60))." Hours remaining. You can contact him by ".$st_dt->email." or ". $st_dt->phone);
 }
 if ($st_dt->hours==0 OR $st_dt->hours=='') {
-    mainct::send("Admin",$st_dt->name." has ".$st_dt->hours." minutes remaining. You can contact him by ".$st_dt->email." or ". $st_dt->phone);
-    mainct::send($class->t_id,$st_dt->name." has ".$st_dt->hours." minutes remaining. You can contact him by ".$st_dt->email." or ". $st_dt->phone);
+    mainct::send("Admin",$st_dt->name." has ".($st_dt->hours>0?(floor(intval($st_dt->hours) / 60) .':'. intval($st_dt->hours) % 60):("-".floor(intval(-1*$st_dt->hours) / 60) .':'. intval(-1*$st_dt->hours) % 60))." Hours remaining. You can contact him by ".$st_dt->email." or ". $st_dt->phone);
     $status = 0;
 }else{
     $status = 1;
 }
-                    $report = new report;
+
+
+$report = new report;
 $report->title=$class->title;
 $report->description=$class->description;
 $report->subject=$class->subject;
@@ -183,14 +182,15 @@ $report->status=$status;
 $report->notes='';
 $report->assignment='';
 date_default_timezone_set($class->timezone);
-$report->lastclass=date("Y-m-d H:i:s",$data[0][0]);
+$report->lastclass=date("Y-m-d H:i:s",$data[$i][0]);
 $report->save();
 
-$class->lastclass = date("Y-m-d H:i:s",$data[0][0]);
+$class->lastclass = date("Y-m-d H:i:s",$data[$i][0]);
 $class->save();
+            }
                 }
 
-        return $next($request);
+         return $next($request);
         }
         else{
             return back();

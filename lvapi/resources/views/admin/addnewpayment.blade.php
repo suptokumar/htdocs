@@ -1,5 +1,5 @@
 @extends("layout.app")
-@section("title","School management software")
+@section("title","Admin Portal")
 @section("active","paymentdetails")
 @section("content")
 <article>
@@ -41,7 +41,7 @@
     </div>
     <div class="form-group col-md-4">
       <label for="details_value">Value of Details</label>
-      <input type="text" class="form-control" name="gc2" for="details_value" placeholder="eg: jobdc14@gmail.com">
+      <input type="text" class="form-control" name="gc2" for="details_value" placeholder="eg: info@demofy21.top">
     </div>
     <div class="form-group col-md-3" style="display: flex; justify-content: center; align-items: center;">
       <a type="button" href="javascript:void(0)" class="btn btn-info" onclick="new_data()" style="margin-right: 5px;">Add Field</a> 

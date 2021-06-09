@@ -20,6 +20,7 @@ flex-direction: column;
  <article>
 
 
+<input type="hidden" id="today" value="{{time()}}">
 
 <div class="search" style="width: 100%; padding: 2%; overflow: hidden">
 	<div class="rk" style="float: right; align-items: center;">
@@ -66,7 +67,7 @@ flex-direction: column;
 
 @section("script")
 
-  <script src="{{ asset('/public/js/class.js?cfdf') }}"></script>
+  <script src="{{ asset('/public/js/class.js?cfdssf') }}"></script>
 <script>
 	$(document).ready(function() {
 		awgafasdfew(1);

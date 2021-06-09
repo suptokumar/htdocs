@@ -9,15 +9,28 @@
 
 <!-- jQuery library -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<style>
+    .btn {
+        background: red !important;
+border: 1px solid red !important;
+margin: 5px;
+    }
 
+    .alert {
+    color: white;
+    background-color: #d79922;
+    border-color: #d79922;
+    font-weight: bold;
+}
+</style>
 </head>
-<body>
+<body style="background:#efe2ba;">
 	<div class="container">
 		<div class="image_part">
 			<div class="imagebg" style="background:url({{ url('/public/img/user.png') }}) 50% 50% / 100% 100%; margin: 5px auto; height: 150px; width: 150px; border-radius: 100px;"></div>
 			<div class="form" style="max-width: 400px; margin: 0 auto;">
 			<h2 style="text-align: center; font-family: tahoma; font-size: 18px;">Select Category</h2>
-				<select name="" id="" class="form-control">
+				<select name="" id="category" class="form-control">
 					<option value="MOBILE NUMBER">MOBILE NUMBER</option>
 					<option value="HOUSE UNIT NUMBER">HOUSE UNIT NUMBER</option>
 					<option value="CAR LICENSE PLATE">CAR LICENSE PLATE</option>
@@ -31,7 +44,7 @@
 			<h2 style="text-align: center; font-family: tahoma; font-size: 18px;">Type Number</h2>
 				<div class="numberchecker"></div>
 
-				<input type="number" id="number" onkeyup="removeit()" class="form-control"><br>
+				<input type="text" id="number" onkeyup="removeit()" class="form-control"><br>
 			<div style="text-align: center;">
 			<button onclick="submit()" class="btn btn-success" style="width: 330px;">Submit</button>
 			</div>
@@ -39,7 +52,10 @@
 			<div class="interputer">
 				
 			</div>
-			
+			<div style="text-align: center;">
+	<a class="btn link" href="{{ url('/logout') }}">Logout</a>
+			</div>
+				
 		</div>
 	</div>
 
@@ -54,47 +70,24 @@
 		}
 		
 		function submit(){
-			var number = $("#number").val().toString().padStart(4, "0");
-			if (number=='') {
+			var number = $("#number").val();
+			var category = $("#category").val();
+			if (Number(number)==0) {
 				$(".numberchecker").html("<div class='alert alert-danger'>The number is not valid</div><br>");
 				return false;
 				
 			}else{
 				$(".form2").fadeOut('slow', function() {
-				
-			// $.ajax({
-			// 		url: '{{ url('/resources/json/int1.json?'.rand()) }}',
-			// 		type: 'GET',
-			// 		dataType: "json",
-			// 		success:function(data){
-			// 		pt1=data[pt1];
-			// $.ajax({
-			// 		url: '{{ url('/resources/json/int2.json?'.rand()) }}',
-			// 		type: 'GET',
-			// 		dataType: "json",
-			// 		success:function(data){
-			// 		pt2=data[pt2];
-			// $.ajax({
-			// 		url: '{{ url('/resources/json/int3.json?'.rand()) }}',
-			// 		type: 'GET',
-			// 		dataType: "json",
-			// 		success:function(data){
-			// 		pt3=data[pt3];
-			// var sum = "<br>"+pt1+"<br>"+pt2+"<br>"+pt3+"<br>";
-			// $(".interputer").html("<h2 style='text-align: center; font-family: tahoma; font-size: 18px;'>Entered Number: "+number+"</h2><br><div class='alert alert-success'>Interpretation 1: "+pt1+"</div><div class='alert alert-success'>Interpretation 2: "+pt2+"</div><div class='alert alert-success'>Interpretation 3: "+pt3+"</div><div class='alert alert-primary'>Overall Interpretation: "+sum+"</div><div style='text-align: center;'><button onclick='back()' class='btn btn-info' style='width: 330px;'>Back</button></div>");
-			// 	}
-			// });
-			// 	}
-			// });
-			// 	}
-			// });
 			$.ajax({
 				url: '{{ url('/get_result') }}',
 				type: 'POST',
-				data: {number: number,_token: "{{csrf_token()}}"},
+				data: {number: number,category: category,_token: "{{csrf_token()}}"},
 			})
 			.done(function(data) {
 				$(".interputer").html(data);
+			})
+			.fail(function(){
+			     location.reload();
 			});
 			
 				

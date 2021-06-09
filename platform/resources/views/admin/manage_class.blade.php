@@ -25,14 +25,14 @@ flex-direction: column;
 	
 </div>
 
-
+<input type="hidden" id="today" value="{{time()}}">
 
  </article>
 @endsection
 
 @section("script")
 
-  <script src="{{ asset('/public/js/admin.js?fse') }}"></script>
+  <script src="{{ asset('/public/js/admin.js?fsede') }}"></script>
 <script>
 	$(document).ready(function() {
 		manage_class(1);

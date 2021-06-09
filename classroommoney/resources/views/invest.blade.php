@@ -23,7 +23,7 @@
       <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-content">
-      <a href="{{ url('/invest') }}">Invest</a>
+      <a href="{{ url('/invest') }}">Fee submission</a>
       <a href="{{ url('/balance') }}">My balance</a>
       <a href="{{ url('/earning') }}">Earning Records</a>
             <a href="{{ url('/student/teach') }}">My Teachers</a>
@@ -48,11 +48,11 @@
 @endif
 
 
-<form style="background: white; padding: 20px; width: 90%; margin: 100px auto; border: 1px solid #ccc;" action="{{ url('/teacher_update') }}" method="POST" enctype="multipart/form-data">
+<form style="background: white; padding: 20px; width: 90%; margin: 100px auto; border: 1px solid #ccc;" action="{{ url('/payment') }}" method="POST" enctype="multipart/form-data">
 
   @csrf
   
-  <h2>Invest</h2>
+  <h2>Fee submission</h2>
   <hr>
 
   @if ($message = session("message"))
@@ -68,7 +68,7 @@
 @endif
   <div class="form-row">
     <div class="form-group col-md-4">
-      <label for="name">Invest Year <span style="color: red">*</span></label>
+      <label for="name">Fee submission Year <span style="color: red">*</span></label>
       <select name="year" id="year" class="form-control">
       	<option value="2020-2021">2020-2021</option>
       	<option value="2021-2022">2021-2022</option>
@@ -83,8 +83,8 @@
       </select>
     </div>
     <div class="form-group col-md-4">
-      <label for="educational_qualifications">Envest Amount ($) <span style="color: red">*</span></label>
-      <input type="number" class="form-control" required="" readonly  id="educational_qualifications" name="educational_qualifications" placeholder="Your Last Qualification"  value="50">
+      <label for="amount">Payment Amount ($) <span style="color: red">*</span></label>
+      <input type="number" class="form-control" required="" readonly  id="amount" name="amount" placeholder="Your Last Qualification"  value="50">
     </div>
   </div>
     <button type="submit" class="btn btn-primary">Pay Now</button>
@@ -93,7 +93,7 @@
 <div>
 <input type="hidden" value="{{ csrf_token() }}" id="csrf">
 <div style="width: 100%;max-width: 1000px;padding: 20px;margin: 0px auto;">
-<h3>Previous Invests</h3>
+<h3>Previous Fees</h3>
 	
     Search <input type="search" id="snod410" autocomplete="off" onkeyup="veri_teachers(1)" style="padding: 10px; width: 60%; border: 1px solid #ccc; outline: none;">
 <div class="all_payments">
@@ -123,36 +123,34 @@ function myFunction() {
   }
   function veri_teachers(page){
     $.ajax({
-      url: '{{ url('/teacher/requests') }}',
+      url: '{{ url('/paymentlist') }}',
       type: 'POST',
       data: {page: page, search: $("#snod410").val(), _token:'{{csrf_token()}}'},
     })
     .done(function(data) {
-    	console.log(data);
      var d = JSON.parse(data);
      let body = "";
-      for (var i = 0; i < d[0].length; i++) {
-        var row = d[0][i];
+      for (var i = 0; i < d.length; i++) {
+        var row = d[i];
+        console.log(row);
       body += '<div class="row" id="bcmc'+row["id"]+'" style="padding: 15px; border: 1px solid #ccc; margin: 10px">';
-        body+= "<div class='col-sm-8'>"+row['content']+"<br>"+row['created_at']+"</div>";
-        body+="<div class='col-sm-4'>";
-        body+= " <button class='btn btn-primary' onclick="+row['script']+"("+row['id']+",this)>Accept</button>";
-        body+= " <button class='btn btn-danger' onclick=deleteit("+row['id']+",this)>Delete</button>";
-        body+= "</div>";
+        body+= "<div class='col-sm-4'><h2>"+row['year']+"</h2>"+row['ctd']+"</div>";
+        if (row['status']!="pending") {
+body+="<div class='col-sm-4'><span class='badge badge-succcess'>"+row['status']+"</span><h3>Gateway: "+row['gateway']+"</h3><h3>paymentID: "+row['paymentID']+"</h3></div>";
+        }else{
+        body+="<div class='col-sm-4'><span class='badge badge-info'>"+row['status']+"</span><h3>"+row['amount']+"$</h3></div>";
+        body+= "<a class='btn btn-primary' style='padding: 1.375rem 1.75rem' href='{{ url('/payment/') }}/"+row['paymentID']+"'>Pay Now</a>";
+        }
+
       body+= '</div>';
 
       }
       if (d[0]=='') {
       body += '<div class="row" style="padding: 15px; border: 1px solid #ccc; margin: 10px">';
-        body+= "No Requests";
+        body+= "No Payments";
         body+= "</div>";
       }
-      $page = d[1][1];
-      $total = d[1][0];
-      $limit = d[1][2];
-      if (d[0]!=''){
-      body+=generate_pagination($total, $page, $limit, "dp_fun");
-      }
+
       $(".all_payments").html(body);
     })
     .fail(function() {

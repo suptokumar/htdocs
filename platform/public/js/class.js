@@ -15,9 +15,11 @@ function show_class(page){
       }else{
       var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Student</th> <th scope="col">Title</th> <th scope="col">ID</th> </tr> </thead> <tbody>';
       }
+              $today = $("#today").val();
+
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
-        body+= "<tr id='bcmc"+row[0]+"'>";
+        body+= "<tr id='bcmc"+row[0]+"' style='background:"+((row[0]-Number($today))<3600*24?'#e4ffe4':'white')+"'>";
         body+= "<td>";
         body+= row[1];
         body+= "</td>";
@@ -85,9 +87,11 @@ function awgafasdfew(page){
       }else{
       var body = '<table class="table"> <thead class="thead-light"> <th scope="col">Time</th> <th scope="col">Subject</th><th scope="col">Duration</th> <th scope="col">Student</th> <th scope="col">Teacher</th> <th scope="col">Title</th><th scope="col">ID</th> </tr> </thead> <tbody>';
       }
+              $today = $("#today").val();
+
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
-        body+= "<tr id='bcmc"+row[0]+"'>";
+        body+= "<tr id='bcmc"+row[0]+"' style='background:"+((row[0]-Number($today))<3600*24?'#e4ffe4':'white')+"'>";
         body+= "<td>";
         body+= row[1];
         body+= "</td>";

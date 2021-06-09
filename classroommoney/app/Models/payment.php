@@ -8,16 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class payment extends Model
 {
     use HasFactory;
-     protected $fillable = [
-'date',
-'user',
-'type',
-'adder',
-'hours',
-'timezone',
-'invoice',
-'fees',
-'transfer_fees',
-'extra_payment'
-     ];
+
 }

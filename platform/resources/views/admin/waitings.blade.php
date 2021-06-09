@@ -12,7 +12,7 @@ flex-direction: column;
  <article>
 
 <form style="width: 90%; margin: 0 auto;" action="{{ url('/admin/waitings/add') }}" method="POST" enctype="multipart/form-data"><br>
-	<h3 style="text-align: center;">Add Waiting Member</h3>
+	<h3 style="text-align: center;">Add</h3>
 			@if ($message = session("message"))
 	<div class="alert alert-danger" role="alert">
   {{$message}}

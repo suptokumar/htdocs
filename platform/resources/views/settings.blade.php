@@ -171,15 +171,15 @@ flex-direction: column;
   </div>
   </div>
 <div class='row'>
-  <div class="form-group col-sm-3">
+  <div class="form-group col-sm-3" style="display: none;">
     <label for="exampleInputEmail1">{{__('Student Evaluation')}}</label>
-    <textarea class="form-control" id="evalu" name="evalu" aria-describedby="emailHelp" placeholder="{{__('Your Evaluation')}}">{{ old("evalu") }}</textarea>
+    <textarea class="form-control" id="evalu" name="evalu" aria-describedby="emailHelp" placeholder="{{__('Your Evaluation')}}">{{ Auth::user()->evalu }}</textarea>
   </div>
 
 
-  <div class="form-group col-sm-3">
+  <div class="form-group col-sm-6">
     <label for="exampleInputEmail1">{{__('Regular Evaluation')}}</label>
-    <textarea class="form-control" id="reg_evalu" name="reg_evalu" aria-describedby="emailHelp" placeholder="{{__('Your Evaluation')}}">{{ old("reg_evalu") }}</textarea>
+    <textarea class="form-control" id="reg_evalu" name="reg_evalu" aria-describedby="emailHelp" placeholder="{{__('Your Evaluation')}}">{{ Auth::user()->reg_evalu }}</textarea>
   </div>
 
 

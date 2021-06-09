@@ -12,14 +12,14 @@ flex-direction: column;
  <article>
 
 <form style="width: 90%; margin: 0 auto;" action="{{ url('/update') }}" method="POST" enctype="multipart/form-data"><br>
-	<h3 style="text-align: center;">Info of {{$user->name}}</h3>
-			@if ($message = session("message"))
-	<div class="alert alert-danger" role="alert">
+  <h3 style="text-align: center;">Info of {{$user->name}}</h3>
+      @if ($message = session("message"))
+  <div class="alert alert-danger" role="alert">
   {{$message}}
 </div>
 @endif
 @if ($success = session("success"))
-	<div class="alert alert-success" role="alert">
+  <div class="alert alert-success" role="alert">
   {{$success}}
 </div>
 @endif
@@ -172,12 +172,16 @@ flex-direction: column;
     @else
     <label for="exampleInputEmail1">{{__('Done Hours')}}</label>
     @endif
-    <input class="form-control" id="bioer" name="bio" value="{{ floor(intval($user->hours) / 60) }}:{{ intval($user->hours) % 60 }}">
+    @if($user->hours==0)
+    <input class="form-control" id="bioer" name="bio" value="0:00">
+    @else
+    <input class="form-control" id="bioer" name="bio" value="{{ intval($user->hours)>0?(floor(intval($user->hours) / 60) .':'. intval($user->hours) % 60):("-".floor(intval(-1*$user->hours) / 60) .':'. intval(-1*$user->hours) % 60) }}">
+    @endif
     <a href="javascript:void(0)" class="btn btn-success resp">Edit</a>
     <div class="main_edit" style="max-width: 500px; margin: 0px auto; display: none;">
         <div class="form-group">
     <label for="exampleInputEmail1">{{__('Hours in account')}}</label>
-    <input type="number" class="form-control" id="sd" value="{{$user->hours}}" name="hours" aria-describedby="emailHelp" >
+    <input type="number" class="form-control" id="sd" value="{{intval($user->hours) / 60}}" name="hours" aria-describedby="emailHelp" >
     <input type="hidden" id="scrf" value="{{csrf_token()}}">
     <input type="hidden" id="id1" value="{{$user->id}}">
   </div>
@@ -191,7 +195,7 @@ flex-direction: column;
       $(".main_edit").slideToggle(400);
     });
     $(".resp_2").click(function(event) {
-      let time = $("#sd").val();
+      let time = Number($("#sd").val())*60;
       let token = $("#scrf").val();
       let id = $("#id1").val();
       $.ajax({

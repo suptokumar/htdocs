@@ -25,9 +25,13 @@ Route::post("/student_update",'soft@student_update');
 
 Route::group(['middleware' => 'login'], function() {
 
+Route::get("/payment/{id}",'soft@gateway');
+Route::get("/payment/success",'soft@paysuccess');
 Route::get("/profile/{id}",'soft@profile');
 Route::get("/settings",'soft@settings');
 Route::get("/add_live",'soft@add_live');
+Route::post("/payment",'soft@payment');
+Route::post("/paymentlist",'soft@paymentlist');
 Route::post("/request_perchage",'soft@request_perchage');
 Route::post("/my_class",'soft@my_class');
 Route::post("/livesearch",'soft@livesearch');

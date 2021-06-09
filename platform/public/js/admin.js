@@ -23,6 +23,10 @@ function cancel_all(id,t){
 }
 
 
+function request_cancel(id, t){
+  window.location = url('request_cancel/'+id+'/time/'+t);
+}
+
 
 
 
@@ -162,7 +166,7 @@ function waiting_list(page){
         body+= "</td>";
         body+= "<td>";
         // body+= '<div class="dropdown"> <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Options <span class="caret"></span></button> <ul class="dropdown-menu"> <li><a href="javascript:void(0)" onclick="pd_view(\''+row['product_id']+'\',\''+row['product_name']+'\')">View Details</a></li> <li><a href="javascript:void(0)" onclick="pd_edit(\''+row['product_id']+'\',\''+row['product_name']+'\')">Edit</a></li> <li><a href="javascript:void(0)" style="background:#FF1B1B; color: white" onclick="pd_delete(\''+row['id']+'\',\''+row['product_name']+'\',\'#bcmc'+row['id']+'\')">Delete</a></li> </ul> </div>';
-        body+= "<a class='btn btn-info' href='"+url("admin/waitings/add/"+row["id"])+"'>Edit</a>";
+        body+= "<a class='btn btn-info' style='padding-top: 33px' href='"+url("admin/waitings/add/"+row["id"])+"'>Edit</a>";
         body+= " <button class='btn btn-danger' data-do='0' onclick='delete_waiting("+row['id']+",this)'>Delete</button>";
         
         body+= "</td>";
@@ -320,7 +324,8 @@ function manage_class(page){
       }
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
-        body+= "<tr class='bcmc"+row[7]['id']+"'>";
+        $today = $("#today").val();
+        body+= "<tr class='bcmc"+row[7]['id']+"' style='background:"+((row[0]-Number($today))<3600*24?'#e4ffe4':'white')+"'>";
         body+= "<td>";
         body+= row[1];
         body+= "</td>";
@@ -348,10 +353,11 @@ function manage_class(page){
       // }
         body+= "</td>";
         body+= "</tr>";
-        body+="<tr>";
+        body+="<tr class='bcmc"+row[7]['id']+"'>";
         body+="<td colspan=7 style='text-align: center; border-top: none !important;'>";
          body+= "<a href='"+row[3]+"' class='btn btn-info'>Go to Class</a>";
         body+= " <button class='btn btn-danger' onclick='request_cancel("+row[7]['id']+","+row[8]+")' data-do='0'>Cancel</button>";
+        body+= " <button class='btn btn-secondary' onclick='cancel_all("+row[7]['id']+","+row[8]+")' data-do='0'>Cancel All</button>";
         body+= " <button class='btn btn-primary' onclick='request_change_time("+row[7]['id']+","+row[8]+")' data-do='0'>Reschedule</button>";
         body+="</td>";
         body+="</tr>";
@@ -547,7 +553,7 @@ function get_clients(page){
         body+= row['email'];
         body+= "</td>";
         body+= "<td>";
-        body+= (row['hours'] / 60) + ":" +(row['hours'] % 60);
+        body+= row['hours'];
         body+= "</td>";
         body+= "<td>";
         body+= d[2][i][0];
@@ -560,7 +566,7 @@ function get_clients(page){
         body+= "<br>Phone:"+row['phone'];
         body+= "</td>";
         body+= "<td>";
-        body+= "<a href='"+url("admin/editclient/"+row['id'])+"' class='btn btn-primary'>Edit</a>";
+        body+= "<a href='"+url("admin/editclient/"+row['id'])+"' style='background-color: #b0aeae; border-color: #b0aeae; padding-top: 33px; padding-left: 11px; font-size: 24px;' class='btn btn-primary'>Edit</a>";
         body+= "</td>";
         body+= "</tr>";
 

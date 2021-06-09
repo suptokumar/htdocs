@@ -5,7 +5,7 @@
   --page-header-bgColor-hover: #1d2636;
   --page-header-txtColor: #fff;
   --page-header-headingColor: #7889a4;
-  --page-header-width: 220px;
+  --page-header-width: 265px;
   --page-content-bgColor: hsl(0deg 1% 8%);
   --page-content-txtColor: #f9f9f9;
   --page-content-blockColor: hsl(0deg 2% 10%);
@@ -637,4 +637,15 @@ button.toggle-mob-menu {
   .grid{
     margin-top: 88px !important;
   }
+}
+
+
+.red{
+  color: red;
+}
+.right {
+  text-align: right;
+}
+.btn {
+    margin: 2px;
 }

@@ -1162,7 +1162,7 @@ public function tick(Request $request){
         $sql = DB::select("SELECT * FROM admissions WHERE id='$user'");
         $count1 = 0;
         $sq = DB::select("SELECT * FROM adtests WHERE em_id='$user'");
-        foreach ($sq as $key => $value) {
+        foreach ($sq as $sdfwer => $value) {
             $name = explode('```',$value->test_name);
             $count1+= count($name)-1;
         }
@@ -1170,7 +1170,7 @@ public function tick(Request $request){
         $paid = DB::select("SELECT paid FROM addpayments WHERE em_id='$user'");
         $t = 0;
         $p = 0;
-        foreach ($total as $key => $value) {
+        foreach ($total as $sdfwer => $value) {
             if ($value->room_register!=0) {
                 $day = floor((time()-strtotime($value->date))/86400)+1;
                 $t+=$value->total * $day;
@@ -1178,7 +1178,7 @@ public function tick(Request $request){
             $t+=intval($value->total);
             }
         }
-        foreach ($paid as $key => $value) {
+        foreach ($paid as $sdfwer => $value) {
             $p+=intval($value->paid);
         }
 

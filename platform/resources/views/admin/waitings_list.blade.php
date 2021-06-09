@@ -17,7 +17,7 @@ flex-direction: column;
 	<div class="rk" style="float: right; align-items: center;">
 		Search <input type="search" id="snod410" autocomplete="off" onkeyup="waiting_list(1)" style="padding: 10px; border: 1px solid #ccc; outline: none;" placeholder="Search">
 	</div>
-	<a href="{{ url('/admin/waitings/add') }}" class="btn btn-success">Add Waiting Member</a>
+	<a href="{{ url('/admin/waitings/add') }}" class="btn btn-success" style="padding-top: 30px;">Add</a>
 	<div class="dk">
 <input type="hidden" value="{{ csrf_token() }}" id="csrf">
 	</div>
@@ -33,7 +33,7 @@ flex-direction: column;
 
 @section("script")
 
-<script src="{{ asset('/public/js/admin.js?') }}"></script>
+<script src="{{ asset('/public/js/admin.js?asdfg') }}"></script>
 <script>
 	$(document).ready(function() {
 		waiting_list(1);

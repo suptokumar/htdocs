@@ -73,7 +73,7 @@ class mainct extends Controller
                 else
                 {
                     $repeat = explode(",", $value->repeat);
-                    $nxt = strtotime(empty($value->lastclass) ? $value->starting : $value->lastclass) + 24 * 3600;
+                    $nxt = empty($value->lastclass) ? (strtotime($value->starting)) : (strtotime($value->lastclass) + 24 * 3600);
                     while (true)
                     {
                         if ($nxt > $mxt)
@@ -174,11 +174,16 @@ class mainct extends Controller
         $user->hours = $this->null_pointer($request->get("hours"));
         if ($user->save())
         {
-            return json_encode([(floor(intval($user->hours) / 60)) . ":" . (intval($user->hours) % 60) , __("Successfuly Updated.") ]);
+            if ($user->hours==0) {
+            return json_encode(['0:00', __("Successfuly Updated.") ]);
+            }else{
+            return json_encode([$user->hours>0?(floor(intval($user->hours) / 60) .':'. intval($user->hours) % 60):("-".floor(intval(-1*$user->hours) / 60) .':'. intval(-1*$user->hours) % 60) , __("Successfuly Updated.") ]);
+            }
         }
         else
         {
-            return json_encode([(floor(intval($user->hours) / 60)) . ":" . (intval($user->hours) % 60) , __("Failed to update Updated.") ]);
+            
+            return json_encode([$user->hours>0?(floor(intval($user->hours) / 60) .':'. intval($user->hours) % 60):("-".floor(intval(-1*$user->hours) / 60) .':'. intval(-1*$user->hours) % 60) , __("Failed to update Updated.") ]);
         }
     }
     public function clients()
@@ -223,7 +228,7 @@ $no = date("h:ia d M Y",$rqs);
             
             $this->send(Auth::user()->id,$notification);
 
-        $notification = '<b>'.Auth::user()->name .' <i>('.Auth::user()->email . ')</i></b> requested to change a schedule. <br> Timezone: ' . $request->get("timezone") . '<br>Pre Class Time:' .$pri. '<br>Change Time: ' . $no .'<br>Class Title:'. course::find($request->get("del"))->title.'<br>Subject:'. course::find($request->get("del"))->subject;
+        $notification = Auth::user()->email.' has requested to reschedule a class.';
                 date_default_timezone_set(course::find($request->get("del"))->timezone);
 
         if (Auth::user()->type==2) {
@@ -299,8 +304,20 @@ $dl->status = '';
 $dl->app = $main[0];
             if ($dl->save())
             {
-                $this->send($cls->t_id, " The request to change class schedule for <b>" . $cls->title . "</b> was Approved.");
-                $this->send($cls->s_id, " The request to change class schedule for <b>" . $cls->title . "</b> was Approved.");
+                $this->send($cls->t_id, " The request to change class schedule for <b>" . $cls->title . "</b> was Approved.<br>
+
+Timezone: ".$dl->timezone."<br>
+Class Time: ".date("h:i a, D, d M Y",$dl->replacetime)."<br>
+Class Title: ".course::where("ras","=",$dl->class_id)->first()->title."<br>
+
+                    ");
+                $this->send($cls->s_id, " The request to change class schedule for <b>" . $cls->title . "</b> was Approved.<br>
+
+Timezone: ".$dl->timezone."<br>
+Class Time: ".date("h:i a, D, d M Y",$dl->replacetime)."<br>
+Class Title: ".course::where("ras","=",$dl->class_id)->first()->title."<br>
+
+                    ");
                 $this->send("Admin", " The request to change class schedule for <b>" . $cls->title . "</b> was Approved.");
                 $req->delete();
                 return "Approved";
@@ -328,11 +345,11 @@ $dl->app = $main[0];
                 ->email);
             if (Auth::user()->type == 2)
             {
-                $this->send($fon->t_id, '<b>'.Auth::user()->name .' <i>('.Auth::user()->email . ")</i></b> sent a request to cancel the class(" . $fon->title . ") '" . $fon->title);
+                $this->send($fon->t_id, '<b>'.Auth::user()->name .' <i>('.Auth::user()->email . ")</i></b> sent a request to cancel a class");
             }
             else
             {
-                $this->send($fon->s_id, '<b>'.Auth::user()->name .' <i>('.Auth::user()->email . ")</i></b> sent a request to cancel the class '" . $fon->title);
+                $this->send($fon->s_id, '<b>'.Auth::user()->name .' <i>('.Auth::user()->email . ")</i></b> sent a request to cancel a class");
 
             }
             $user = User::find(Auth::id());
@@ -510,7 +527,8 @@ $dl->app = $main[0];
         $client->rate = $this->null_pointer($request->get("rate"));
         $client->last_paid = '1111-11-11';
         $client->child = 1;
-        $key = time() . rand(1, 100);
+        $old_client = client::get()->count();
+        $key = $old_client+10000;
         $client->key = $key;
         if ($client->save())
         {
@@ -536,7 +554,7 @@ $dl->app = $main[0];
         $client->payment = $this->null_pointer($request->get("payment"));
         $client->email = $this->null_pointer($request->get("email"));
         $client->phone = $this->null_pointer($request->get("phone"));
-        $client->hours = $this->null_pointer($request->get("hours"));
+        $client->hours = $this->null_pointer($request->get("hours")*60);
         $client->invoice_number = $this->null_pointer($request->get("invoice_number"));
         $client->payment_plan = $this->null_pointer($request->get("payment_plan"));
         $client->payment_usd = $this->null_pointer($request->get("payment_usd"));
@@ -1312,7 +1330,7 @@ WHEN phone LIKE '___________$search%' THEN 12 END, name ASC;
                 else
                 {
                     $repeat = explode(",", $value->repeat);
-                    $nxt = strtotime(empty($value->lastclass) ? $value->starting : $value->lastclass) + 24 * 3600;
+                    $nxt = empty($value->lastclass) ? (strtotime($value->starting)) : (strtotime($value->lastclass) + 24 * 3600);
                     while (true)
                     {
                         if ($nxt > $mxt)
@@ -1393,6 +1411,10 @@ WHEN phone LIKE '___________$search%' THEN 12 END, name ASC;
         $status = [];
         foreach ($result as $c => $value)
         {
+            $snoe = $result[$c]->hours>0?(floor(intval($result[$c]->hours) / 60) .':'. intval($result[$c]->hours) % 60):("-".floor(intval(-1*$result[$c]->hours) / 60) .':'. intval(-1*$result[$c]->hours) % 60);
+            $result[$c]->hours=$snoe;
+
+
             $childs = User::where("gurdain_id", "=", $value->key)
                 ->get();
             $mg = '';

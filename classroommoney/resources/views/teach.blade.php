@@ -24,7 +24,7 @@
       <i class="fa fa-caret-down"></i>
     </button>
     <div class="dropdown-content">
-      <a href="{{ url('/invest') }}">Invest</a>
+      <a href="{{ url('/invest') }}">Fee submission</a>
       <a href="{{ url('/balance') }}">My balance</a>
       <a href="{{ url('/earning') }}">Earning Records</a>
       <a href="{{ url('/student/teach') }}" class="active">My Teachers</a>

@@ -1,5 +1,5 @@
 @extends("layout.app")
-@section("title","School management software")
+@section("title","Admin Portal")
 @section("active","paymentdetails")
 @section("content")
 <article>

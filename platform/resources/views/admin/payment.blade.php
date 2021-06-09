@@ -32,7 +32,7 @@ flex-direction: column;
    <div class="form-group col-sm-3">
    		
     <label for="exampleInputEmail1">{{__('Payment Type')}}</label>
-		<select class="form-control" name="type"  id="type" required="">
+		<select class="form-control" name="type" value="{{old("type")}}" id="type" required="">
 			<option value="1">Student</option>
 			<option value="2">Client</option>
 		</select>
@@ -40,44 +40,49 @@ flex-direction: column;
 
   	<div class="form-group col-sm-3">
     <label for="exampleInputEmail1">{{__('Payment Date')}}</label>
-		<input class="form-control" name="date" required="" type="date">
+		<input class="form-control" name="date" value="{{old("date")}}" required="" type="date">
   	</div>
   	
   	<div class="form-group col-sm-3">
     <label for="exampleInputEmail1">{{__('Client ID or Student\'s Mail')}}</label>
-		<input class="form-control" name="client" required="" type="text">
+		<input class="form-control" name="client" value="{{old("client")}}" required="" type="text">
   	</div>
   	  	
   	<div class="form-group col-sm-3">
     <label for="exampleInputEmail1">{{__('Invoice')}}</label>
-		<input class="form-control" name="invoice" type="text">
+		<input class="form-control" name="invoice" value="{{old("invoice")}}" type="text">
   	</div>
   </div>
   <div class='row'>
 
   	<div class="form-group col-sm-3">
     <label for="exampleInputEmail1">{{__('Fees')}}</label>
-		<input class="form-control" name="fees" type="text">
+		<input class="form-control" name="fees" value="{{old("fees")}}" type="text">
   	</div>
   	  	<div class="form-group col-sm-3">
     <label for="exampleInputEmail1">{{__('Transfer Fees')}}</label>
-		<input class="form-control" name="transfer_fees" type="text">
+		<input class="form-control" name="transfer_fees" value="{{old("transfer_fees")}}" type="text">
   	</div>
   	  	  	<div class="form-group col-sm-3">
     <label for="exampleInputEmail1">{{__('Extra Payment')}}</label>
-		<input class="form-control" name="extra_payment" type="text">
+		<input class="form-control" name="extra_payment" value="{{old("extra_payment")}}" type="text">
   	</div>
   	
   	<div class="form-group col-sm-3">
     <label for="exampleInputEmail1">{{__('Purchased Hours')}}</label>
-		<input class="form-control" name="hours" required="" type="text">
+		<input class="form-control" name="hours" required="" value="{{old("hours")}}" type="text">
   	</div>
   	
   	</div>
 
     <div class="form-group">
     	<input type="hidden" name="refil" value="1">
-        <button type="submit" class="btn btn-primary btn-block"> Complete Payment  </button>
+        <button type="submit" class="btn btn-primary btn-block" style="background-color: #b0aeae;
+border-color: #b0aeae;
+padding-top: 0px;
+padding-left: 6px;
+font-size: 14px;
+text-align: center;"> Complete Payment  </button>
     </div> <!-- form-group// -->      
 </form>
 </article>

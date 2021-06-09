@@ -106,7 +106,7 @@ $class = DB::select($sql);
                 else
                 {
                     $repeat = explode(",", $value->repeat);
-                    $nxt = strtotime(empty($value->lastclass) ? $value->starting : $value->lastclass) + 24 * 3600;
+                    $nxt = empty($value->lastclass) ? (strtotime($value->starting)) : (strtotime($value->lastclass) + 24 * 3600);
                     while (true)
                     {
                         if ($nxt > $mxt)
@@ -304,6 +304,8 @@ $class = DB::select($sql);
     	$payment->timezone = Auth::user()->timezone;
     	$payment->type = ($type==1 ? "Student" : "Client");
     	$payment->user = ($type==1 ? $user->id : $user->key);
+        $payment->name = ($type==1 ? $user->name : $user->name);
+        $payment->email = ($type==1 ? $user->email : $user->email);
     	$payment->save();
     	
     	
@@ -325,7 +327,7 @@ $class = DB::select($sql);
 // functions for the admin to manage class
 
         $search = $request->get("search");
-        $and = "payments WHERE (date LIKE '%$search%' OR adder LIKE '%$search%')";
+        $and = "payments WHERE (date LIKE '%$search%' OR invoice LIKE '%$search%' OR name LIKE '%$search%' OR email LIKE '%$search%')";
         // $page = 1;
         $page = $request->get("page");
         $limit = 15;
@@ -584,7 +586,7 @@ $members = $this->get_family_members(Auth::id());
                 else
                 {
                     $repeat = explode(",", $value->repeat);
-                    $nxt = strtotime(empty($value->lastclass) ? $value->starting : $value->lastclass) + 24 * 3600;
+                    $nxt = empty($value->lastclass) ? (strtotime($value->starting)) : (strtotime($value->lastclass) + 24 * 3600);
                     while (true)
                     {
                         if ($nxt > $mxt)
@@ -694,7 +696,7 @@ $members = $this->get_family_members(Auth::id());
                 else
                 {
                     $repeat = explode(",", $value->repeat);
-                    $nxt = strtotime(empty($value->lastclass) ? $value->starting : $value->lastclass) + 24 * 3600;
+                    $nxt = empty($value->lastclass) ? (strtotime($value->starting)) : (strtotime($value->lastclass) + 24 * 3600);
                     while (true)
                     {
                         if ($nxt > $mxt)
@@ -830,20 +832,20 @@ $members = $this->get_family_members(Auth::id());
         $page = $request->get("page");
         $limit = 15;
         $from = ($page-1)*$limit;
-        $result = DB::select("SELECT * FROM ".$and." ORDER BY id DESC LIMIT $from,$limit;
+        $result = DB::select("SELECT * FROM ".$and." ORDER BY `lastclass` DESC LIMIT $from,$limit;
             ");
-        $total = DB::select("SELECT id FROM ".$and." ORDER BY id DESC;
+        $total = DB::select("SELECT id FROM ".$and." ORDER BY `lastclass` DESC;
             ");
         $starting_time = [];
         $status = [];
         foreach ($result as $key => $value) {
             $result[$key]->repeat = substr($value->repeat, 1);
             date_default_timezone_set($value->timezone);
-            $pre_v = strtotime($value->starting);
+            $pre_v = strtotime($value->lastclass);
             $sql = "SELECT * FROM reports WHERE ras='$value->ras' AND id<$value->id";
             $res = count(DB::select($sql));
             date_default_timezone_set(Auth::user()->timezone);
-            array_push($starting_time, [date("D, M d,Y h:ia", $pre_v), (($res)+1),Auth::user()->type,Date("D, M d,Y h:ia", strtotime($value->starting)+(3600*36))]);   
+            array_push($starting_time, [date("D, M d,Y h:ia", $pre_v), (($res)+1),Auth::user()->type,Date("D, M d,Y h:ia", strtotime($value->lastclass)+(3600*36))]);   
         }
     return json_encode([$result,[count($total), $page, $limit],$starting_time]);
     }

@@ -32,7 +32,7 @@ flex-direction: column;
 
 @section("script")
 
-  <script src="{{ asset('/public/js/admin.js?') }}"></script>
+  <script src="{{ asset('/public/js/admin.js?eee') }}"></script>
 <script>
 	$(document).ready(function() {
 		get_clients(1);

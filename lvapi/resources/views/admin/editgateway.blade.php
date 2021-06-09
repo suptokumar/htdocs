@@ -1,5 +1,5 @@
 @extends("layout.app")
-@section("title","School management software")
+@section("title","Admin Portal")
 @section("active","paymentdetails")
 @section("content")
 <article>
@@ -32,7 +32,7 @@
     </div>
     <div class="form-group col-md-6">
       <label for="icon">Gateway Icon<br>
-      <input type="file" style="display: none;" class="form-control" name="file" id="icon" required="" placeholder="eg: Icon">
+      <input type="file" style="display: none;" class="form-control" name="file" id="icon" placeholder="eg: Icon">
       <img src="{{ url('/public/') }}{{$gateway->icon}}" alt="" style="width: 100px; height:100px;  float: left; border-radius: 100px;">
       </label>
     </div>
@@ -92,7 +92,7 @@
     </div>
     <div class="form-group col-md-4">
       <label for="details_value`+rand_class+`">Value of Details</label>
-      <input type="text" class="form-control" name='gc2`+rand_class+`' for="details_value`+rand_class+`" placeholder="eg: jobdc14@gmail.com">
+      <input type="text" class="form-control" name='gc2`+rand_class+`' for="details_value`+rand_class+`" placeholder="eg: info@demofy21.top">
     </div>
     <div class="form-group col-md-3" style="display: flex; justify-content: center; align-items: center;">
       <a type="button" class="btn btn-info"  onclick="new_data()" style="margin-right: 5px;">Add Field</a> 

@@ -53,8 +53,8 @@ flex-direction: column;
     <input type="text" class="form-control" id="payment_usd" required="" name="payment_usd" aria-describedby="emailHelp" value="{{ $client->payment_usd }}" placeholder="payment in usd">
   </div>
   <div class="form-group">
-    <label for="exampleInputEmail1">{{__('Client\'s Payment Hours (min)')}}</label>
-    <input type="text" class="form-control" id="hours" required="" name="hours" aria-describedby="emailHelp" value="{{ $client->hours }}" placeholder="in minute">
+    <label for="exampleInputEmail1">{{__('Client\'s Payment Hours')}}</label>
+    <input type="text" class="form-control" id="hours" required="" name="hours" aria-describedby="emailHelp" value="{{ $client->hours/60 }}" placeholder="in minute">
   </div>
   <div class="form-group">
     <label for="exampleInputEmail1">{{__('Client\'s Last Payment Date')}}</label>

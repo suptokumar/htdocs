@@ -12,6 +12,7 @@ use App\Models\teacher;
 use App\Models\myresult;
 use App\Models\student;
 use App\Models\live;
+use App\Models\payment;
 use App\Models\book;
 use App\Models\bookreader;
 use App\Mail\email;
@@ -23,8 +24,58 @@ use DB;
 use File;
 use Image;
 use Cookie;
+use URL;
 class soft extends Controller
 {
+    public function paymentlist(Request $request)
+    {
+        $payment = payment::where("user","=",Auth::id())->get();
+        $i = 0;
+        foreach ($payment as $key => $p) {
+            $payment[$i]->ctd = date("h:i a d M Y", strtotime($p->created_at));
+            $i++;
+        }
+        return json_encode($payment);
+    }
+    public function paysuccess(Request $request)
+    {
+        $paymentID = $request->get("paymentID");
+        $orderID = $request->get("orderID");
+        $returnUrl = $request->get("returnUrl");
+        $id = $request->get("id");
+        $payment = payment::find($id);
+        $payment->method = "PayPal";
+        $payment->paymentID = $paymentID;
+        $payment->orderID = $orderID;
+        $payment->returnURL = $returnUrl;
+        $payment->status = "success";
+        $payment->save();
+        return "saved";
+    }
+    public function payment(Request $request)
+    {
+        $year = $request->get("year");
+        $amount = $request->get("amount");
+        $id = Auth::id();
+        $paymentID = time().rand(1,9).rand(1,9).rand(1,9);
+        $payment = new payment;
+        $payment->paymentID = $paymentID;
+        $payment->user = $id;
+        $payment->amount = $amount;
+        $payment->year = $year;
+        $payment->currency = "USD";
+        $payment->status = "pending";
+        $payment->method = "";
+        $payment->returnURL = "";
+        $payment->orderID = "";
+        $payment->save();
+        return redirect()->away(URL::to('/payment/'.$paymentID));
+    }
+    public function gateway($id)
+    {
+        $payment  = payment::where("PaymentID","=",$id)->first();
+        return view("payment",['payment'=>$payment]);
+    }
     public function bookrequest(){
         return view("admin.bookrequest");
     }
@@ -487,49 +538,43 @@ if ($result->save()) {
         return view("requestpage");
     }
     public function get_grade($mark){
-        if ($mark>90) {
-            return 4;
-        }
-        if ($mark>80) {
-            return 3;
-        }
-        if ($mark>70) {
-            return 2;
-        }
-        if ($mark>60) {
-            return 1;
-        }
-        return 0;  
-    }
-    public function get_lettergrade($mark){
-        if ($mark>90) {
+        if ($mark>89) {
             return "A";
-        }
-        if ($mark>80) {
+        }else if ($mark>79) {
             return "B";
-        }
-        if ($mark>70) {
+        }else if ($mark>69) {
             return "C";
-        }
-        if ($mark>60) {
+        }else if ($mark>59) {
             return "D";
         }
-        return "F";  
+        return "";  
+    }
+    public function get_lettergrade($mark){
+        if ($mark>89) {
+            return "A";
+        }else if ($mark>79) {
+            return "B";
+        }else if ($mark>69) {
+            return "C";
+        }else if ($mark>59) {
+            return "D";
+        }
+        return "";  
     }
     public function get_amount($mark,$subject,$att){
-        if ($mark>90) {
+        if ($mark>89) {
             return 20;
         }
-        if ($mark>80) {
+        if ($mark>79) {
             return 15;
         }
-        if ($mark>70) {
+        if ($mark>69) {
             return 10;
         }
-        if ($mark>60) {
+        if ($mark>59) {
             return 5;
         }
-        return 0;  
+        return '0';  
     }
     public function settings()
     {

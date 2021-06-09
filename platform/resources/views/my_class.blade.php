@@ -59,6 +59,7 @@ flex-direction: column;
 	
 </div>
 
+<input type="hidden" id="today" value="{{time()}}">
 
 
  </article>
@@ -66,7 +67,7 @@ flex-direction: column;
 
 @section("script")
 
-  <script src="{{ asset('/public/js/class.js?cdf') }}"></script>
+  <script src="{{ asset('/public/js/class.js?ceedf') }}"></script>
 <script>
 	$(document).ready(function() {
 		show_class(1);
