@@ -68,16 +68,16 @@
 </style>
 <div class="mainct">
   @foreach ($books as $book)
-    <div class="book a{{$book->id}}">
+    <div class="book a{{$book->title}}">
       <img src="{{ url('/public/image/'.$book->thumb) }}" class="imgs1" alt="">
-      <h3>{{$book->title}}</h3>
+      <p>{{$book->description}}</p>
       <p>
       	@if ($book->status==0)
       	Pending
       	@else
-      	<a href='{{ $book->link }}' class='btn btn-link'>download book</a>
+      	<a href='{{ $book->link }}' class='btn btn-success'>Download Book</a>
+        <a href='{{ url('/exam/'.$book->title) }}' class='btn mt-1 btn-danger'>Earn With Exam</a>
       @endif</p>
-      <p>{{$book->description}}</p>
     </div>
   @endforeach
 </div>  

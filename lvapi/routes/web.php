@@ -48,15 +48,29 @@ Route::group(['prefix' => 'admin','middleware'=>'admin'], function() {
     Route::get("/exchange","soft@exchange");
     Route::get("/addexchange","soft@addexchange");
     Route::get("/addconfigure","soft@addconfigure");
+    Route::get("/plan","soft@plan");
     Route::get("/editconfigure/{id}","soft@editconfigure");
+    Route::get("/editplan/{id}","soft@editplan");
     Route::get("/editexchange/{id}","soft@editexchange");
     Route::post("/createapi/editexchangelist","soft@editexchangelist");
     Route::post("/createapi/addconfigure","soft@addconfigureintodatabase");
     Route::post("/createapi/addexchangelist","soft@addexchangelistintodatabase");
+    Route::post("/createapi/addplan","soft@addplan");
     Route::post("/load_configures","soft@load_configures");
-    Route::post("/editconfigure","soft@editconfigureintodatabase");
-    Route::post("/deleteconfigure","soft@deleteconfigure");
+    Route::post("/load_plans","soft@load_plans");
     Route::post("/load_exchange","soft@load_exchange");
+    Route::post("/editconfigure","soft@editconfigureintodatabase");
+    Route::post("/editplan","soft@editplanintodatabase");
+    Route::post("/deleteconfigure","soft@deleteconfigure");
+    Route::post("/deleteplan","soft@deleteplan");
     Route::post("/deleteexchange","soft@deleteexchange");
+
+
+
+    // Route for ID Management
+    Route::get("/createid","soft@idmanagement");
+    Route::get("/idactions/{id}","soft@idactions");
+    Route::post("/load_idmanagement","soft@load_idmanagement");
+    Route::post("/deleteid","soft@deleteid");
 
 });

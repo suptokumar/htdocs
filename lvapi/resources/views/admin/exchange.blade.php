@@ -20,6 +20,7 @@
 		<div class="col-4">
 	<a href="{{ url('/admin/addexchange') }}" class="btn btn-info float-right">Add Exchanges</a>
 	<a href="{{ url('/admin/addconfigure') }}" class="btn btn-danger float-right">Add Exchange Type</a>
+  <a href="{{ url('/admin/plan') }}" class="btn btn-success float-right">Add Plan</a>
 		</div>
 	</div>
 </header>
@@ -85,6 +86,7 @@
         </div>
         <div class="col-3 center" style='padding-top: 15px;'>
         <h4>`+row['configure'].substring(1)+`</h4>
+        `+row['plan']+`
         </div>
 
         <div class="col-3 right" style='padding-top: 15px;'>

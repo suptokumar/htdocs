@@ -178,7 +178,7 @@ $class = DB::select($sql);
         $total_teacher = User::where("type","=","1")->count();
         $total_active = User::where([["type","=","2"],["status","=","active"]])->count();
         $total_inactive = User::where([["type","=","2"],["status","!=","active"]])->count();
-        $waitings = waiting::where("done","=","0")->count();
+        $waitings = waiting::count();
 
         $doneclass = count(DB::select("SELECT * FROM `reports` WHERE year(`starting`)='$year' AND month(`starting`)='$month'"));
         $total_deleted = count(DB::select("SELECT * FROM `changes` WHERE year(`created_at`)='$year' AND month(`created_at`)='$month' AND status='0'"));
@@ -186,19 +186,38 @@ $class = DB::select($sql);
         $missed_class = count(DB::select("SELECT * FROM `reports` WHERE year(`starting`)='$year' AND month(`starting`)='$month' AND status='0'"));
         $total_clients = count(DB::select("SELECT * FROM `clients`"));
         $numberofpaidinvoice = count(DB::select("SELECT * FROM `payments`  WHERE year(`created_at`)='$year' AND month(`created_at`)='$month' group by `invoice`"));
-        $feeandtransfer = DB::select("SELECT SUM(fees) as fees,SUM(transfer_fees) as transfer FROM `payments`  WHERE year(`created_at`)='$year' AND month(`created_at`)='$month' group by `invoice`");
-        $transfer = empty($feeandtransfer[0]->transfer)?"0":$feeandtransfer[0]->transfer;
-        $fees = empty($feeandtransfer[0]->fees)?"0":$feeandtransfer[0]->fees;
+        $feeandtransfer = DB::select("SELECT fees,transfer_fees FROM `payments`  WHERE year(`date`)='$year' AND month(`date`)='$month' and type='Student'");
+        $transfer = 0;
+        $fees = 0;
+        foreach($feeandtransfer as $ft)
+        {
+            $transfer+=intval($ft->transfer_fees);
+            $fees+=intval($ft->fees);
+        }
         $total_remaining_hours = DB::select("SELECT SUM(hours) as sm FROM `users` WHERE type=2")[0]->sm/60;
         $upcoming_cls = count($this->upcoming_cls("SELECT * FROM courses", "$year-$month-01"));
-        $total_cls = $doneclass+$upcoming_cls;
+        $total_cls = ($doneclass)+($upcoming_cls);
+        $upcoming = $this->upcoming_cls("SELECT * FROM courses", "$year-$month-01");
+        $uphours = 0;
+        foreach($upcoming as $up)
+        {
+            $uphours+=$up[4];
+        }
+        $dhours = 0;
+        $dh = DB::select("SELECT * FROM `reports` WHERE year(`starting`)='$year' AND month(`starting`)='$month'");
+        foreach($dh as $d)
+        {
+            $dhours+=$d->duration;
+        }
+        
+        
         $qm = count(DB::SELECT("select * from courses where subject='Quran Memorization' AND year(`updated_at`)='$year' AND month(`updated_at`)='$month'  GROUP BY s_id"));
         $qr = count(DB::SELECT("select * from courses where subject='Quran Recitation' AND year(`updated_at`)='$year' AND month(`updated_at`)='$month'  GROUP BY s_id"));
         $al = count(DB::SELECT("select * from courses where subject='Arabic language' AND year(`updated_at`)='$year' AND month(`updated_at`)='$month'  GROUP BY s_id"));
         $is = count(DB::SELECT("select * from courses where subject='Islamic Studies' AND year(`updated_at`)='$year' AND month(`updated_at`)='$month'  GROUP BY s_id"));
         
 
-        return view("reports",["total_student"=>$total_student,"total_teacher"=>$total_teacher,"total_active"=>$total_active,"total_inactive"=>$total_inactive,"waitings"=>$waitings,"doneclass"=>$doneclass,"total_deleted"=>$total_deleted,"total_changed"=>$total_changed,"missed_class"=>$missed_class,"total_clients"=>$total_clients,"numberofpaidinvoice"=>$numberofpaidinvoice,"transfer"=>$transfer,"fees"=>$fees,"total_remaining_hours"=>$total_remaining_hours,"upcoming_cls"=>$upcoming_cls,"total_cls"=>$total_cls,"qm"=>$qm,"qr"=>$qr,"al"=>$al,"is"=>$is]);
+        return view("reports",["total_student"=>$total_student,"dhours"=>$dhours,"uphours"=>$uphours,"total_teacher"=>$total_teacher,"total_active"=>$total_active,"total_inactive"=>$total_inactive,"waitings"=>$waitings,"doneclass"=>$doneclass,"total_deleted"=>$total_deleted,"total_changed"=>$total_changed,"missed_class"=>$missed_class,"total_clients"=>$total_clients,"numberofpaidinvoice"=>$numberofpaidinvoice,"transfer"=>$transfer,"fees"=>$fees,"total_remaining_hours"=>$total_remaining_hours,"upcoming_cls"=>$upcoming_cls,"total_cls"=>$total_cls,"qm"=>$qm,"qr"=>$qr,"al"=>$al,"is"=>$is]);
     }
     public function delete_waiting(Request $request){
         if($waiting = waiting::find($request->get("id"))){
@@ -535,9 +554,8 @@ $members = $this->get_family_members(Auth::id());
         }
         $mem_script.= ") ";
 
-
-
-        $class = DB::select("select * from courses WHERE $mem_script");
+        $s = $request->get("search");
+        $class = DB::select("select * from courses WHERE $mem_script  and (ras LIKE '%$s%' OR title LIKE '%$s%' OR teacher LIKE '%$s%')");
 
             $data = [];
             $crt = time();
@@ -643,11 +661,11 @@ $members = $this->get_family_members(Auth::id());
 
     public function laod_class(Request $request)
     {
+        $s = $request->get("search");
         if (Auth::user()->type==1) {
-        $class = course::where("t_id", "=", Auth::id())->get();
+        $class = DB::select("select * from courses WHERE t_id = '".Auth::id()."' and (ras LIKE '%$s%' OR title LIKE '%$s%' OR teacher LIKE '%$s%')");
         }else{
-        $class = course::where("s_id", "=",  Auth::id())->get();
-
+        $class = DB::select("select * from courses WHERE s_id = '".Auth::id()."' and (ras LIKE '%$s%' OR title LIKE '%$s%' OR teacher LIKE '%$s%')");
         }
             $data = [];
             $crt = time();

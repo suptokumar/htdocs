@@ -67,24 +67,60 @@
 </div>
 @endif
   <div class="form-row">
+    @php
+      
+        use App\Http\Controllers\soft;
+
+    @endphp
+    <div class="form-group col-md-12">
+      <script>
+        function amg(t)
+        {
+          var val = $(t).val();
+          valv = 0;
+          for (var i = 0; i < val.length; i++) {
+            if(i==0)
+            {
+              valv+= {{number_format(soft::set()->single_payment,2)}};
+            }else{
+              valv+= {{number_format(soft::set()->multi_payment,2)}};
+            }
+          }
+          $("#amount").val(valv);
+        }
+      </script>
+      <label for="name">Select Students <span style="color: red">*</span></label>
+      <select name="student[]" id="student" class="form-control" multiple="" required="" onchange="amg(this)">
+        @php
+          use App\Models\student;
+          use App\Models\payment;
+          use App\Models\User;
+          $p = student::where("email","=",Auth::user()->email)->first();
+          $parents = $p->m_occupation;
+          $mores = student::where("m_occupation","=", $parents)->get();
+        @endphp
+        @foreach ($mores as $more)
+        @php
+          $st = $more->email;
+          $std = User::where("email","=",$st)->first();
+          if ($payment = payment::where([["user","=",$std->id],["status","=","success"]])->first()) {
+            continue;
+          }
+        @endphp
+        <option value="{{$more->email}}">{{$more->name}}</option>
+        @endforeach
+      </select>
+      <small>If you have more then one students you  will get a discount. Please make Mother's Email same to make student from one family</small>
+    </div>
     <div class="form-group col-md-4">
       <label for="name">Fee submission Year <span style="color: red">*</span></label>
       <select name="year" id="year" class="form-control">
-      	<option value="2020-2021">2020-2021</option>
-      	<option value="2021-2022">2021-2022</option>
-      	<option value="2022-2023">2022-2023</option>
-      	<option value="2023-2024">2023-2024</option>
-      	<option value="2024-2025">2024-2025</option>
-      	<option value="2025-2026">2025-2026</option>
-      	<option value="2026-2027">2026-2027</option>
-      	<option value="2027-2028">2027-2028</option>
-      	<option value="2028-2029">2028-2029</option>
-      	<option value="2029-2030">2029-2030</option>
+      	<option value="{{date("Y")}}-{{date("Y")+1}}">{{date("Y")}}-{{date("Y")+1}}</option>
       </select>
     </div>
     <div class="form-group col-md-4">
       <label for="amount">Payment Amount ($) <span style="color: red">*</span></label>
-      <input type="number" class="form-control" required="" readonly  id="amount" name="amount" placeholder="Your Last Qualification"  value="50">
+      <input type="number" class="form-control" step=".001" required="" readonly  id="amount" name="amount" placeholder="Your Last Qualification"  value="{{soft::set()->single_payment}}">
     </div>
   </div>
     <button type="submit" class="btn btn-primary">Pay Now</button>
@@ -136,9 +172,9 @@ function myFunction() {
       body += '<div class="row" id="bcmc'+row["id"]+'" style="padding: 15px; border: 1px solid #ccc; margin: 10px">';
         body+= "<div class='col-sm-4'><h2>"+row['year']+"</h2>"+row['ctd']+"</div>";
         if (row['status']!="pending") {
-body+="<div class='col-sm-4'><span class='badge badge-succcess'>"+row['status']+"</span><h3>Gateway: "+row['gateway']+"</h3><h3>paymentID: "+row['paymentID']+"</h3></div>";
+body+="<div class='col-sm-4'><span class='badge badge-success'>"+row['status']+"</span><h5>Gateway: "+row['method']+"</h5><h5>paymentID: "+row['paymentID']+"</h5></div>";
         }else{
-        body+="<div class='col-sm-4'><span class='badge badge-info'>"+row['status']+"</span><h3>"+row['amount']+"$</h3></div>";
+        body+="<div class='col-sm-4'><span class='badge badge-info'>"+row['status']+"</span><h3>"+row['amount']+"$</h3><h6>"+row['returnURL']+"<h6></div>";
         body+= "<a class='btn btn-primary' style='padding: 1.375rem 1.75rem' href='{{ url('/payment/') }}/"+row['paymentID']+"'>Pay Now</a>";
         }
 

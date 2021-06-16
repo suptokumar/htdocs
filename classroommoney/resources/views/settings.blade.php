@@ -93,8 +93,8 @@
   <div class="form-row">
 
     <div class="form-group col-md-2">
-      <label for="id_number">National ID <span style="color: red">*</span></label>
-      <input type="text" class="form-control" required="" value="{{$user->id_number}}" id="id_number" name="id_number" placeholder="National ID">
+      <label for="id_number">TAB teacher/ tutor id <span style="color: red">*</span></label>
+      <input type="text" class="form-control" required="" value="{{$user->id_number}}" id="id_number" readonly="" name="id_number" placeholder="National ID">
     </div>
     <div class="form-group col-md-2">
       <label for="id_proof">Id front copy</label>
@@ -198,7 +198,7 @@
     </div>
     <div class="form-group col-md-4">
       <label for="inputEmail4">Student ID</label>
-      <input type="text" class="form-control"  value="{{$user->id_number}}" id="id_number" name="id_number" placeholder="eg. 15">
+      <input type="text" class="form-control"  value="{{$user->id_number}}" id="id_number" readonly name="id_number" placeholder="eg. 15">
     </div>
     <div class="form-group col-md-4">
       <label for="inputPassword4">Id Proof.</label>
@@ -228,6 +228,10 @@
     <div class="form-group col-md-4">
       <label for="inputEmail4">Mother's Name</label>
       <input type="text" class="form-control" value="{{$user->m_name}}" id="m_name" name="m_name">
+    </div>
+    <div class="form-group col-md-4">
+      <label for="m_phone">Mother's Phone</label>
+      <input type="text" class="form-control" value="{{$user->section}}" id="m_phone" name="m_phone">
     </div>
     <div class="form-group col-md-4">
       <label for="inputPassword4">Mother's Email</label>

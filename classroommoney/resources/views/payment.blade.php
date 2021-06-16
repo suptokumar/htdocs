@@ -124,6 +124,100 @@
     }
   }, '#paypal-button');
   </script>
+<div style="text-align: center;"><a href="#" class="btn btn-primary btn-block" style="max-width: 354px;
+width: 100%;
+padding: 10px; margin: 10px auto">Pay With Stripe</a></div>
+</form>
+<form action="{{ url('/vg') }}">
+  <input type="hidden" value="<?php echo $payment->amount ?>" name="amount" class="amount">
+  <script src = "https://checkout.stripe.com/checkout.js" > </script> 
+
+<script type = "text/javascript">
+
+    $(document).ready(function() {
+
+        $.ajaxSetup({
+
+            headers: {
+
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+
+            }
+
+        });
+
+    });
+
+
+$('.btn-block').click(function() {
+
+  var amount = $('.amount').val();
+
+  var handler = StripeCheckout.configure({
+
+      key: 'pk_live_51Hb8lGGixg6ZQ8a5aynNMgmSG5SATEIdQeNAAbdS8bGBZX38GjWM7hO6qZu9s7PEknesDMye4URv5MCgrLlXYHd500h9cv9g6q', // your publisher key id
+
+      locale: 'auto',
+
+      token: function(token) {
+
+          // You can access the token ID with `token.id`.
+
+          // Get the token ID to your server-side code for use.
+
+          $('#res_token').html(JSON.stringify(token));
+
+          $.ajax({
+
+              url: '{{ url("vg") }}',
+
+              method: 'post',
+
+              data: {
+
+                  tokenId: token.id,
+
+                  amount: amount,
+                  id: '<?php echo $payment->id ?>',
+                  _token: '{{csrf_token()}}',
+
+              },
+
+              success: (response) => {
+
+                  window.location = '{{ url('/invest') }}';
+
+              },
+
+              error: (error) => {
+
+                  console.log(error);
+
+                  alert('Oops! Something went wrong')
+
+              }
+
+          })
+
+      }
+
+  });
+
+  handler.open({
+
+      name: 'Payment Demo',
+
+      description: 'NiceSnippets',
+
+      amount: amount * 100
+
+  });
+
+})
+
+
+</script>
+
 </form>
 <div>
 <input type="hidden" value="{{ csrf_token() }}" id="csrf">

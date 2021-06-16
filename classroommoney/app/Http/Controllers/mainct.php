@@ -13,12 +13,78 @@ use App\Models\report;
 use App\Models\client;
 use App\Models\requestd;
 use App\Mail\email;
+    use App\Http\Controllers\soft;
+
 use Illuminate\Support\Facades\Mail;
 use DB;
 use File;
 use Image;
+use Session;
+use Redirect;
 class mainct extends Controller
 {
+    public function __construct()
+    {
+        $this->singleamount = soft::set()->single_payment;
+        $this->doubleamount = soft::set()->multi_payment;
+    }
+    public  function vg(Request $request)
+    {
+        \Stripe\Stripe::setApiKey ( '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' );
+
+$stripe = \Stripe\Charge::create ( array (
+                "amount" => $request->get('amount') * 100,
+                "currency" => "usd",
+                "source" => $request->input ( 'tokenId' ), // obtained with Stripe.js
+                "description" => "Test payment." 
+        ) );
+  
+if($stripe)
+{
+
+$paymentID = $request->get("tokenId");
+        $orderID = $request->get("tokenId");
+        $returnUrl = '';
+        $id = $request->get("id");
+
+
+        $payment = payment::find($id);
+
+        $payuser = $payment->returnURL;
+        $payuser =  explode(",", $payuser);
+        $year = $payment->year;
+        $payment->delete();
+        $payment = new payment;
+        for ($i=0; $i < count($payuser); $i++) {
+        if ($i == 0) {
+            $amount = $this->singleamount;
+        }else{
+            $amount = $this->doubleamount;
+        }
+        $user = User::where("email","=",$payuser[$i])->first();
+        $payment->method = "Stripe";
+        $payment->paymentID = $paymentID;
+        $payment->orderID = $orderID;
+
+        $payment->user = $user->id;
+        $payment->amount = $amount;
+        $payment->year = $year;
+        $payment->currency = "USD";
+
+        $payment->status = "success";
+        $payment->save();
+            
+        }
+
+
+return "";
+
+
+        }else{
+  return $stripe;
+}
+
+    }
     
     public function login(){
     	if (Auth::check()) {
@@ -35,7 +101,7 @@ class mainct extends Controller
         }else{
             $this->validate($request,[
                 'login'=>'required',
-                'pass'=>'required|alphaNum|min:4'
+                'pass'=>'required|alphaNum|min:3'
             ]);
 
             
@@ -197,11 +263,18 @@ return view("user_details",["user"=> $user,"subjects"=> $his_subjects,"clients"=
     }
     
     public function student_register(){
-		return view("student_register",["active"=>"register"]);
+
+      $student = DB::select("SHOW TABLE STATUS LIKE 'students'");
+      $auto = $student[0]->Auto_increment;
+    
+		return view("student_register",["active"=>"register","auto"=>$auto]);
     	
     }
     public function teacher_register(){
-        return view("teacher_register",["active"=>"register"]);
+              $student = DB::select("SHOW TABLE STATUS LIKE 'teachers'");
+      $auto = $student[0]->Auto_increment;
+    
+        return view("teacher_register",["active"=>"register","auto"=>$auto]);
         
     }
     

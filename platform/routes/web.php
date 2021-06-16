@@ -100,7 +100,7 @@ Route::post('/clients', 'mainct@get_clients');
 Route::group(['prefix' => 'student','middleware' => 'student'], function() {
 Route::get('/', 'mainct@index');
 Route::get('/settings', 'mainct@settings');  
-Route::get('/my_class', 'dclient@my_class');  
+Route::get('/my_classes', 'dclient@my_class');  
 Route::get('/manage_class', 'dclient@manage_class');  
 Route::get('/allpreclass', 'dclient@allpreclass');  
 Route::get('/allclass', 'dclient@allclass');  
@@ -110,7 +110,7 @@ Route::get('/allclass', 'dclient@allclass');
 
 Route::group(['prefix' => 'teacher','middleware' => 'teacher'], function() {
 Route::get('/', 'mainct@index');
-Route::get('/my_class', 'dclient@my_classt');  
+Route::get('/my_classes', 'dclient@my_classt');  
 Route::get('/manage_class', 'dclient@manage_class');  
 Route::get('/settings', 'mainct@settings');  
 Route::get('/settings', 'mainct@settings');  

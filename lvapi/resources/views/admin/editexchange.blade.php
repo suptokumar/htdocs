@@ -6,6 +6,8 @@
 <header style="overflow: hidden;">
   <a href="{{ url('/admin/exchange') }}" class="btn btn-danger float-left">Exchange List</a>
   <a href="{{ url('/admin/addconfigure') }}" class="btn btn-success float-left">Add Configure</a>
+    <a href="{{ url('/admin/plan') }}" class="btn btn-info float-left">Add Plan</a>
+
 </header>
 <section class="gateway_view">
   <form action="{{ url('/admin/createapi/editexchangelist') }}" method="POST" enctype="multipart/form-data">
@@ -55,6 +57,13 @@
       </select>
 
       <br>
+            <label for="type">Select Plan <span class="red">*</span></label>
+      <select class="form-control" required="" name="plan[]" multiple="" id="awet" >
+        @foreach ($plan as $cg)
+          <option value="{{$cg->id}}" {{$cg->id==$exchange->type_image?'selected':''}}>{{$cg->name}}</option>
+        @endforeach
+      </select>
+<br>
       <label for="type">Exchange URL <span class="red">*</span></label>
       <input type="text" class="form-control" name="exchangeurl" for="exchangeurl" value="{{$exchange->type}}" placeholder="eg: https://www.google.com">
     
@@ -82,6 +91,13 @@
   $(function(){
 
     $('#asdfeea').multiselect({
+
+    // allows HTML content
+    enableHTML: false,
+       // CSS class of the multiselect button
+    buttonClass: 'custom-select'
+  });
+    $('#awet').multiselect({
 
     // allows HTML content
     enableHTML: false,

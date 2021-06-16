@@ -31,7 +31,7 @@
 @endif
   <div class="form-row">
     <div class="form-group col-md-6">
-      <label for="name">Greade <span style="color: red">*</span></label>
+      <label for="name">Grade <span style="color: red">*</span></label>
       <select name="grade" id="grade" class="form-control">
         <option value="7">7th</option>
         <option value="8">8th</option>
@@ -53,7 +53,7 @@
       <input type="text" class="form-control" required=""  id="link" name="link">
     </div>
     <div class="form-group col-md-6">
-      <label for="thumb">Thumbnails <span style="color: red">*</span></label>
+      <label for="thumb">Book upload <span style="color: red">*</span></label>
       <input type="file" class="form-control" required=""  id="thumb" name="thumb">
     </div>
       </div>

@@ -21,4 +21,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 Route::post("/exchangelist","api@exchange");
+Route::post("/planlist","api@planlist");
+Route::post("/configurelist","api@configurelist");
+Route::post("/createid","api@createid");
+Route::post("/idlist","api@idlist");
+Route::post("/createuser","api@createuser");
+Route::post("/userlist","api@userlist");
 

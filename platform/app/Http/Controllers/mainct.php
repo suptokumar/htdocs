@@ -32,7 +32,7 @@ class mainct extends Controller
             foreach ($class as $key => $value)
             {
             date_default_timezone_set($value->timezone);
-                // add the changes
+                 // add the changes
                 if ($value->repeat == '')
                 {
                     $nst =  date("Y-m-d H:i:s",  strtotime($value->starting));
@@ -51,8 +51,7 @@ class mainct extends Controller
                                     $nod = date("Y-m-d H:i:s",$change->app);
                                     // date_default_timezone_set(Auth::user()->timezone);
                                     $change->app = strtotime($nod);
-                                                                        // date_default_timezone_set($change->timezone);
-
+                                        
                                 date_default_timezone_set(Auth::user()->timezone);
                                     array_push($data, [$change->app, date("D, M d,Y h:i a", $change->app) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mxt]);
                             }
@@ -64,9 +63,10 @@ class mainct extends Controller
                             // date_default_timezone_set($value->timezone);
                                 $ntr = date("Y-m-d H:i:s",strtotime($value->starting));
                                 $nxt = strtotime($ntr);
-
+                                if ($nxt>$crt) {
                                 date_default_timezone_set(Auth::user()->timezone);
                             array_push($data, [$nxt , date("D, M d,Y h:i a", $nxt) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst ]);
+                                }
                         }
                     
                 }
@@ -89,8 +89,9 @@ class mainct extends Controller
                             $change = change::where([["class_id", "=", $value->ras], ["replacetime", "=", $mst]])->orderBy("id","desc")->first();
                             if ($change)
                             {
-                                if ($change->status != '0')
+                                if ($change->status != '0' && $change->app>$crt)
                                 {
+                                
                                     // date_default_timezone_set($change->timezone);
                                     $nod = date("Y-m-d H:i:s",$change->app);
                                     // date_default_timezone_set(Auth::user()->timezone);
@@ -103,8 +104,10 @@ class mainct extends Controller
                             }
                             else
                             {
+                                if( $nxt>$crt){
                                 date_default_timezone_set(Auth::user()->timezone);
                                 array_push($data, [$nxt, date("D, M d,Y h:i a", $nxt) ,$value->subject , $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst]);
+                                }
                             }
                             $nxt += 24 * 3600;
                         }
@@ -156,11 +159,11 @@ class mainct extends Controller
     {
         if (Auth::user()->type == 2)
         {
-            return redirect("student/my_class");
+            return redirect("student/my_classes");
         }
         if (Auth::user()->type == 1)
         {
-            return redirect("teacher/my_class");
+            return redirect("teacher/my_classes");
         }
         if (Auth::user()->type == 3)
         {
@@ -578,7 +581,7 @@ Class Title: ".course::where("ras","=",$dl->class_id)->first()->title."<br>
         {
             if ($user->type == 2)
             {
-                $course = course::where("s_id", "=", $user->id)
+                $course = course::where("s_id", "=", $user->id)->groupBy("t_id")
                     ->get();
                 $his_subjects = [];
                 $his_clients = [];
@@ -590,7 +593,7 @@ Class Title: ".course::where("ras","=",$dl->class_id)->first()->title."<br>
                     }
                     if (!in_array($value->teacher, $his_subjects))
                     {
-                        array_push($his_clients, $value->teacher);
+                        array_push($his_clients, User::where("email","=",$value->teacher)->first()->name);
                     }
                 }
                 $pre_m = (intval(date("m")) == 1 ? 12 : intval(date("m")) - 1);
@@ -611,7 +614,7 @@ Class Title: ".course::where("ras","=",$dl->class_id)->first()->title."<br>
             }
             else if ($user->type == 1)
             {
-                $course = course::where("t_id", "=", $user->id)
+                $course = course::where("t_id", "=", $user->id)->groupBy("s_id")
                     ->get();
                 $his_subjects = [];
                 $his_clients = [];
@@ -623,7 +626,7 @@ Class Title: ".course::where("ras","=",$dl->class_id)->first()->title."<br>
                     }
                     if (!in_array($value->student, $his_subjects))
                     {
-                        array_push($his_clients, $value->teacher);
+                        array_push($his_clients, User::where("email","=",$value->student)->first()->name);
                     }
                 }
                 $pre_m = (intval(date("m")) == 1 ? 12 : intval(date("m")) - 1);
@@ -1139,6 +1142,25 @@ Class Title: ".course::where("ras","=",$dl->class_id)->first()->title."<br>
                 $user = User::find($report->t_id);
                 $user->hours = intval($user->hours) + intval($report->duration);
                 $user->save();
+                
+                $class = $report;
+                
+                $st_dt = User::find($class->s_id);
+$hours = $st_dt->hours;
+$class_time = $class->duration;
+$now_t = intval($hours) - intval($class_time);
+
+$st_dt->hours = $now_t;
+$st_dt->save();
+
+if ($st_dt->hours<1 OR $st_dt->hours=='') {
+    mainct::send($st_dt->id,"You have ".($st_dt->hours>0?(floor(intval($st_dt->hours) / 60) .':'. intval($st_dt->hours) % 60):("-".floor(intval(-1*$st_dt->hours) / 60) .':'. intval(-1*$st_dt->hours) % 60))." Hours in your account. You should Purchase hour now.");
+    mainct::send("Admin",$st_dt->name." has ".($st_dt->hours>0?(floor(intval($st_dt->hours) / 60) .':'. intval($st_dt->hours) % 60):("-".floor(intval(-1*$st_dt->hours) / 60) .':'. intval(-1*$st_dt->hours) % 60))." Hours remaining. You can contact him by ".$st_dt->email." or ". $st_dt->phone);
+}
+if ($st_dt->hours==0 OR $st_dt->hours=='') {
+    mainct::send("Admin",$st_dt->name." has ".($st_dt->hours>0?(floor(intval($st_dt->hours) / 60) .':'. intval($st_dt->hours) % 60):("-".floor(intval(-1*$st_dt->hours) / 60) .':'. intval(-1*$st_dt->hours) % 60))." Hours remaining. You can contact him by ".$st_dt->email." or ". $st_dt->phone);
+    $status = 0;
+}
                 return back()
                     ->with("success", "Successfuly Created Progress Note");
             }
@@ -1282,7 +1304,8 @@ WHEN phone LIKE '___________$search%' THEN 12 END, name ASC;
     
     // functions for the admin to manage class
     function get_classes(Request $request){
-        $class = course::get();
+        $s = $request->get("search");
+        $class = DB::select("select * from courses WHERE  (ras LIKE '%$s%' OR title LIKE '%$s%' OR teacher LIKE '%$s%')");
            $data = [];
             $crt = time();
             $mxt = time() + 3600 * 24 * 30;
@@ -1646,7 +1669,7 @@ WHEN phone LIKE '___________$search%' THEN 12 END, name ASC LIMIT $from,$limit;
         $course->title = $title;
         $g1 = "";
         $g2 = "";
-        $ras = time() . rand();
+        $ras = course::orderBy("id","desc")->count()==0?10000:(intval(course::orderBy("id","desc")->first()->ras)+1);
         if ($guest != "")
         {
             $gu = explode(",", $guest);

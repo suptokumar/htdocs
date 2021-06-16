@@ -23,7 +23,7 @@
     })
     .done(function(data) {
      var d = JSON.parse(data);
-      var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Student</th> <th scope="col">Teacher</th><th scope="col">Subject/Course</th><th scope="col">Marks</th><th scope="col">Grades</th><th scope="col">Miss Attendents</th><th scope="col">Payment($)</th><th scope="col">Options</th> </tr> </thead> <tbody>';
+      var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Student</th> <th scope="col">Teacher</th><th scope="col">Subject/Course</th><th scope="col">Marks</th><th scope="col">Grades</th><th scope="col">Attendance</th><th scope="col">Payment($)</th><th scope="col">Options</th> </tr> </thead> <tbody>';
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
         body+= "<tr id='bcmc"+row["id"]+"'>";

@@ -7,6 +7,8 @@ use App\Models\paymentdetail;
 use App\Models\exchangeconfigure;
 use App\Models\exchange;
 use App\Models\User;
+use App\Models\plan;
+use App\Models\idmanager;
 use DB;
 use Hash;
 use Auth;
@@ -16,6 +18,7 @@ class soft extends Controller
     {
         $this->limit = 30;
     }
+
     public function index()
     {
         return view("index");
@@ -518,11 +521,19 @@ WHEN email LIKE '__________$search%' THEN 11
             return view("admin.exchange",['configure'=>$exchangeconfigure]);
         }
     }
-    public  function addexchange()
+    public function plan()
     {
         if ($this->power(Auth::id(),"exchange",0)) {
             $exchangeconfigure = exchangeconfigure::orderBy("text","asc")->get();
-            return view("admin.addexchange",['configure'=>$exchangeconfigure]);
+            return view("admin.plan",['configure'=>$exchangeconfigure]);
+        }
+    }
+    public  function addexchange()
+    {
+        if ($this->power(Auth::id(),"exchange",0)) {
+            $plan = plan::orderBy("name","asc")->get();
+            $exchangeconfigure = exchangeconfigure::orderBy("text","asc")->get();
+            return view("admin.addexchange",['configure'=>$exchangeconfigure,'plan'=>$plan]);
         }
     }
     public  function addconfigure()
@@ -543,12 +554,25 @@ WHEN email LIKE '__________$search%' THEN 11
             return redirect("permissionerror");
         }
     }
+    public function editplan($id)
+    {
+        if ($this->power(Auth::id(),"exchange",0)) {
+            if ($editplan = plan::find($id)) {
+                return view("admin.editplan",['plan'=>$editplan]);
+            }else{
+                return back();
+            }
+        }else{
+            return redirect("permissionerror");
+        }
+    }
     public function editexchange($id)
     {
         if ($this->power(Auth::id(),"exchange",0)) {
             if ($exchange = exchange::find($id)) {
                 $exchangeconfigure = exchangeconfigure::get();
-                return view("admin.editexchange",['exchange'=>$exchange,'configure'=>$exchangeconfigure]);
+                $plan = plan::get();
+                return view("admin.editexchange",['exchange'=>$exchange,'configure'=>$exchangeconfigure,'plan'=>$plan]);
             }else{
                 return back();
             }
@@ -571,6 +595,16 @@ WHEN email LIKE '__________$search%' THEN 11
         if ($this->power(Auth::id(),"exchange",0)) {
             $deleteexchange = exchange::find($request->get("id"));
             $deleteexchange->delete();
+            return "Deleted";
+        }else{
+            return "Permission Denied";
+        }
+    }
+    public function deleteplan(Request $request)
+    {
+        if ($this->power(Auth::id(),"exchange",0)) {
+            $deleteplan = plan::find($request->get("id"));
+            $deleteplan->delete();
             return "Deleted";
         }else{
             return "Permission Denied";
@@ -603,12 +637,81 @@ WHEN email LIKE '__________$search%' THEN 11
                 return back()->with("message", "Failed to add configure.");
             }
         }else{
-            return "Permission Failed.";
+            return __("Permission Failed.");
+        }
+    }
+    public  function addplan(Request $request)
+    {
+        if ($this->power(Auth::id(),"exchange",0)) {
+             // Uploading the logo to the  website
+         if ($request->hasFile('file'))
+            {
+                $r = $request->file('file')
+                    ->getPathName();
+                // Save the image
+                $path = public_path();
+                $file = "/image/".time() . rand() . $request->file('file')
+                    ->getClientOriginalName();
+                move_uploaded_file($r, $path . $file);
+            }else{
+                $file= "/logo/user.png";
+            }
+
+            $plan = new plan;
+            $plan->icon = $file;
+            $plan->name = $request->get("name");
+            $plan->max_withdraw_amount = $request->get("max_withdraw_amount");
+            $plan->max_withdraw_perday = $request->get("max_withdraw_perday");
+            $plan->max_withdraw_month = $request->get("max_withdraw_month");
+            $plan->min_withdraw_amount = $request->get("min_withdraw_amount");
+            $plan->min_refil_amount = $request->get("min_refil_amount");
+            $plan->min_maintaining_amount = $request->get("min_maintaining_amount");
+            if ($plan->save()) {
+                return back()->with("success", __("Plan added."));
+            }else{
+                return back()->with("message", __("Failed to add Plan."));
+            }
+        }else{
+            return __("Permission Failed.");
+        }
+    }
+    public  function editplanintodatabase(Request $request)
+    {
+        if ($this->power(Auth::id(),"exchange",0)) {
+             // Uploading the logo to the  website
+            $plan = plan::find($request->get("id"));
+         if ($request->hasFile('file'))
+            {
+                $r = $request->file('file')
+                    ->getPathName();
+                // Save the image
+                $path = public_path();
+                $file = "/image/".time() . rand() . $request->file('file')
+                    ->getClientOriginalName();
+                move_uploaded_file($r, $path . $file);
+            $plan->icon = $file;
+            }
+
+            $plan->name = $request->get("name");
+            $plan->max_withdraw_amount = $request->get("max_withdraw_amount");
+            $plan->max_withdraw_perday = $request->get("max_withdraw_perday");
+            $plan->max_withdraw_month = $request->get("max_withdraw_month");
+            $plan->min_withdraw_amount = $request->get("min_withdraw_amount");
+            $plan->min_refil_amount = $request->get("min_refil_amount");
+            $plan->min_maintaining_amount = $request->get("min_maintaining_amount");
+            if ($plan->save()) {
+                return back()->with("success", __("Plan saved."));
+            }else{
+                return back()->with("message", __("Failed to save Plan."));
+            }
+        }else{
+            return __("Permission Failed.");
         }
     }
     public function addexchangelistintodatabase(Request $request)
     {
         $type = implode(",",$request->get("type"));
+        $plan = implode(",",$request->get("plan"));
         if ($this->power(Auth::id(),"exchange",0)) {
              // Uploading the logo to the  website
          if ($request->hasFile('file'))
@@ -630,7 +733,7 @@ WHEN email LIKE '__________$search%' THEN 11
             $exchange->min_bit = $request->get("min_value");
             $exchange->type = $request->get("exchangeurl");
             $exchange->type_id = $type;
-            $exchange->type_image = '';
+            $exchange->type_image = $plan;
             if ($exchange->save()) {
                 return back()->with("success", "Exchange added.");
             }else{
@@ -657,11 +760,12 @@ WHEN email LIKE '__________$search%' THEN 11
             $exchange->logo = $file;
             }
 $type = implode(",",$request->get("type"));
+$plan = implode(",",$request->get("plan"));
             $exchange->name = $request->get("name");
             $exchange->min_bit = $request->get("min_value");
             $exchange->type = $request->get("exchangeurl");
             $exchange->type_id = $type;
-            $exchange->type_image = '';
+            $exchange->type_image = $plan;
             if ($exchange->save()) {
                 return back()->with("success", "Exchange edited.");
             }else{
@@ -702,6 +806,11 @@ $type = implode(",",$request->get("type"));
     public function load_configures()
     {
         return json_encode([exchangeconfigure::orderBy("id","desc")->get(),[10,10,10]]);
+    }
+
+    public function load_plans()
+    {
+        return json_encode([plan::orderBy("id","desc")->get(),[10,10,10]]);
     }
 
 
@@ -754,6 +863,20 @@ WHEN name LIKE '__________$search%' THEN 11
                 $result[$key]->configure_logo .= ",".$value->type_image;
             }
             }
+
+
+            $tid = explode(",", $value->type_image);
+            $result[$key]->plan = '';
+            for ($i=0; $i < count($tid); $i++) { 
+            if ($plan = plan::find($tid[$i])) {
+                $result[$key]->plan .= "<span class='badge badge-".$this->badge()."'>".$plan->name."</span> ";
+            }else{
+                $result[$key]->plan .= "<span class='badge badge-danger'>".'Not Found'."</span> ";;
+            }
+            }
+
+
+
         }
         $total = DB::select("SELECT id FROM " . $and . " ORDER BY CASE
 WHEN name='$search' THEN 0
@@ -791,6 +914,133 @@ WHEN name LIKE '__________$search%' THEN 11
 
     // End OF Exchange Management
 
+    // Start OF ID Management
+    public function idmanagement()
+    {
+        if ($this->power(Auth::id(),"createid",0)) {
+            return view("admin.idmanagement");
+
+        }else{
+            return redirect("permissionerror");
+        }
+    }
+
+
+    public function load_idmanagement(Request $request)
+    {
+                        if ($this->power(Auth::id(),"createid",0)) {
+
+        $search = $request->get("search");
+        $type = $request->get("type");
+        if ($type=='') {
+        $and = "idmanagers WHERE (`name` LIKE '%$search%' OR `phone` LIKE '%$search%')";
+        }else{
+        $and = "idmanagers WHERE (`name` LIKE '%$search%' OR `phone` LIKE '%$search%') AND status='$type'";
+        }
+
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = $this->limit;
+        $from = ($page - 1) * $limit;
+        $result = DB::select("SELECT * FROM " . $and . " ORDER BY CASE
+WHEN name='$search' THEN 0
+WHEN phone='$search' THEN 0
+WHEN name LIKE '$search%' THEN 1
+WHEN phone LIKE '$search%' THEN 1
+WHEN name LIKE '_$search%' THEN 2
+WHEN phone LIKE '_$search%' THEN 2
+WHEN name LIKE '__$search%' THEN 3
+WHEN phone LIKE '__$search%' THEN 3
+WHEN name LIKE '___$search%' THEN 4
+WHEN phone LIKE '___$search%' THEN 4
+WHEN name LIKE '____$search%' THEN 5
+WHEN phone LIKE '____$search%' THEN 5
+WHEN name LIKE '_____$search%' THEN 6
+WHEN phone LIKE '_____$search%' THEN 6
+WHEN name LIKE '______$search%' THEN 7
+WHEN phone LIKE '______$search%' THEN 7
+WHEN name LIKE '_______$search%' THEN 8
+WHEN phone LIKE '_______$search%' THEN 8
+WHEN name LIKE '________$search%' THEN 9
+WHEN phone LIKE '________$search%' THEN 9
+WHEN name LIKE '_________$search%' THEN 10
+WHEN phone LIKE '_________$search%' THEN 10
+WHEN name LIKE '__________$search%' THEN 11
+WHEN phone LIKE '__________$search%' THEN 11
+
+ END,
+
+            id DESC LIMIT $from,$limit;
+            ");
+        $total = DB::select("SELECT id FROM " . $and . " ORDER BY CASE
+WHEN name='$search' THEN 0
+WHEN phone='$search' THEN 0
+WHEN name LIKE '$search%' THEN 1
+WHEN phone LIKE '$search%' THEN 1
+WHEN name LIKE '_$search%' THEN 2
+WHEN phone LIKE '_$search%' THEN 2
+WHEN name LIKE '__$search%' THEN 3
+WHEN phone LIKE '__$search%' THEN 3
+WHEN name LIKE '___$search%' THEN 4
+WHEN phone LIKE '___$search%' THEN 4
+WHEN name LIKE '____$search%' THEN 5
+WHEN phone LIKE '____$search%' THEN 5
+WHEN name LIKE '_____$search%' THEN 6
+WHEN phone LIKE '_____$search%' THEN 6
+WHEN name LIKE '______$search%' THEN 7
+WHEN phone LIKE '______$search%' THEN 7
+WHEN name LIKE '_______$search%' THEN 8
+WHEN phone LIKE '_______$search%' THEN 8
+WHEN name LIKE '________$search%' THEN 9
+WHEN phone LIKE '________$search%' THEN 9
+WHEN name LIKE '_________$search%' THEN 10
+WHEN phone LIKE '_________$search%' THEN 10
+WHEN name LIKE '__________$search%' THEN 11
+WHEN phone LIKE '__________$search%' THEN 11
+ END,
+            id DESC;
+            ");
+        $status = [];
+        foreach ($result as $c => $value)
+        {
+            $result[$c]->created_at = date("Y/m/d h:i a", strtotime($value->created_at));
+            $result[$c]->updated_at = date("Y/m/d h:i a", strtotime($value->updated_at));
+            $result[$c]->exchange = exchange::find($value->exchange)->name;
+            $result[$c]->plan = plan::find($value->plan)->name;
+
+        }
+        return json_encode([$result, [count($total) , $page, $limit]]);
+        }else{
+            return redirect("permissionerror");
+        }
+    }
+
+
+    public function deleteid(Request $request)
+    {
+        if ($this->power(Auth::id(),"createid",0)) {
+            $idmanager = idmanager::find($request->get("id"));
+            $idmanager->status='deleted';
+            $idmanager->save();
+            return __("Deleted");
+        }else{
+            return __("Permission Denied");
+        }
+    }
+
+    public function idactions(Request $request)
+    {
+        if ($this->power(Auth::id(),"createid",0)) {
+            return view("admin.actionid");
+        }else{
+            return redirect("permissionerror");
+        }
+    }
+
+
+
+    // End OF ID Management
+
     // Public Functions
 
     public static function null($value,$number=0)
@@ -824,6 +1074,12 @@ WHEN name LIKE '__________$search%' THEN 11
             return 0;
         }   
         }
+    }
+    public static function badge()
+    {
+        $ar = ['success','info','primary','light'];
+        $rand = rand(0,count($ar)-1);
+        return $ar[$rand];
     }
 
 

@@ -85,8 +85,8 @@
   <div class="form-row">
 
     <div class="form-group col-md-2">
-      <label for="id_number">National ID <span style="color: red">*</span></label>
-      <input type="text" class="form-control" required="" id="id_number" name="id_number" placeholder="National ID">
+      <label for="id_number">TAB teacher/ tutor id <span style="color: red">*</span></label>
+      <input type="text" class="form-control" required="" id="id_number" name="id_number"  value="{{$auto}}" readonly="">
     </div>
     <div class="form-group col-md-2">
       <label for="id_proof">Id front copy. <span style="color: red">*</span></label>

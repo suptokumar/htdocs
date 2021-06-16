@@ -232,7 +232,11 @@ flex-direction: column;
     @else
     <label for="exampleInputEmail1">{{__('Students')}}</label>
     @endif
-    <input class="form-control" id="bio" name="bio" value="{{ implode(",", $clients) }}">
+    <div style="border:1px solid #ccc; padding; 5px; overflow:hidden;">
+    @for($j = 0; $j<count($clients); $j++)
+    <div style="float:left; padding: 3px; border-radius:5px; border:1px solid #ccc;">{{$clients[$j]}}</div>
+    @endfor
+    </div>
   </div>
   <div class="form-group col-sm-2">
     <label for="exampleInputEmail1">{{__('Cancel Requests')}}</label>
@@ -276,7 +280,7 @@ flex-direction: column;
  @foreach ($report2 as $r)
  @php
    date_default_timezone_set($r->timezone);
-   $m = strtotime($r->starting);
+   $m = strtotime($r->lastclass);
    date_default_timezone_set(Auth::user()->timezone);
  @endphp
       <tr> 
@@ -285,7 +289,7 @@ flex-direction: column;
         <td>{{ $r->subject}}</td>
         <td>{{ $r->client}}</td>
         <td>{{ $r->duration}} Minutes</td>
-        <td>{{ date("Y-m-d h:i a",$m)}}</td>
+        <td>{{ date("d M Y h:ia",$m)}}</td>
         <td>{{ $r->notes}}</td>
       </tr>
 @endforeach 
@@ -317,7 +321,7 @@ flex-direction: column;
  @foreach ($report as $r)
  @php
    date_default_timezone_set($r->timezone);
-   $m = strtotime($r->starting);
+   $m = strtotime($r->lastclass);
    date_default_timezone_set(Auth::user()->timezone);
  @endphp
       <tr> 
@@ -326,7 +330,7 @@ flex-direction: column;
         <td>{{ $r->subject}}</td>
         <td>{{ $r->client}}</td>
         <td>{{ $r->duration}} Minutes</td>
-        <td>{{ date("Y-m-d h:i a",$m)}}</td>
+        <td>{{ date("d M Y h:ia",$m)}}</td>
         <td>{{ $r->notes}}</td>
       </tr>
 @endforeach 

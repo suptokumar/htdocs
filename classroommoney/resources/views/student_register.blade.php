@@ -56,7 +56,7 @@
   {{$success}}
 </div>
 @endif
-  <h4 style="text-align: center">Personal Details</h4>
+  <h4 style="text-align: center">Personal</h4>
   <div class="form-row">
     <div class="form-group col-md-4">
       <label for="inputEmail4">Student Name <span style="color: red">*</span></label>
@@ -93,16 +93,17 @@
       <label for="inputEmail4">Address <span style="color: red">*</span></label>
       <textarea class="form-control" id="address" required="" name="address" placeholder="Address"></textarea>
     </div>
+
     <div class="form-group col-md-4">
-      <label for="inputEmail4">Student ID</label>
-      <input type="text" class="form-control"  id="id_number" name="id_number" placeholder="eg. 15">
+      <label for="inputEmail4">Addmission ID</label>
+      <input type="text" class="form-control" readonly="" id="id_number" name="id_number" value="{{$auto}}">
     </div>
     <div class="form-group col-md-4">
       <label for="inputPassword4">Id Proof.</label>
       <input type="file" class="form-control"  id="id_proof" name="id_proof">
     </div>
   </div>
-  <h4 style="text-align: center">Family Details</h4>
+  <h4 style="text-align: center">Family</h4>
 
   <div class="form-row">
     <div class="form-group col-md-4">
@@ -123,13 +124,19 @@
       <label for="inputEmail4">Mother's Name</label>
       <input type="text" class="form-control" id="m_name" name="m_name">
     </div>
+
+    <div class="form-group col-md-4">
+      <label for="m_phone">Mothers's Phone</label>
+      <input type="text" class="form-control" required="" id="m_phone" name="m_phone">
+    </div>
+
     <div class="form-group col-md-4">
       <label for="inputPassword4">Mother's Email</label>
       <input type="email" class="form-control" id="m_occupation" name="m_occupation">
     </div>
   </div>
 
-  <h4 style="text-align: center">Login Details</h4>
+  <h4 style="text-align: center">Login</h4>
 
   <div class="form-row">
     <div class="form-group col-md-4">

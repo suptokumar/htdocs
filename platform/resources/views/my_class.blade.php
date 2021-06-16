@@ -28,7 +28,11 @@ flex-direction: column;
 	<div class="parts">
 		<div class="rab">
 			<h5>{{Auth::user()->type==1?"Done Hours":"Remaining Hours"}}</h5>
-			<h3 style="color:{{Auth::user()->hours<61?'red;':'blue'}}">{{floor(intval(Auth::user()->hours)/60)}}:{{intval(Auth::user()->hours<0?intval(Auth::user()->hours)*-1:Auth::user()->hours)%60}}</h3>
+			@if(Auth::user()->hours==0)
+			<h3 style="color:{{Auth::user()->hours<61?'red;':'blue'}}">0:00</h3>
+			@else
+			<h3 style="color:{{Auth::user()->hours<61?'red;':'blue'}}">{{ intval(Auth::user()->hours)>0?(floor(intval(Auth::user()->hours) / 60) .':'. intval(Auth::user()->hours) % 60):("-".floor(intval(-1*Auth::user()->hours) / 60) .':'. intval(-1*Auth::user()->hours) % 60) }}</h3>
+		    @endif
 		</div>
 	</div>
 

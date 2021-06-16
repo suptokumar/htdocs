@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,16 +23,21 @@ Route::post("/teacher_register",'soft@teacher_registered');
 Route::post("/teacher_update",'soft@teacher_update');
 Route::post("/accept_student",'soft@accept_student');
 Route::post("/student_update",'soft@student_update');
+Route::post("/vg",'mainct@vg');
 
 Route::group(['middleware' => 'login'], function() {
 
 Route::get("/payment/{id}",'soft@gateway');
+Route::get("/exam/{id}",'soft@exam');
 Route::get("/payment/success",'soft@paysuccess');
 Route::get("/profile/{id}",'soft@profile');
 Route::get("/settings",'soft@settings');
 Route::get("/add_live",'soft@add_live');
 Route::post("/payment",'soft@payment');
+Route::post("/complete/{secret}/{hahaha}",'soft@complete');
+Route::post("/load_question",'soft@load_question');
 Route::post("/paymentlist",'soft@paymentlist');
+Route::post("/paymentlistadmin",'soft@paymentlistadmin');
 Route::post("/request_perchage",'soft@request_perchage');
 Route::post("/my_class",'soft@my_class');
 Route::post("/livesearch",'soft@livesearch');
@@ -62,8 +68,16 @@ Route::get('/', 'soft@index');
 Route::group(['prefix' => 'admin','middleware' => 'admin'], function() {
 Route::get('/', 'mainct@index');
 Route::get('/live', 'soft@live');  
+Route::get('/question/edit/{id}', 'soft@awetgwergr');  
 Route::get('/teachers', 'soft@teachers');  
 Route::post('/veri_teachers', 'soft@veri_teachers');  
+Route::post('/deletequestion', 'soft@deletequestion');  
+Route::post('/allbooks', 'soft@allbooks');  
+Route::get('/settings', 'soft@settingsg');  
+Route::get('/questions/{id}', 'soft@questions');  
+Route::get('/addquestion', 'soft@addquestion');  
+Route::post('/savesettings', 'soft@savesettings');
+Route::post('/amarbarikone', 'soft@amarbarikone');
 Route::post('/livelist', 'soft@livelist');  
 Route::post('/bookreqeusts', 'soft@bookreqeusts');  
 Route::post('/acceptreader', 'soft@acceptreader');  
@@ -77,6 +91,8 @@ Route::post('/results', 'soft@results');
 Route::post('/amt', 'soft@amts');  
 Route::post('/changeit', 'soft@changeit');  
 Route::post('/requestapprove', 'soft@requestapprove');  
+Route::post('/savequestions', 'soft@savequestions');  
+Route::get('/payments', 'soft@payments');  
 Route::get('/users', 'mainct@users');  
 Route::get('/books', 'soft@books');  
 Route::get('/requests', 'mainct@requests');  

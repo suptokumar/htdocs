@@ -28,7 +28,9 @@ class teacher
     public function handle(Request $request, Closure $next)
     { 
         if (Auth::user()->type==1) {
-        $class = course::where("t_id", "=", Auth::id())->get();
+
+            date_default_timezone_set('Africa/Cairo');
+        $class = course::get();
             $data = [];
             $crt = time()-24*3600*20;
             $mxt = time() + 3600 * 24 * 30;
@@ -57,7 +59,7 @@ class teacher
                                     // date_default_timezone_set(Auth::user()->timezone);
                                     $change->app = strtotime($nod);
                                         
-                                date_default_timezone_set(Auth::user()->timezone);
+                                date_default_timezone_set("Africa/Cairo");
                                     array_push($data, [$change->app, date("D, M d,Y h:i a", $change->app) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mxt]);
                             }
                         }
@@ -69,7 +71,7 @@ class teacher
                                 $ntr = date("Y-m-d H:i:s",strtotime($value->starting));
                                 $nxt = strtotime($ntr);
                                 if ($nxt>$crt) {
-                                date_default_timezone_set(Auth::user()->timezone);
+                                date_default_timezone_set("Africa/Cairo");
                             array_push($data, [$nxt , date("D, M d,Y h:i a", $nxt) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst ]);
                                 }
                         }
@@ -102,7 +104,7 @@ class teacher
                                     // date_default_timezone_set(Auth::user()->timezone);
                                     $change->app = strtotime($nod);
                                     // date_default_timezone_set($change->timezone);
-                                date_default_timezone_set(Auth::user()->timezone);
+                                date_default_timezone_set("Africa/Cairo");
 
                                     array_push($data, [$change->app, date("D, M d,Y h:i a", $change->app) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst]);
                                 }
@@ -110,7 +112,7 @@ class teacher
                             else
                             {
                                 if( $nxt>$crt){
-                                date_default_timezone_set(Auth::user()->timezone);
+                                date_default_timezone_set("Africa/Cairo");
                                 array_push($data, [$nxt, date("D, M d,Y h:i a", $nxt) ,$value->subject , $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst]);
                                 }
                             }
@@ -129,31 +131,16 @@ class teacher
             {
                 return $a[0] > $b[0] ? 1 : -1;
             });
-            
+
+dd($data);
             for ($i=0; $i < count($data); $i++) { 
                 
-            $starting_in = empty($data[0])?545445454:$data[$i][0]-time();
+            $starting_in = empty($data[$i])?545445454:$data[$i][0]-time();
                 if($starting_in<0){
-        $class = $data[0][7];
-$st_dt = User::find($class->s_id);
-$hours = $st_dt->hours;
-$class_time = $class->duration;
-$now_t = intval($hours) - intval($class_time);
+        $class = $data[$i][7];
 
-$st_dt->hours = $now_t;
-$st_dt->save();
 
-if ($st_dt->hours<1 OR $st_dt->hours=='') {
-    mainct::send($st_dt->id,"You have ".($st_dt->hours>0?(floor(intval($st_dt->hours) / 60) .':'. intval($st_dt->hours) % 60):("-".floor(intval(-1*$st_dt->hours) / 60) .':'. intval(-1*$st_dt->hours) % 60))." Hours in your account. You should Purchase hour now.");
-    mainct::send("Admin",$st_dt->name." has ".($st_dt->hours>0?(floor(intval($st_dt->hours) / 60) .':'. intval($st_dt->hours) % 60):("-".floor(intval(-1*$st_dt->hours) / 60) .':'. intval(-1*$st_dt->hours) % 60))." Hours remaining. You can contact him by ".$st_dt->email." or ". $st_dt->phone);
-}
-if ($st_dt->hours==0 OR $st_dt->hours=='') {
-    mainct::send("Admin",$st_dt->name." has ".($st_dt->hours>0?(floor(intval($st_dt->hours) / 60) .':'. intval($st_dt->hours) % 60):("-".floor(intval(-1*$st_dt->hours) / 60) .':'. intval(-1*$st_dt->hours) % 60))." Hours remaining. You can contact him by ".$st_dt->email." or ". $st_dt->phone);
-    $status = 0;
-}else{
-    $status = 1;
-}
-
+$status = 1;
 
 $report = new report;
 $report->title=$class->title;
@@ -183,6 +170,16 @@ $class->save();
             }
                 }
 
+
+
+
+
+
+
+
+
+
+date_default_timezone_set(Auth::user()->timezone);
          return $next($request);
         }
         else{

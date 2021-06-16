@@ -69,7 +69,7 @@
 <div class="mainct">
   @foreach ($books as $book)
     <div class="book a{{$book->id}}">
-      <button class="btn btn-primary float-right" onclick="delte_it({{$book->id}},this)">Request Purchase</button>
+      <button class="btn btn-primary float-right" onclick="delte_it({{$book->id}},this)">Read & Earn</button>
       <img src="{{ url('/public/image/'.$book->thumb) }}" class="imgs1" alt="">
       <h3>{{$book->title}}</h3>
       <p>{{$book->description}}</p>

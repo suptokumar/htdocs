@@ -85,7 +85,7 @@
         body+= "</td>";
 
         body+= "<td>";
-        body+= "<a href='"+row['zoomlink']+"' target=_blank>visit room</a>";
+        body+= "<a href='"+row['zoomlink']+"' target=_blank>Visit Room</a>";
         body+= "</td>";
 
         body+= "<td>";

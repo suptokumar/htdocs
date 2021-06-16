@@ -6,6 +6,8 @@
 <header style="overflow: hidden;">
   <a href="{{ url('/admin/exchange') }}" class="btn btn-danger float-left">Exchange List</a>
   <a href="{{ url('/admin/addexchange') }}" class="btn btn-success float-left">Add Exchange</a>
+    <a href="{{ url('/admin/plan') }}" class="btn btn-info float-left">Add Plan</a>
+
 </header>
 <section class="gateway_view">
   <form action="{{ url('/admin/editconfigure') }}" method="POST" enctype="multipart/form-data">

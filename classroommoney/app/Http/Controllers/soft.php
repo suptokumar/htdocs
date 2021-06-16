@@ -19,6 +19,9 @@ use App\Mail\email;
 use App\Models\dtrequest;
 use App\Models\password_reset;
 use App\Models\withdraw;
+use App\Models\setting;
+use App\Models\question;
+use App\Models\exam;
 use Illuminate\Support\Facades\Mail;
 use DB;
 use File;
@@ -27,6 +30,226 @@ use Cookie;
 use URL;
 class soft extends Controller
 {
+    public function __construct()
+    {
+        $this->singleamount = $this->set()->single_payment;
+        $this->doubleamount = $this->set()->multi_payment;
+    }
+    public function savesettings(Request $request)
+    {
+        if($setting = setting::first()){
+            $setting->single_payment = $request->get("singleamount");
+            $setting->multi_payment = $request->get("multipleamount");
+            $setting->save();
+        }else{
+            $setting = new setting;
+            $setting->single_payment = $request->get("singleamount");
+            $setting->multi_payment = $request->get("multipleamount");
+            $setting->save();
+        }
+        return back()->with("success","saved");
+
+    }
+    public static function set()
+    {
+        if($settings = setting::first()){
+            return $settings;
+        }else{
+            $setting = new setting;
+            $setting->single_payment = 50;
+            $setting->multi_payment = 25;
+            $setting->save();
+            return $setting;
+        }
+    }
+    public function savequestions(Request $request)
+
+    {
+        $question = question::find($request->get("book"));
+
+        $question->question = $request->get("question");
+        $question->opt1 = $request->get("opt1");
+        $question->opt2 = $request->get("opt2");
+        $question->opt3 = $request->get("opt3");
+        $question->opt4 = $request->get("opt4");
+        $question->correct = $request->get("correct");
+        $question->save();
+        return back()->with("success","Saved Successfuly");
+    }
+    public function settingsg()
+    {
+     return view("admin.settings");   
+    }
+    public function complete(Request $request)
+    {
+        // dd($request);
+        $question  = question::where("book","=",$request->get("book"))->get();
+        $score = 0;
+        $earning = 0;
+
+        for ($i=0; $i < count($question); $i++) { 
+            if ($i==10) {
+                break;
+            }
+            $exam = new exam;
+            $exam->exam_id = time();
+            $exam->book = $request->get("book");
+            $exam->user = Auth::id();
+            $exam->question = $question[$i]->question;
+            $exam->answer = $request->get("ans".$question[$i]->id);
+            $exam->correct = $question[$i]->correct;
+            $exam->starter = $question[$i]->id;
+            $exam->grade = '';
+            $exam->earning = '';
+            $exam->earning_status = 0;
+            $exam->exam_status = 1;
+            if ($question[$i]->correct == $request->get("ans".$question[$i]->id)) {
+                $exam->grade = "A";
+            $exam->earning = '1';
+            $exam->earning_status = 0;
+                $score+=1;
+            }else{
+                $exam->grade = "F";
+            $exam->earning = '0';
+            $exam->earning_status = 0;
+            }
+
+            $exam->save();
+
+        }
+            if ($score>7) {
+                $exam = exam::where([["book","=",$request->get("book")],["user","=",Auth::id()],["exam_id","=",'COMP']])->first();
+                $exam->earning = 1;
+                $exam->exam_status = 1;
+                $exam->grade = $score;
+                $exam->save();
+                return back()->with("success","Your Exam Completed. You are passed and earned 1$");
+            }else{
+                return back()->with("message","Your Exam Completed. You are failed and you can't join this exam again.");
+            }
+    }
+    public function load_question(Request $request)
+    {
+        $id = $request->get("id");
+        $book = question::where("book","=",$id)->get();
+
+        $checkup = exam::where([["book","=",$id],["user","=",Auth::id()],["exam_status","=",'init']])->first();
+        if ($checkup) {
+        return '<div style=" text-align: center; border: 1px solid #ccc; padding: 10px;">
+    Sorry You can\'t Join the exam because you previously joined the exam.
+    </div>
+</div>';
+            # code...
+        }else{
+            $exam = new exam;
+            $exam->book = $id;
+            $exam->user = Auth::id();
+            $exam->exam_status = 'init';
+            $exam->earning_status = 'earning_status';
+            $exam->exam_id = 'COMP';
+            $exam->question = '';
+            $exam->answer = '';
+            $exam->correct = '';
+            $exam->earning = '';
+            $exam->starter = '';
+            $exam->grade = '';
+            $exam->save();
+
+
+$question = '<form action = "'.url("/complete/examid_".rand()."/erxge".md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand()).md5(rand())).'" method="POST">';
+$question.="<div id='timer' style='color: red; font-size: 25px; text-align: center;'></div>";
+for ($i=0; $i < count($book); $i++) { 
+    if ($i==10) {
+        break;
+    }
+    $question.="<div class='afe1' style=\" text-align: center; border: 1px solid #ccc; padding: 10px; margin: 10px\">";
+    $question.="<div class='row'>";
+    $question.="<h2 class='col-sm-12'>".$book[$i]->question."</h2>";
+    $question.="<div class='col-sm-6'>";
+    $question.="<label for='opt1".$book[$i]->id."'><input required type='radio' name='ans".$book[$i]->id."' id='opt1".$book[$i]->id."' value='opt1'>".$book[$i]->opt1."</label><br>";
+    $question.="<label for='opt2".$book[$i]->id."'><input required type='radio' name='ans".$book[$i]->id."' id='opt2".$book[$i]->id."' value='opt2'>".$book[$i]->opt2."</label>";
+    $question.="</div>";
+    $question.="<div class='col-sm-6'>";
+    $question.="<label for='opt3".$book[$i]->id."'><input required type='radio' name='ans".$book[$i]->id."' id='opt3".$book[$i]->id."' value='opt3'>".$book[$i]->opt3."</label>";
+    $question.="<label for='opt4".$book[$i]->id."'><input required type='radio' name='ans".$book[$i]->id."' id='opt4".$book[$i]->id."' value='opt4'>".$book[$i]->opt4."</label>";
+    $question.="</div>";
+    $question.="</div>";
+    $question.="</div>";
+}
+$question.='
+<input type="hidden" value="'.$id.'" name="book">
+<input type="hidden" value="'.csrf_token().'" name="_token">
+<input type="submit" value="Submit" name="submit" id="submit" class="btn btn-success" style="width: calc(100% - 20px); margin: 10px;">
+<style>
+.afe1 label {
+  border: 2px solid green;
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+}
+
+.afe1 input{
+  margin-right: 5px;
+}
+</style>
+<script>
+var countDownDate = new Date().getTime()+600000;
+
+var x = setInterval(function() {
+
+  var now = new Date().getTime();
+
+  var distance = countDownDate - now;
+
+  // Time calculations for days, hours, minutes and seconds
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  document.getElementById("timer").innerHTML =minutes + " Minutes " + seconds + " Seconds ";
+console.log(distance);
+  // If the count down is finished, write some text
+  if (distance < 0) {
+    clearInterval(x);
+    $("#submit").click();
+  }
+}, 1000);
+</script>
+
+
+</form>
+';
+
+echo $question;
+
+
+        }
+
+     
+
+
+
+
+    }
+    public function payments()
+    {
+        return view("admin.payments");
+    }
+    public function exam($id)
+    {
+        if ($question = question::where("book","=",$id)->get()) {
+            $check = exam::where([["book","=",$id],["user","=",Auth::id()]])->first();
+            if ($check) {
+                $check = 1;
+            }else{
+                $check = 0;
+            }
+        return view("exam",["book"=>$id,"check"=>$check]);
+        }else{
+            return back();
+        }
+    }
     public function paymentlist(Request $request)
     {
         $payment = payment::where("user","=",Auth::id())->get();
@@ -37,19 +260,54 @@ class soft extends Controller
         }
         return json_encode($payment);
     }
+    public function paymentlistadmin(Request $request)
+    {
+        $s = $request->get("search");
+        $payment = payment::where("paymentID","like","%$s%")->get();
+        $i = 0;
+        foreach ($payment as $key => $p) {
+            $payment[$key]->ctd = date("h:i a d M Y", strtotime($p->created_at));
+            $payment[$key]->email = User::find($p->user)->email;
+            $i++;
+        }
+        return json_encode($payment);
+    }
     public function paysuccess(Request $request)
     {
         $paymentID = $request->get("paymentID");
         $orderID = $request->get("orderID");
         $returnUrl = $request->get("returnUrl");
         $id = $request->get("id");
+
+        
         $payment = payment::find($id);
+
+        $payuser = $payment->returnURL;
+        $payuser =  explode(",", $payuser);
+        $year = $payment->year;
+        $payment->delete();
+        $payment = new payment;
+        for ($i=0; $i < count($payuser); $i++) {
+        if ($i == 0) {
+            $amount = $this->singleamount;
+        }else{
+            $amount = $this->doubleamount;
+        }
+        $user = User::where("email","=",$payuser[$i])->first();
         $payment->method = "PayPal";
         $payment->paymentID = $paymentID;
         $payment->orderID = $orderID;
-        $payment->returnURL = $returnUrl;
+
+        $payment->user = $user->id;
+        $payment->amount = $amount;
+        $payment->year = $year;
+        $payment->currency = "USD";
+
         $payment->status = "success";
         $payment->save();
+            
+        }
+
         return "saved";
     }
     public function payment(Request $request)
@@ -66,7 +324,7 @@ class soft extends Controller
         $payment->currency = "USD";
         $payment->status = "pending";
         $payment->method = "";
-        $payment->returnURL = "";
+        $payment->returnURL = implode(",",$request->get("student"));
         $payment->orderID = "";
         $payment->save();
         return redirect()->away(URL::to('/payment/'.$paymentID));
@@ -78,6 +336,9 @@ class soft extends Controller
     }
     public function bookrequest(){
         return view("admin.bookrequest");
+    }
+    public function addquestion(){
+        return view("admin.addquestion");
     }
     public function mybooks(){
         $books = bookreader::where("user","=",Auth::id())->get();
@@ -164,6 +425,12 @@ class soft extends Controller
             foreach ($with as $key => $value) {
                 $earnings-=$value->amount;
             }
+
+            $exam = exam::where([["user","=",$user->id],["exam_status","=",'1'],["exam_id","=",'COMP']])->get();
+            foreach ($exam as $key => $e) {
+                $earnings+= $e->earning;
+            }
+
             return $earnings;
     }
     public function library(Request $request){
@@ -174,6 +441,48 @@ class soft extends Controller
 
         }
         return view("library",["books"=>$sql]);
+    }
+
+    public function questions($id){
+        $sql = book::where("id","=",$id)->first();
+        return view("admin.questions",["books"=>$sql]);
+    }
+    public function awetgwergr($id){
+        $sql = question::where("id","=",$id)->first();
+        return view("admin.questionsedit",["books"=>$sql]);
+    }
+    public function deletequestion(Request $request)
+    {
+        $id = $request->get("id");
+        $question = question::find($id);
+        $question->delete();
+        return "";
+    }
+    public function amarbarikone(Request $request)
+    {
+        $question = new question;
+        $question->book = $request->get("book");
+        $question->question = $request->get("question");
+        $question->opt1 = $request->get("opt1");
+        $question->opt2 = $request->get("opt2");
+        $question->opt3 = $request->get("opt3");
+        $question->opt4 = $request->get("opt4");
+        $question->correct = $request->get("correct");
+        $question->showtime = 0;
+        if ($question->save()) {
+            return back()->with("success","Question Saved");
+        }else{
+            return back()->with("message","Question Adding Failed");
+        }
+    }
+    public function allbooks(Request $request){
+        if (!empty($request->get("s"))) {
+        $sql = db::select("SELECT * FROM books WHERE title LIKE '%".$request->get("s")."%'  ORDER BY id,grade DESC");
+        }else{
+        $sql = db::select("SELECT * FROM books  ORDER BY id,grade DESC");
+
+        }
+        return json_encode($sql);
     }
     public function delteanoe(Request $request){
         if($book =  book::find($request->id)){
@@ -1223,6 +1532,7 @@ if ($result->save()) {
         $f_occupation = $this->null($request->get("f_occupation"));
         $m_name = $this->null($request->get("m_name"));
         $m_phone = $this->null($request->get("m_phone"));
+
         $m_occupation = $this->null($request->get("m_occupation"));
         $student = student::where("email","=",$email)->first();
 
@@ -1253,7 +1563,7 @@ if ($result->save()) {
         $student->m_name = $m_name;
         $student->address = $address;
         $student->m_occupation = $m_occupation;
-        $student->section = '';
+                $student->section =  $this->null($request->get("m_phone"));
         $student->class = '';
         $student->country = $country;
         $student->state = $state;
@@ -1333,7 +1643,7 @@ if ($result->save()) {
         $student->m_name = $m_name;
         $student->address = $address;
         $student->m_occupation = $m_occupation;
-        $student->section = '';
+        $student->section =  $this->null($request->get("m_phone"));
         $student->class = '';
         $student->country = $country;
         $student->state = $state;

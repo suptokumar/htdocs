@@ -63,17 +63,29 @@ display: block;
 	<h3>Inctive Students</h3>
 	<h4>{{$total_inactive}}</h4>
 </aside>
-
-<aside class="rest" style="">
-	<h3>Inctive Students</h3>
-	<h4>{{$total_inactive}}</h4>
-</aside>
-
-
 <aside class="rest" style="">
 	<h3>Waiting Student</h3>
 	<h4>{{$waitings}}</h4>
 </aside>
+
+<aside class="rest" style="">
+	<h3>Upcoming Hours</h3>
+	<h4>{{number_format($uphours/60,2)}} Hours</h4>
+</aside>
+
+
+<aside class="rest" style="">
+	<h3>Previous Hours</h3>
+	<h4>{{number_format($dhours/60,2)}} Hours</h4>
+</aside>
+
+
+<aside class="rest" style="">
+	<h3>Total Hours</h3>
+	<h4>{{number_format(($dhours+$uphours)/60,2)}} Hours</h4>
+</aside>
+
+
 
 
 
