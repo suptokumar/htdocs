@@ -75,17 +75,29 @@
     </div>
   </div>
   <div class="form-row">
-    <div class="form-group col-md-4">
+    <div class="form-group col-md-3">
       <label for="inputEmail4">City</label>
       <input type="text" class="form-control" id="city" name="city" placeholder="city">
     </div>
-    <div class="form-group col-md-4">
+    <div class="form-group col-md-3">
       <label for="inputEmail4">State</label>
       <input type="text" class="form-control"  id="state" name="state" placeholder="state">
     </div>
-    <div class="form-group col-md-4">
+    <div class="form-group col-md-3">
       <label for="inputPassword4">Country <span style="color: red">*</span></label>
       <input type="text" class="form-control" required="" id="country" name="country" placeholder="country">
+    </div>
+    <div class="form-group col-md-3">
+      <label for="inputPassword4">Class <span style="color: red">*</span></label>
+      <select class="form-control" required="" id="class" name="class" placeholder="class">
+{{--         <option value="6">6</option>--}}
+        <option value="7">7</option> 
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+      </select>
     </div>
   </div>
   <div class="form-row">

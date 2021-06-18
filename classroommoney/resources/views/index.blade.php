@@ -41,6 +41,8 @@
   <a href="{{ url('/') }}" class="active">Classroom Money</a>
   <a href="{{ url('/teacher/mymarksheet') }}">Marksheet</a>
   <a href="{{ url('/teacher/mystudents') }}">Students</a>
+    <a href="{{ url('/addbooks') }}">Add Books</a>
+
   <a href="{{ url('/teacher/requests') }}">Requests</a>
   <a href="{{ url('/settings') }}">Settings</a>
   <a href="{{ url('/logout') }}">Logout</a>
@@ -81,6 +83,7 @@
 @if (Auth::user()->type==4)
 <div class="container"> 
 <a href="{{ url('/add_live') }}" class="btn btn-primary">Add Live Class</a>
+<a href="{{ url('/addbooks') }}" class="btn btn-primary">Add Books</a>
 <a href="{{ url('/logout') }}" class="btn btn-danger">Log out</a>
 <input type="hidden" value="{{ csrf_token() }}" id="csrf">
 <div style="width: 100%;max-width: 1000px;padding: 20px;margin: 0px auto;">
@@ -220,7 +223,10 @@ function myFunction() {
   }
 }
 </script>
+  
+
 <script>
+
   $(document).ready(function() {
     veri_teachers(1);
   });

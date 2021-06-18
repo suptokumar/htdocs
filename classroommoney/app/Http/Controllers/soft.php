@@ -35,6 +35,20 @@ class soft extends Controller
         $this->singleamount = $this->set()->single_payment;
         $this->doubleamount = $this->set()->multi_payment;
     }
+    public function addbooks(Request $request)
+    {
+        $s = $request->get("s");
+        $j = '';
+        if (!empty($request->get("mode"))) {
+            $j = " AND mode='".intval($request->get("mode"))."' ";
+        }
+ if (!empty($request->get("s"))) {
+        $books = db::select("SELECT * FROM books WHERE title LIKE '%".$request->get("s")."%' AND  creator = '".Auth::id()."' $j  ORDER BY id,grade DESC");
+        }else{
+        $books = db::select("SELECT * FROM books WHERE creator = '".Auth::id()."' $j ORDER BY id,grade DESC");
+
+        }        return view('bookcreater',["books"=>$books]);
+    }
     public function savesettings(Request $request)
     {
         if($setting = setting::first()){
@@ -435,9 +449,9 @@ echo $question;
     }
     public function library(Request $request){
         if (!empty($request->get("s"))) {
-        $sql = db::select("SELECT * FROM books WHERE title LIKE '%".$request->get("s")."%'  ORDER BY id,grade DESC");
+        $sql = db::select("SELECT * FROM books WHERE title LIKE '%".$request->get("s")."%' AND  mode=1  ORDER BY id,grade DESC");
         }else{
-        $sql = db::select("SELECT * FROM books  ORDER BY id,grade DESC");
+        $sql = db::select("SELECT * FROM books WHERE mode=1 ORDER BY id,grade DESC");
 
         }
         return view("library",["books"=>$sql]);
@@ -477,9 +491,9 @@ echo $question;
     }
     public function allbooks(Request $request){
         if (!empty($request->get("s"))) {
-        $sql = db::select("SELECT * FROM books WHERE title LIKE '%".$request->get("s")."%'  ORDER BY id,grade DESC");
+        $sql = db::select("SELECT * FROM books WHERE title LIKE '%".$request->get("s")."%' AND mode=1  ORDER BY id,grade DESC");
         }else{
-        $sql = db::select("SELECT * FROM books  ORDER BY id,grade DESC");
+        $sql = db::select("SELECT * FROM books WHERE mode=1 ORDER BY id,grade DESC");
 
         }
         return json_encode($sql);
@@ -489,6 +503,16 @@ echo $question;
 
         $book->delete();
         return "Deleted";
+        }else{
+            return "Not Found";
+        }
+    }
+    public function publishit(Request $request){
+        if($book =  book::find($request->id)){
+
+        $book->mode = 1;
+        $book->save();
+        return "Published";
         }else{
             return "Not Found";
         }
@@ -507,6 +531,30 @@ $book->thumb = "0".$cv;
 $book->description = $request->description;
 $book->link =  $request->link;
 $book->grade = $request->grade;
+$book->mode = 1;
+$book->creator = "Admin";
+if ($book->save()) {
+    return back()->with("success","Successfuly Added.");
+}else{
+    return back()->with("message","Failed to add.");
+}
+    }
+    public function rummba(Request $request){
+        $book = new book;
+$cv = '';
+if ($request->hasFile('thumb')) {
+$r =  $request->file('thumb')->getPathName();
+$path = public_path()."/image/";
+$cv = time().rand().$request->file('thumb')->getClientOriginalName();
+move_uploaded_file($r, $path."0".$cv);
+}
+$book->title = $request->title;
+$book->thumb = "0".$cv;
+$book->description = $request->description;
+$book->link =  $request->link;
+$book->grade = $request->grade;
+$book->mode = 2;
+$book->creator = Auth::id();
 if ($book->save()) {
     return back()->with("success","Successfuly Added.");
 }else{
@@ -514,10 +562,14 @@ if ($book->save()) {
 }
     }
     public function books(Request $request){
+        $j = '';
+                if (!empty($request->get("mode"))) {
+            $j = " AND mode='".intval($request->get("mode"))."' ";
+        }
         if (!empty($request->get("s"))) {
-        $sql = db::select("SELECT * FROM books WHERE title LIKE '%".$request->get("s")."%'  ORDER BY id,grade DESC");
+        $sql = db::select("SELECT * FROM books WHERE title LIKE '%".$request->get("s")."%' $j  ORDER BY id,grade DESC");
         }else{
-        $sql = db::select("SELECT * FROM books  ORDER BY id,grade DESC");
+        $sql = db::select("SELECT * FROM books WHERE id!=0 $j ORDER BY id,grade DESC");
 
         }
         return view("admin.books",["books"=>$sql]);
@@ -834,7 +886,7 @@ $result->subject = $request->get("subject");
 $result->status = 0;
 
 $result->grades = $this->get_grade($request->get("mark"));
-$result->amount = $this->get_amount($request->get("mark"), $request->get("subject"),$request->get("attend"));
+$result->amount = $this->get_amount($request->get("mark"), $request->get("subject"),$request->get("attend"),$request->get("student"));
 $result->withstatus = 0;
 if ($result->save()) {
     return back()->with("success","Successfuly added the marks!");
@@ -870,7 +922,41 @@ if ($result->save()) {
         }
         return "";  
     }
-    public function get_amount($mark,$subject,$att){
+    public function get_amount($mark,$subject,$att,$st){
+
+        $user = User::find($st)->email;
+        $grade = Student::where("email","=",$user)->first()->class;
+
+        if ($grade==7 || $grade == 8) {
+        if ($mark>89) {
+            return 5;
+        }
+        if ($mark>79) {
+            return 4;
+        }
+        if ($mark>69) {
+            return 3;
+        }
+        if ($mark>59) {
+            return 1;
+        }
+        }
+
+        if ($grade==9 || $grade == 10) {
+        if ($mark>89) {
+            return 10;
+        }
+        if ($mark>79) {
+            return 5;
+        }
+        if ($mark>69) {
+            return 3;
+        }
+        if ($mark>59) {
+            return 2;
+        }
+        }
+        if ($grade==11 || $grade == 12) {
         if ($mark>89) {
             return 20;
         }
@@ -878,10 +964,11 @@ if ($result->save()) {
             return 15;
         }
         if ($mark>69) {
-            return 10;
+            return 7;
         }
         if ($mark>59) {
-            return 5;
+            return 2;
+        }
         }
         return '0';  
     }
@@ -1290,6 +1377,41 @@ if ($result->save()) {
         }
         return json_encode([$result, [count($total) , $page, $limit]]);
     }
+    public function userrecords()
+    {
+        return view("admin.userrecords");
+    }
+    public function usersfg(Request $request)
+    {
+        $search = $request->get("search");
+        $order = $request->get("order");
+        if (!empty($order)) {
+        $and = "users WHERE type!=1 AND (`type` = '$order') and (name  LIKE '%$search'  OR phone LIKE '%$search' OR email LIKE '%$search')";
+        }else{
+        $and = "users WHERE type!=1 AND (name  LIKE '%$search'  OR phone LIKE '%$search' OR email LIKE '%$search')";
+        }
+
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = 30;
+        $from = ($page - 1) * $limit;
+        $result = DB::select("SELECT * FROM " . $and . " ORDER BY id DESC LIMIT $from,$limit;
+            ");
+        $total = DB::select("SELECT id FROM " . $and . " ORDER BY id DESC;
+            ");
+        $status = [];
+        foreach ($result as $c => $value)
+        {
+            $result[$c]->created_at = date("Y/m/d h:i a", strtotime($value->created_at));
+            $result[$c]->type = $value->type==3?"Student":($value->type==2?"Teacher":"Tutor");
+
+        }
+        return json_encode([$result, [count($total) , $page, $limit]]);
+
+
+
+
+    }
     public function amts(Request $request)
     {
         $search = Auth::id();
@@ -1339,6 +1461,7 @@ if ($result->save()) {
             $student = student::where("email","=",$value->email)->first();
             $result[$c]->id_number = $student->id_number;
             $result[$c]->id_proof = $student->id_proof;
+            $result[$c]->class = $student->class;
 
 
         }
@@ -1603,6 +1726,7 @@ if ($result->save()) {
         $gender = $this->null($request->get("gender"));
         $birth = $this->null($request->get("birth"));
         $city = $this->null($request->get("city"));
+        $class = $this->null($request->get("class"));
         $state = $this->null($request->get("state"));
         $country = $this->null($request->get("country"));
         $address = $this->null($request->get("address"));
@@ -1644,7 +1768,7 @@ if ($result->save()) {
         $student->address = $address;
         $student->m_occupation = $m_occupation;
         $student->section =  $this->null($request->get("m_phone"));
-        $student->class = '';
+        $student->class = $class;
         $student->country = $country;
         $student->state = $state;
         $student->city = $city;

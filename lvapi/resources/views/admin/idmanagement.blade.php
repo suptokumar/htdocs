@@ -17,11 +17,11 @@
         		<option value="deleted">deleted</option>
 			</select>
 		</div>
-{{-- 		<div class="col-4">
-	<a href="{{ url('/admin/addexchange') }}" class="btn btn-info float-right">Add Exchanges</a>
-	<a href="{{ url('/admin/addconfigure') }}" class="btn btn-danger float-right">Add Exchange Type</a>
-  <a href="{{ url('/admin/plan') }}" class="btn btn-success float-right">Add Plan</a>
-		</div> --}}
+		<div class="col-4">
+	<a href="{{ url('/admin/createnewid') }}" class="btn btn-info float-right">Create New ID</a>
+{{-- 	<a href="{{ url('/admin/addconfigure') }}" class="btn btn-danger float-right">Add Exchange Type</a>
+  <a href="{{ url('/admin/plan') }}" class="btn btn-success float-right">Add Plan</a> --}}
+		</div>
 	</div>
 </header>
 <section class="user_view">

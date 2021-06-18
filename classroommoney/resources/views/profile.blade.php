@@ -41,6 +41,8 @@
   <a href="{{ url('/') }}" class="active">Classroom Money</a>
   <a href="{{ url('/teacher/mymarksheet') }}">Marksheet</a>
   <a href="{{ url('/teacher/mystudents') }}">Students</a>
+    <a href="{{ url('/addbooks') }}">Add Books</a>
+
   <a href="{{ url('/teacher/requests') }}">Requests</a>
   <a href="{{ url('/settings') }}">Settings</a>
   <a href="{{ url('/logout') }}">Logout</a>

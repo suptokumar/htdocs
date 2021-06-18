@@ -20,6 +20,8 @@ class CreateBooksTable extends Migration
             $table->text("description");
             $table->text("link");
             $table->text("grade");
+            $table->text("mode");
+            $table->text("creator");
             $table->timestamps();
         });
     }

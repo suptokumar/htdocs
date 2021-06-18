@@ -70,7 +70,12 @@
 
 </div>
 <form action="" method="GET">
-  <input type="text" name="s" placeholder="search"><input type="submit" value="search">
+  <input type="text" name="s" placeholder="search">
+  <select name="mode" id="">
+    <option value="">-- SELECT STATUS --</option>
+    <option value="1">Published</option>
+    <option value="2">Pending</option>
+  </select><input type="submit" value="search">
 </form>
 <style>
   .book {
@@ -87,13 +92,21 @@
   height: 300px;
 }
 </style>
+@php
+  use App\Models\User;
+@endphp
 <div class="mainct">
   @foreach ($books as $book)
     <div class="book a{{$book->id}}">
       <button class="btn btn-danger" onclick="delte_it({{$book->id}},this)">Delete</button>
+      @if ($book->mode==2)
+      <button class="btn btn-success" onclick="publishit({{$book->id}},this)">Publish</button>
+      @endif
       <img src="{{ url('/public/image/'.$book->thumb) }}" class="imgs1" alt="">
       <h3>{{$book->title}}</h3>
       <p>{{$book->description}}</p>
+      <p>Status: {{$book->mode==2?"Pending":"Published"}}</p>
+      <p>Creator: {{$book->creator=="Admin"?"Admin":User::find($book->creator)->name}}</p>
     </div>
   @endforeach
 </div>
@@ -103,6 +116,19 @@
     if (confirm("Are you sure you want to delete it?")) {
       $.ajax({
         url: '{{ url('/delteanoe') }}',
+        type: 'POST',
+        data: {id:id,_token:'{{csrf_token()}}'},
+      })
+      .done(function(data) {
+        $(t).html(data);
+        $(".a"+t).css('background', '#FFD4D4');
+      });
+      
+    }
+  }  function publishit(id,t){
+    if (confirm("Are you sure you want to publish it?")) {
+      $.ajax({
+        url: '{{ url('/publishit') }}',
         type: 'POST',
         data: {id:id,_token:'{{csrf_token()}}'},
       })

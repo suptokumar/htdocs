@@ -40,6 +40,7 @@
   <a href="{{ url('/') }}">Classroom Money</a>
   <a href="{{ url('/teacher/mymarksheet') }}">Marksheet</a>
   <a href="{{ url('/teacher/mystudents') }}">Students</a>
+  <a href="{{ url('/addbooks') }}">Add Books</a>
   <a href="{{ url('/teacher/requests') }}" class="active">Requests</a>
   <a href="{{ url('/settings') }}">Settings</a>
   <a href="{{ url('/logout') }}">Logout</a>
@@ -96,8 +97,6 @@
   <div class="form-group col-md-6">
       <label for="grade">Grade/Class <span style="color: red">*</span></label>
       <select class="form-control" required=""  id="grade" name="grade">
-      	<option value="5th">5th</option>
-      	<option value="6th">6th</option>
       	<option value="7th">7th</option>
       	<option value="8th">8th</option>
       	<option value="9th">9th</option>

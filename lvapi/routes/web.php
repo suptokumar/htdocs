@@ -69,8 +69,11 @@ Route::group(['prefix' => 'admin','middleware'=>'admin'], function() {
 
     // Route for ID Management
     Route::get("/createid","soft@idmanagement");
+    Route::get("/createnewid","soft@createnewid");
     Route::get("/idactions/{id}","soft@idactions");
     Route::post("/load_idmanagement","soft@load_idmanagement");
+    Route::post("/load_plan","soft@load_plan");
     Route::post("/deleteid","soft@deleteid");
+    Route::post("/createapi/createnewid","soft@createnewidaddintodatabase");
 
 });

@@ -9,6 +9,7 @@ use App\Models\exchange;
 use App\Models\User;
 use App\Models\plan;
 use App\Models\idmanager;
+use App\Models\notification;
 use DB;
 use Hash;
 use Auth;
@@ -924,6 +925,31 @@ WHEN name LIKE '__________$search%' THEN 11
             return redirect("permissionerror");
         }
     }
+    public function load_plan(Request $request)
+    {
+        if ($this->power(Auth::id(),"createid",0)) {
+            $id = $request->get("id");
+            $exchange = exchange::find($id);
+            $plan = $exchange->type_image;
+            $plan = explode(",", $plan);
+            foreach ($plan as $p)
+            {
+                echo '<option value="'.$p.'">'.(plan::find($p)?plan::find($p)->name:"Not Found").'</option>';
+            }
+
+        }else{
+            return redirect("permissionerror");
+        }
+    }
+    public function createnewid()
+    {
+        if ($this->power(Auth::id(),"createid",0)) {
+            return view("admin.createnewid");
+
+        }else{
+            return redirect("permissionerror");
+        }
+    }
 
 
     public function load_idmanagement(Request $request)
@@ -1021,10 +1047,30 @@ WHEN phone LIKE '__________$search%' THEN 11
         if ($this->power(Auth::id(),"createid",0)) {
             $idmanager = idmanager::find($request->get("id"));
             $idmanager->status='deleted';
+            $this->send($idmanager->name, $idmanager->phone, "Your ID request (exchange:".exchange::find($idmanager->exchange)->name.", plan:".plan::find($idmanager->plan)->name.") has been deleted by the administrator.", Auth::user()->name,0);
             $idmanager->save();
             return __("Deleted");
         }else{
             return __("Permission Denied");
+        }
+    }
+
+    public function createnewidaddintodatabase(Request $request)
+    {
+        if ($this->power(Auth::id(),"createid",0)) {
+            $id = new idmanager();
+            $id->name = $request->get('name');
+            $id->phone = $request->get('phone');
+            $id->exchange = $request->get('exchange');
+            $id->plan = $request->get('plan');
+            $id->username = $request->get('username');
+            $id->password = $request->get('password');
+            $id->status = empty($request->get('status'))?'pending':$request->get('status');
+            $id->mode = empty($request->get('mode'))?0:$request->get('mode');
+            $id->save();
+            return back()->with("success",__("New ID created"));
+        }else{
+            return back()->with("message",__("Permission Denied"));
         }
     }
 
@@ -1080,6 +1126,17 @@ WHEN phone LIKE '__________$search%' THEN 11
         $ar = ['success','info','primary','light'];
         $rand = rand(0,count($ar)-1);
         return $ar[$rand];
+    }
+    public static function send($user,$phone, $content, $console,$mode)
+    {
+        $notification = new notification;
+        $notification->name = $user;
+        $notification->phone = $phone;
+        $notification->content = $content;
+        $notification->console = $console;
+        $notification->mode = $mode;
+        $notification->save();
+        return $notification;
     }
 
 

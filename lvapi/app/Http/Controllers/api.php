@@ -36,14 +36,14 @@ class api extends Controller
         if (Hash::check($this->key,$request->get("key"))) {
         
             $id = new idmanager();
-            $id->name = $request->name;
-            $id->phone = $request->phone;
-            $id->exchange = $request->exchange;
-            $id->plan = $request->plan;
-            $id->username = $request->username;
-            $id->password = $request->password;
-            $id->status = empty($request->status)?'pending':$request->status;
-            $id->mode = empty($request->mode)?0:$request->mode;
+            $id->name = $request->get('name');
+            $id->phone = $request->get('phone');
+            $id->exchange = $request->get('exchange');
+            $id->plan = $request->get('plan');
+            $id->username = $request->get('username');
+            $id->password = $request->get('password');
+            $id->status = empty($request->get('status'))?'pending':$request->get('status');
+            $id->mode = empty($request->get('mode'))?0:$request->get('mode');
             $id->save();
 
             return "Id created successfuly.";

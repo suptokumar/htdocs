@@ -86,7 +86,19 @@ $class = DB::select($sql);
                                     $change->app = strtotime($nod);
                                         
                                 date_default_timezone_set(Auth::user()->timezone);
-                                    array_push($data, [$change->app, date("D, M d,Y h:i a", $change->app) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mxt]);
+                                if($user41 = User::find($value->t_id))
+                                {
+                                    $t_name = $user41->name;
+                                }else{
+                                    $t_name = "DELETED";
+                                }
+                                if($user41 = User::find($value->s_id))
+                                {
+                                    $s_name = $user41->name;
+                                }else{
+                                    $s_name = "DELETED";
+                                }
+                                    array_push($data, [$change->app, date("D, M d,Y h:i a", $change->app) , $value->subject, $value->link, $value->duration, $t_name, $s_name,$value,$mxt]);
                             }
                         }
                     }
@@ -98,7 +110,19 @@ $class = DB::select($sql);
                                 $nxt = strtotime($ntr);
                                 if ($nxt>$crt) {
                                 date_default_timezone_set(Auth::user()->timezone);
-                            array_push($data, [$nxt , date("D, M d,Y h:i a", $nxt) , $value->subject, $value->link, $value->duration, User::find($value->t_id)->name, User::find($value->s_id)->name,$value,$mst ]);
+                                if($user41 = User::find($value->t_id))
+                                {
+                                    $t_name = $user41->name;
+                                }else{
+                                    $t_name = "DELETED";
+                                }
+                                if($user41 = User::find($value->s_id))
+                                {
+                                    $s_name = $user41->name;
+                                }else{
+                                    $s_name = "DELETED";
+                                }
+                            array_push($data, [$nxt , date("D, M d,Y h:i a", $nxt) , $value->subject, $value->link, $value->duration, $t_name, $s_name,$value,$mst ]);
                                 }
                         }
                     
@@ -291,44 +315,44 @@ $class = DB::select($sql);
     
     }
     public function payment(Request $req){
-    	$type = $req->get("type");
-    	$client = $req->get("client");
-    	$date = $req->get("date");
-    	$hours = $req->get("hours");
+        $type = $req->get("type");
+        $client = $req->get("client");
+        $date = $req->get("date");
+        $hours = $req->get("hours");
 
-    	if ($type == 1) {
-    		$user = User::where("email","=",$client)->first();
-    		if (!$user) {
-    			return back()->with("message",__("The student is not found."));
-    		}
-    		$user->hours= intval($user->hours)+intval($hours)*60;
-    		$user->save();
-    	}
-    	if ($type == 2) {
-    		$user = client::where("key","=",$client)->first();
-    		if (!$user) {
-    			return back()->with("message",__("The client is not found."));
-    		}
-    		$user->hours= intval($user->hours)+intval($hours)*60;
-    		$user->save();
-    	}
-    	$payment =  new payment;
-    	$payment->date = $date;
-    	$payment->hours = $hours;
+        if ($type == 1) {
+            $user = User::where("email","=",$client)->first();
+            if (!$user) {
+                return back()->with("message",__("The student is not found."));
+            }
+            $user->hours= floatval($user->hours)+floatval($hours)*60;
+            $user->save();
+        }
+        if ($type == 2) {
+            $user = client::where("key","=",$client)->first();
+            if (!$user) {
+                return back()->with("message",__("The client is not found."));
+            }
+            $user->hours= floatval($user->hours)+floatval($hours)*60;
+            $user->save();
+        }
+        $payment =  new payment;
+        $payment->date = $date;
+        $payment->hours = $hours;
         $payment->invoice = empty($req->get("invoice"))?'':$req->get("invoice");
         $payment->fees = empty($req->get("fees"))?'':$req->get("fees");
         $payment->transfer_fees = empty($req->get("transfer_fees"))?'':$req->get("transfer_fees");
         $payment->extra_payment = empty($req->get("extra_payment"))?'':$req->get("extra_payment");
-    	$payment->adder = Auth::user()->name;
-    	$payment->timezone = Auth::user()->timezone;
-    	$payment->type = ($type==1 ? "Student" : "Client");
-    	$payment->user = ($type==1 ? $user->id : $user->key);
+        $payment->adder = Auth::user()->name;
+        $payment->timezone = Auth::user()->timezone;
+        $payment->type = ($type==1 ? "Student" : "Client");
+        $payment->user = ($type==1 ? $user->id : $user->key);
         $payment->name = ($type==1 ? $user->name : $user->name);
         $payment->email = ($type==1 ? $user->email : $user->email);
-    	$payment->save();
-    	
-    	
-    	 $notification = new notification;
+        $payment->save();
+        
+        
+         $notification = new notification;
     $notification->user ="Admin";
     $notification->content = $user->name." has made a new payment.";
     date_default_timezone_set(Auth::user()->timezone);
@@ -337,7 +361,7 @@ $class = DB::select($sql);
     $notification->save();
     
     
-    	return back()->with("success",__("Successfully added the payment."));
+        return back()->with("success",__("Successfully added the payment."));
 
     }
     public function get_payment(Request $request){
@@ -361,26 +385,26 @@ $class = DB::select($sql);
             
             
             
-        	$data = [];
-        	if ($value->type=="Student") {
+            $data = [];
+            if ($value->type=="Student") {
             if ($user_name = User::find($value->user)) {
-        	$data[0] = $user_name->name;
-        	$data[1] = $user_name->email;
+            $data[0] = $user_name->name;
+            $data[1] = $user_name->email;
             }else{
             $data[0] = 'User Deleted';
             $data[1] ='User Deleted';
             }
-        	}else{
-        	if ($user_name = client::where("key","=",$value->user)->first()){
-        	$data[0] = $user_name->name;
-        	$data[1] = $user_name->email;
+            }else{
+            if ($user_name = client::where("key","=",$value->user)->first()){
+            $data[0] = $user_name->name;
+            $data[1] = $user_name->email;
             }else{
             $data[0] = 'User Deleted';
             $data[1] ='User Deleted';
             }
-        	}
+            }
 
-        	array_push($status, $data);
+            array_push($status, $data);
         }
     return json_encode([$result,[count($total), $page, $limit],$status]);
     
@@ -406,7 +430,7 @@ $class = DB::select($sql);
             $last_payment = date("D, M d,Y");
         }
         
-    	return view("my_class",["attend"=>[count($attend), count($attends)],"not_attended"=>[count($not_attended), count($not_attendeds)],"last_payment"=>[$dt,$last_payment]]);
+        return view("my_class",["attend"=>[count($attend), count($attends)],"not_attended"=>[count($not_attended), count($not_attendeds)],"last_payment"=>[$dt,$last_payment]]);
     }
     public function my_classt(){
                 $me = Auth::id();

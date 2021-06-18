@@ -41,6 +41,9 @@
     <a class="nav-link @yield("10")" href="{{ url('/admin/addquestion') }}">Add Questions</a>
   </li>
   <li class="nav-item">
+    <a class="nav-link @yield("11")" href="{{ url('/admin/userrecords') }}">User Records</a>
+  </li>
+  <li class="nav-item">
     <a class="nav-link @yield("9")" href="{{ url('/admin/settings') }}">Settings</a>
   </li>
   <li class="nav-item">

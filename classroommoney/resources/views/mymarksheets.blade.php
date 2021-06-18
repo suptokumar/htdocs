@@ -35,7 +35,7 @@
 </div>
 <div style="background:#D0E8FF;padding:20px;">
 <div style=" width: 100%" class="row">
-  <h2 class=" col-sm-6">My Results</h2>
+  <h2 class=" col-sm-6">Report Card</h2>
   <div class="rk col-sm-6" style="float: right;">
     Search <input type="search" id="snod410" autocomplete="off" onkeyup="veri_teachers(1)" style="padding: 10px; width: 60%; border: 1px solid #ccc; outline: none;" placeholder="email, school, name">
   </div>

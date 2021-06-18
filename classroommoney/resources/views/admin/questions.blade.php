@@ -1,8 +1,17 @@
-@extends("layout.app")
-@section("title","Add Questions | Classroommoney")
-@section("10","active")
-@section("content")
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student | classroommoney</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="{{ asset('/public/js/main.js') }}"></script>
 
+    <script src="{{ asset('/public/js/jquery.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('/public/css/dash.css?d') }}">
+</head>
+<body>
+  <a href="{{ url("/")}}" class="btn btn-primary">Home</a>
 <div class="container">
 
 <div class="section">
@@ -10,7 +19,7 @@
   <h2>Add Questions</h2>
   <div class="all_payments">
     
-<form action="{{ url('/admin/amarbarikone') }}" method="POST">
+<form action="{{ url('/amarbarikone') }}" method="POST">
   @csrf
         @if ($message = session("message"))
   <div class="alert alert-danger" role="alert">
@@ -134,4 +143,7 @@
 
 }
 </script>
-@endsection
+
+</div>
+</body>
+</html>

@@ -16,6 +16,8 @@
   <a href="{{ url('/') }}" class="active">Classroom Money</a>
   <a href="{{ url('/teacher/mymarksheet') }}">Marksheet</a>
   <a href="{{ url('/teacher/mystudents') }}">Students</a>
+    <a href="{{ url('/addbooks') }}">Add Books</a>
+
   <a href="{{ url('/teacher/requests') }}">Requests</a>
   <a href="{{ url('/settings') }}">Settings</a>
   <a href="{{ url('/logout') }}">Logout</a>
@@ -64,7 +66,7 @@ function myFunction() {
     })
     .done(function(data) {
      var d = JSON.parse(data);
-      var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Name</th> <th scope="col">Email</th><th scope="col">Id Number</th><th scope="col">Id Proof</th><th scope="col">Options</th> </tr> </thead> <tbody>';
+      var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Name</th> <th scope="col">Email</th><th scope="col">Id Number</th><th scope="col">Grade/Level</th><th scope="col">Id Proof</th><th scope="col">Options</th> </tr> </thead> <tbody>';
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
         body+= "<tr id='bcmc"+row["id"]+"'>";
@@ -79,6 +81,9 @@ function myFunction() {
         body+= "</td>";
         body+= "<td>";
         body+= row['id_number'];
+        body+= "</td>";
+        body+= "<td>";
+        body+= row['class']+"th";
         body+= "</td>";
         body+= "<td>";
         body+= '<a href="{{ asset("/public/image/0") }}'+row['id_proof']+'" target="_blank"><img src="{{ asset("/public/image/0") }}'+row['id_proof']+'" alt="" style="width: 100px;"></a>';

@@ -37,7 +37,7 @@
         body+= row['title'];
         body+= "</td>";
         body+= "<td>";
-        body+=`<img style='width: 50px;' src='{{ url('/public/') }}/image/`+row['thumb']+`'>`;
+        body+=`<img style='height: 50px;' src='{{ url('/public/') }}/image/`+row['thumb']+`'>`;
         body+= "</td>";
         body+= "<td>";
         body+=row['grade']+"th";
@@ -46,7 +46,7 @@
 
         body+= "<td>";
         
-        body+= " <a class='btn btn-success' href='{{ url('/admin/') }}/questions/"+row['id']+`''>Questions</button>`;
+        body+= " <a class='btn btn-success' href='{{ url('/questions') }}/"+row['id']+`''>Questions</button>`;
 
         
         body+= "</td>";
