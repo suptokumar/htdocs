@@ -19,6 +19,9 @@ Route::get("/logout",'mainct@logout');
 Route::get("/student_register",'mainct@student_register');
 Route::post("/student_register",'soft@student_registered');
 Route::get("/teacher_register",'mainct@teacher_register');
+Route::get("/contact",function(){
+	return view('contact');
+});
 Route::post("/teacher_register",'soft@teacher_registered');
 Route::post("/teacher_update",'soft@teacher_update');
 Route::post("/accept_student",'soft@accept_student');
@@ -90,6 +93,8 @@ Route::post('/rejectict', 'soft@rejectict');
 Route::post('/approveict', 'soft@approveict');  
 Route::post('/veri_success', 'soft@veri_success');  
 Route::get('/withdrawal', 'soft@withdrawal');  
+Route::get('/examrecords', 'soft@examrecords');  
+Route::post('/1sdf2g14e', 'soft@s1sdf2g14e');  
 Route::post('/results', 'soft@results');  
 Route::post('/amt', 'soft@amts');  
 Route::post('/changeit', 'soft@changeit');  

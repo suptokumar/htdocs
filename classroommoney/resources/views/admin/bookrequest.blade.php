@@ -28,6 +28,9 @@
       var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Student</th> <th scope="col">Book Name</th><th scope="col">Book Level</th><th scope="col">Grade/ Pct%</th><th scope="col">email</th><th scope="col">Time</th><th scope="col">Options</th> </tr> </thead> <tbody>';
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
+        // console.log(row['books']['title']);
+        $bookser = row['books'];
+        console.log($bookser);
         body+= "<tr id='bcmc"+row["id"]+"'>";
         body+= "<td>";
         body+= (i+1);
@@ -36,10 +39,10 @@
         body+= row['users']['name'];
         body+= "</td>";
         body+= "<td>";
-        body+=row['books']['title'];
+        body+= row['bookname'];
         body+= "</td>";
         body+= "<td>";
-        body+=row['books']['grade']+"th";
+        body+= row['bookgrade']+"th";
         body+= "</td>";
         body+= "<td>";
         body+= row['grade']+"th";

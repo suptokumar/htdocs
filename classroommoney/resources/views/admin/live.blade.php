@@ -58,7 +58,7 @@
     })
     .done(function(data) {
      var d = JSON.parse(data);
-      var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Thumbnail</th><th scope="col">Time</th> <th scope="col">Duration</th><th scope="col">Subject</th><th scope="col">Description</th><th scope="col">Zoom</th> <th scope="col">Status</th><th scope="col">Options</th> </tr> </thead> <tbody>';
+      var body = '<table class="table"> <thead class="thead-light"> <tr> <th scope="col">#</th> <th scope="col">Thumbnail</th><th scope="col">Time</th> <th scope="col">Duration</th><th scope="col">Subject</th><th scope="col">Description</th><th scope="col">Zoom/Google Meet</th> <th scope="col">Status</th><th scope="col">Options</th> </tr> </thead> <tbody>';
       for (var i = 0; i < d[0].length; i++) {
         var row = d[0][i];
         body+= "<tr id='bcmc"+row["id"]+"'>";

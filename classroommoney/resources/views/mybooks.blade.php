@@ -1,3 +1,7 @@
+        @php
+          use App\Models\exam;
+          use App\Http\Controllers\soft;
+        @endphp
 <!DOCTYPE html>
 <html>
 <head>
@@ -69,6 +73,9 @@
 <div class="mainct">
   @foreach ($books as $book)
     <div class="book a{{$book->title}}">
+      @php
+          $examers = exam::where([["book","=",$book->title],["user","=",Auth::id()],["exam_id","=","COMP"]])->first();
+      @endphp
       <img src="{{ url('/public/image/'.$book->thumb) }}" class="imgs1" alt="">
       <p>{{$book->description}}</p>
       <p>
@@ -76,7 +83,14 @@
       	Pending
       	@else
       	<a href='{{ $book->link }}' class='btn btn-success'>Download Book</a>
+
+        @if ($examers)
+        <h5>Your Score: {{$examers->grade}}/10</h5>
+        <h5>Your Grade: {{soft::get_grade($examers->grade*10)}}</h5>
+        <h5>Your Earn: {{$examers->earning}}$</h5>
+        @else
         <a href='{{ url('/exam/'.$book->title) }}' class='btn mt-1 btn-danger'>Earn With Exam</a>
+        @endif
       @endif</p>
     </div>
   @endforeach

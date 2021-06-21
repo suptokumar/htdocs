@@ -19,6 +19,7 @@
   <a href="{{url('/')}}" class="btn btn-success"><span class="fa fa-location-arrow"></span> <span class="wo">{{ __('Login') }}</span></a>
   <a href="{{url('/student_register')}}" class="btn btn-success"><span class="fa fa-user"></span>  <span class="wo">{{ __('Student Register') }}</span></a>
   <a href="{{url('/teacher_register')}}" class="btn btn-success"><span class="fa fa-user"></span> <span class="wo">{{ __('Teacher/Tutor Register') }}</span></a>
+  <a href="{{url('/contact')}}" class="btn btn-success"><span class="fa fa-user"></span> <span class="wo">{{ __('Support/ inquiry') }}</span></a>
 </header>
 <style>
     header#bg_no {
@@ -279,7 +280,7 @@ input:placeholder {
 
     <!-- Icon -->
     <div class="fadeIn first">
-      <img src="https://cdn.iconscout.com/icon/free/png-512/laptop-user-1-1179329.png" style="width: 100px" id="icon" alt="User Icon" />
+      <img src="{{url('/public/logo/ss.jpg')}}" style="width: 250px" id="icon" alt="User Icon" />
     </div>
 @if ($message = session("message"))
   <div class="alert alert-success" role="alert">

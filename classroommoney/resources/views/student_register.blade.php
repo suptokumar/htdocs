@@ -19,6 +19,8 @@
   <a href="{{url('/')}}" class="btn btn-success"><span class="fa fa-location-arrow"></span> <span class="wo">{{ __('Login') }}</span></a>
   <a href="{{url('/student_register')}}" class="btn btn-success"><span class="fa fa-user"></span>  <span class="wo">{{ __('Student Register') }}</span></a>
   <a href="{{url('/teacher_register')}}" class="btn btn-success"><span class="fa fa-user"></span> <span class="wo">{{ __('Teacher/Tutor Register') }}</span></a>
+    <a href="{{url('/contact')}}" class="btn btn-success"><span class="fa fa-user"></span> <span class="wo">{{ __('Support/ inquiry') }}</span></a>
+
 </header>
 <style>
     header#bg_no {

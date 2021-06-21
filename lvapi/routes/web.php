@@ -76,4 +76,13 @@ Route::group(['prefix' => 'admin','middleware'=>'admin'], function() {
     Route::post("/deleteid","soft@deleteid");
     Route::post("/createapi/createnewid","soft@createnewidaddintodatabase");
 
+    // Route for Deposit Management
+    Route::get("/deposit","soft@deposit");
+    Route::get("/createdeposit","soft@createdeposit");
+    Route::post("/load_deposit","soft@load_deposit");
+    Route::post("/approvedeposit","soft@approvedeposit");
+    Route::post("/deletedeposit","soft@deletedeposit");
+    Route::post("/phoneid","soft@phoneid");
+    Route::post("/createapi/adddeposit","soft@adddeposit");
+
 });

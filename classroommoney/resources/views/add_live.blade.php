@@ -77,7 +77,7 @@
     </div>
 
     <div class="form-group col-md-6">
-      <label for="zoomlink">Zoom link <span style="color: red">*</span></label>
+      <label for="zoomlink">Zoom/Google Meet link <span style="color: red">*</span></label>
       <input type="text" class="form-control" required=""  id="zoomlink" name="zoomlink">
     </div>
   </div>

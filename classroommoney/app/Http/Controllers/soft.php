@@ -250,6 +250,10 @@ echo $question;
     {
         return view("admin.payments");
     }
+    public function examrecords()
+    {
+        return view("admin.examrecords");
+    }
     public function exam($id)
     {
         if ($question = question::where("book","=",$id)->get()) {
@@ -397,6 +401,13 @@ echo $question;
                 ->first();
             $result[$c]->books = book::where("id", "=", $value->title)
                 ->first();
+            $booker = DB::select("SELECT * FROM books WHERE id='".$value->title."' ORDER BY id DESC LIMIT 1");
+            foreach ($booker as $r)
+            {
+            $result[$c]->bookgrade = $r->grade;
+            $result[$c]->bookname =$r->title;
+
+            }
         }
         return json_encode([$result, [count($total) , $page, $limit]]);
 
@@ -823,7 +834,7 @@ public  function approveict(Request $request){
             foreach($clss as $key => $value)
             {
 
-                if((strtotime($value->time)+$value->duration*60)<time()){
+                if(((strtotime($value->time)+$value->duration*60)+24*3600)<time()){
                     $rss = live::find($value->id);
                     $rss->status=2;
                     $rss->save();
@@ -898,7 +909,19 @@ if ($result->save()) {
     {
         return view("requestpage");
     }
-    public function get_grade($mark){
+    public static function get_grade($mark){
+        if ($mark>89) {
+            return "A";
+        }else if ($mark>79) {
+            return "B";
+        }else if ($mark>69) {
+            return "C";
+        }else if ($mark>59) {
+            return "D";
+        }
+        return "D";  
+    }
+    public static function get_lettergrade($mark){
         if ($mark>89) {
             return "A";
         }else if ($mark>79) {
@@ -910,19 +933,7 @@ if ($result->save()) {
         }
         return "";  
     }
-    public function get_lettergrade($mark){
-        if ($mark>89) {
-            return "A";
-        }else if ($mark>79) {
-            return "B";
-        }else if ($mark>69) {
-            return "C";
-        }else if ($mark>59) {
-            return "D";
-        }
-        return "";  
-    }
-    public function get_amount($mark,$subject,$att,$st){
+    public static function get_amount($mark,$subject,$att,$st){
 
         $user = User::find($st)->email;
         $grade = Student::where("email","=",$user)->first()->class;
@@ -1404,6 +1415,41 @@ if ($result->save()) {
         {
             $result[$c]->created_at = date("Y/m/d h:i a", strtotime($value->created_at));
             $result[$c]->type = $value->type==3?"Student":($value->type==2?"Teacher":"Tutor");
+
+        }
+        return json_encode([$result, [count($total) , $page, $limit]]);
+
+
+
+
+    }
+
+
+    public function s1sdf2g14e(Request $request)
+    {
+        $search = $request->get("search");
+
+        $and = "exams WHERE exam_id='COMP' AND (user  LIKE '%$search%') ORDER BY CASE WHEN user = '$search' THEN 0 END, id DESC";
+   
+
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = 30;
+        $from = ($page - 1) * $limit;
+        $result = DB::select("SELECT * FROM " . $and . " LIMIT $from,$limit");
+        $total = DB::select("SELECT id FROM " . $and);
+        $status = [];
+        foreach ($result as $c => $value)
+        {
+            $result[$c]->created_at = date("Y/m/d h:i a", strtotime($value->created_at));
+            $result[$c]->name = User::find($value->user)?User::find($value->user)->name:"Undefined";
+            $result[$c]->email = User::find($value->user)?User::find($value->user)->email:"Undefined";
+            $result[$c]->phone = User::find($value->user)?User::find($value->user)->phone:"Undefined";
+            $result[$c]->books = book::find($value->book)?book::find($value->book)->title:"Undefined";
+            $result[$c]->label = book::find($value->book)?book::find($value->book)->grade:"Undefined";
+            $grade = $value->grade;
+            $result[$c]->score = $value->grade;
+            $result[$c]->grade = $this->get_grade($grade*10);
 
         }
         return json_encode([$result, [count($total) , $page, $limit]]);
