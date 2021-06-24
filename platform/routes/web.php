@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 Route::get("/login",'mainct@login');
 Route::post("/login",'mainct@logined');
 Route::get("/logout",'mainct@logout');
+Route::get("/profile",'mainct@profile');
 Route::get("/register",'mainct@register');
 Route::post("/register",'mainct@registered');
 Route::post("/n",'mainct@n');

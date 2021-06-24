@@ -24,6 +24,8 @@ class CreateDepositsTable extends Migration
             $table->text("screenshot");
             $table->text("status");
             $table->text("gateway");
+            $table->text("depositid");
+            $table->text("deposittype");
             $table->timestamps();
         });
     }

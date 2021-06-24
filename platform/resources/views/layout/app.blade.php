@@ -181,6 +181,7 @@ window.onclick = function(event) {
   <div class="dropdown">
   <button onclick="myFunction()" class="dropbtn" aria-haspopup="true" style="background:url('{{asset("/public/image/016191206291160117832FB icon.jpg")}}') 50% 50% / 100% 100% no-repeat; width: 58px; height: 55px; border-radius: 100px;margin-right: 14px;"></button>
   <div id="myDropdown" class="dropdown-content">
+    <a href="{{ url('/profile') }}">Profile</a>
     <a href="
     @if(Auth::user()->type==3)
     {{url("/admin/settings")}}

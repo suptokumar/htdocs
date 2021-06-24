@@ -79,6 +79,8 @@ Route::group(['prefix' => 'admin','middleware'=>'admin'], function() {
     // Route for Deposit Management
     Route::get("/deposit","soft@deposit");
     Route::get("/createdeposit","soft@createdeposit");
+    Route::get("/declinedeposit/{id}","soft@declinedeposit");
+    Route::get("/deposit/{id}","soft@depositdetails");
     Route::post("/load_deposit","soft@load_deposit");
     Route::post("/approvedeposit","soft@approvedeposit");
     Route::post("/deletedeposit","soft@deletedeposit");

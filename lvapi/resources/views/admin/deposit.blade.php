@@ -14,6 +14,7 @@
 				<option value="">All</option>
         		<option value="pending" selected="">pending</option>
         		<option value="approved">approved</option>
+            <option value="declined">declined</option>
 			</select>
 		</div>
 		<div class="col-4">
@@ -104,7 +105,12 @@
 body+=`
 <button onclick='edit(`+row['id']+`)' class='btn btn-success'>Approve</button>`;
         }
+        if(row['status']!='declined'){
+body+=`
+<button onclick='decline(`+row['id']+`)' class='btn btn-info'>Decline</button>`;
+        }
       body+=`
+<button onclick='details(`+row['id']+`)' class='btn btn-primary'>View</button>
 <button onclick='deletes(`+row['id']+`)' class='btn btn-danger'>Delete</button>
 
         </div>
@@ -137,6 +143,16 @@ body+=`
       $(".acd"+id).fadeOut('slow');
     });
   }
+  }
+
+
+  function decline(id)
+  {
+   window.location = '{{ url('/admin/declinedeposit/') }}/'+id;
+  }
+  function details(id)
+  {
+   window.location = '{{ url('/admin/deposit/') }}/'+id;
   }
   function manageroll(id)
   {

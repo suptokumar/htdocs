@@ -1557,6 +1557,29 @@ WHEN phone LIKE '___________$search%' THEN 12 END, name ASC;
     {
         return view("settings");
     }
+    public function profile()
+    {
+        $pre_m = date("m");
+        $pre_y = date("Y");
+        if (Auth::user()->type==2 ) {
+        $report = DB::select("SELECT * FROM `reports` WHERE s_id='" . Auth::id() . "' AND month(`starting`)='$pre_m' AND year(`starting`)='$pre_y'");
+        }else{
+        $report = DB::select("SELECT * FROM `reports` WHERE t_id='" . Auth::id() . "' AND month(`starting`)='$pre_m' AND year(`starting`)='$pre_y'");
+
+        }
+        foreach($report as  $key => $value)
+        {
+        if (Auth::user()->type==2 ) {
+
+            $report[$key]->client = User::find($value->t_id)->name; 
+        }else{
+            $report[$key]->client = User::find($value->s_id)->name; 
+
+        }
+        }
+
+        return view("profile", ["report"=>$report]);
+    }
 
     public function add_class()
     {

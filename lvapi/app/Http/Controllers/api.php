@@ -126,6 +126,8 @@ class api extends Controller
             $id->screenshot = $screenshot;
             $id->status = empty($request->get('status'))?'pending':$request->get('status');
             $id->gateway = $request->get('gateway');
+            $id->depositid = time();
+            $id->deposittype = $request->get('deposittype');
             $id->save();
 
             return "Deposit Request created successfuly.";

@@ -47,6 +47,9 @@
     <a class="nav-link @yield("12")" href="{{ url('/admin/examrecords') }}">Exam Records</a>
   </li>
   <li class="nav-item">
+    <a class="nav-link @yield("13")" href="{{ url('/admin/contactlist') }}">Contact</a>
+  </li>
+  <li class="nav-item">
     <a class="nav-link @yield("9")" href="{{ url('/admin/settings') }}">Settings</a>
   </li>
   <li class="nav-item">

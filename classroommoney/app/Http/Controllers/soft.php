@@ -21,6 +21,7 @@ use App\Models\password_reset;
 use App\Models\withdraw;
 use App\Models\setting;
 use App\Models\question;
+use App\Models\contact;
 use App\Models\exam;
 use Illuminate\Support\Facades\Mail;
 use DB;
@@ -34,6 +35,29 @@ class soft extends Controller
     {
         $this->singleamount = $this->set()->single_payment;
         $this->doubleamount = $this->set()->multi_payment;
+    }
+    public function email()
+    {
+            $data = array(
+            "title" => "Abcd",
+
+            "description" => "AMO",
+
+        );
+
+        Mail::to("personal.supto@gmail.com")->send(New email($data));
+        }
+        public function contactlist(){
+            return view("admin.contact");
+        }
+    public function contact(Request $request)
+    {
+        $contact = new contact;
+        $contact->name = $request->get("name");
+        $contact->email = $request->get("email");
+        $contact->message = $request->get("message");
+        $contact->save();
+        return back()->with("success","Our support team will contact you soon. Thank you for contacting us.");
     }
     public function addbooks(Request $request)
     {
@@ -1452,6 +1476,33 @@ if ($result->save()) {
             $result[$c]->grade = $this->get_grade($grade*10);
 
         }
+        return json_encode([$result, [count($total) , $page, $limit]]);
+
+
+
+
+    }
+    public  function clt(Request $request)
+    {
+        $ct = contact::find($request->get("id"));
+        $ct->delete();
+        return "Deleted";
+    }
+
+    public function asdfdfdsf(Request $request)
+    {
+        $search = $request->get("search");
+
+        $and = "contacts WHERE (email LIKE '%$search%') ORDER BY CASE WHEN email = '$search' THEN 0 END, id DESC";
+   
+
+        // $page = 1;
+        $page = $request->get("page");
+        $limit = 30;
+        $from = ($page - 1) * $limit;
+        $result = DB::select("SELECT * FROM " . $and . " LIMIT $from,$limit");
+        $total = DB::select("SELECT id FROM " . $and);
+        $status = [];
         return json_encode([$result, [count($total) , $page, $limit]]);
 
 

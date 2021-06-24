@@ -128,7 +128,7 @@ input[type=button]:active, input[type=submit]:active, input[type=reset]:active  
   transform: scale(0.95);
 }
 
-input {
+input,textarea {
   background-color: #f6f6f6;
   border: none;
   color: #0d0d0d;
@@ -149,7 +149,7 @@ input {
   border-radius: 5px 5px 5px 5px;
 }
 
-input:focus {
+input:focus,textarea:focus {
   background-color: #fff;
   border-bottom: 2px solid #5fbae9;
 }
@@ -282,14 +282,21 @@ input:placeholder {
     <div class="fadeIn first">
       <img src="{{url('/public/logo/ss.jpg')}}" style="width: 250px" id="icon" alt="User Icon" />
     </div>
-@if ($message = session("message"))
+@if ($message = session("success"))
   <div class="alert alert-success" role="alert">
   {{$message}}
 </div>
 @endif
+@if ($message = session("message"))
+  <div class="alert alert-danger" role="alert">
+  {{$message}}
+</div>
+@endif
     <!-- Login Form -->
-    <form action="{{ url('/login') }}" method="POST">
+    <form action="{{ url('/contact') }}" method="POST">
+      <div class="alert alert-success">
     	If you have an issue and can’t find an answer here, we’ve set up multiple ways to reach us. For the quickest response, contact us at contactus@classroommoney.com . Our Customer Support team is located in USA and available 7-days a week (except July 4th, Thanksgiving, Christmas and New Years Day).
+      </div>
           @csrf
 @if ($message = session("error"))
   <div class="alert alert-danger" role="alert">
@@ -299,6 +306,13 @@ input:placeholder {
 @if($errors->any())
     {{ implode('', $errors->all(':message')) }}
 @endif
+
+{{-- <div class="row"> --}}
+
+<input type="text" id="name" required="" class="fadeIn third" autocomplete="off" name="name" placeholder="Your Name">
+<input type="email" id="email" required="" class="fadeIn second" autocomplete="off" name="email" placeholder="Your Email">
+<textarea id="message" required="" class="fadeIn second" autocomplete="off" name="message" placeholder="Your Message"></textarea>
+      <input type="submit" class="fadeIn fourth" value="Send">
 
     </form>
 
