@@ -24,7 +24,7 @@ class mainct extends Controller
     {
         if ($user = User::find($id))
         {
-            $class = course::where("s_id", "=", $user->id)
+            $class = course::where("s_id", "=", $user->id)->orWhere("t_id","=",$user->id)
                 ->get();
             $data = [];
             $crt = time();
@@ -129,6 +129,9 @@ class mainct extends Controller
 <td>Time</td>
 <td>Subject</td>
 <td>Duration</td>
+<td>Class Title</td>
+<td>Teacher Name</td>
+<td>Student Name</td>
             </tr>';
             $i = 0;
             $hours = 0;
@@ -141,9 +144,12 @@ class mainct extends Controller
 <td>' . $value[1] . '</td>
 <td>' . $value[2] . '</td>
 <td>' . $value[4] . ' minutes</td>
+<td>' . $value[7]->title . '</td>
+<td>' . $value[5] . '</td>
+<td>' . $value[6] . '</td>
             </tr>';
             }
-            $body .= '<tr><td colspan=3>Total:</td><td>' . ($hours / 60) . ' hours</td></tr>';
+            $body .= '<tr><td colspan=6>Total:</td><td>' . ($hours / 60) . ' hours</td></tr>';
             $body .= '</table><a href="#" onclick="exportTableToExcel(\'table\',\'Data Notes\')">Download</a>';
             $body .= "<style>table{border-collapse:collapse;} td, th{
                 border: 1px solid #ccc; padding: 10px;}</style>";
@@ -180,13 +186,13 @@ class mainct extends Controller
             if ($user->hours==0) {
             return json_encode(['0:00', __("Successfuly Updated.") ]);
             }else{
-            return json_encode([$user->hours>0?(floor(intval($user->hours) / 60) .':'. intval($user->hours) % 60):("-".floor(intval(-1*$user->hours) / 60) .':'. intval(-1*$user->hours) % 60) , __("Successfuly Updated.") ]);
+            return json_encode([floatval($user->hours)>0?(floor(intval($user->hours) / 60) .':'. intval($user->hours) % 60):("-".floor(intval(-1*$user->hours) / 60) .':'. intval(-1*$user->hours) % 60) , __("Successfuly Updated.") ]);
             }
         }
         else
         {
             
-            return json_encode([$user->hours>0?(floor(intval($user->hours) / 60) .':'. intval($user->hours) % 60):("-".floor(intval(-1*$user->hours) / 60) .':'. intval(-1*$user->hours) % 60) , __("Failed to update Updated.") ]);
+            return json_encode([floatval($user->hours)>0?(floor(intval($user->hours) / 60) .':'. intval($user->hours) % 60):("-".floor(intval(-1*$user->hours) / 60) .':'. intval(-1*$user->hours) % 60) , __("Failed to update Updated.") ]);
         }
     }
     public function clients()
@@ -231,15 +237,17 @@ $no = date("h:ia d M Y",$rqs);
             
             $this->send(Auth::user()->id,$notification);
 
-        $notification = Auth::user()->email.' has requested to reschedule a class.';
+        $notification = '<b>'.Auth::user()->name .' <i>('.Auth::user()->email . ')</i></b> requested to change a schedule. <br> Timezone: ' . course::find($request->get("del"))->timezone . '<br>Pre Class Time:' . date("h:ia d M Y",strtotime($pre_order)). '<br>Change Time: ' . date("h:ia d M Y",strtotime($order)).'<br>Class Title:'. course::find($request->get("del"))->title.'<br>Subject:'. course::find($request->get("del"))->subject;
                 date_default_timezone_set(course::find($request->get("del"))->timezone);
 
         if (Auth::user()->type==2) {
-            
             $this->send(course::find($request->get("del"))->t_id,$notification);
+        }elseif(Auth::user()->type==1){
+            $this->send(course::find($request->get("del"))->s_id,$notification);
         }else{
             $this->send(course::find($request->get("del"))->s_id,$notification);
-
+            $this->send(course::find($request->get("del"))->t_id,$notification);
+            
         }
 
 
@@ -337,7 +345,7 @@ Class Title: ".course::where("ras","=",$dl->class_id)->first()->title."<br>
         $sql = $request->get("note") . "```" . $request->get("del"). "```" . $request->get("times");
         $req = new requestd;
         $fon = course::find($request->get("del"));
-        $req->notification = '<b>'.Auth::user()->name .' <i>('.Auth::user()->email . ')</i></b> requested to cancel a class (' . $fon->title . '). <br> Here\'s his notes: <br>' . $request->get("note");
+        $req->notification = '<b>'.Auth::user()->name .' <i>('.Auth::user()->email . ')</i></b> requested to cancel a class (' . $fon->title . '). <br> Class Time: '.date("d M Y, h:ia",$request->get("times")).' <br> Timezone: '.$fon->timezone.' <br> Here\'s his notes: <br>' . $request->get("note");
         $req->sql = $sql;
         $req->users = 2;
         $req->requested = Auth::user()->email;
@@ -348,11 +356,11 @@ Class Title: ".course::where("ras","=",$dl->class_id)->first()->title."<br>
                 ->email);
             if (Auth::user()->type == 2)
             {
-                $this->send($fon->t_id, '<b>'.Auth::user()->name .' <i>('.Auth::user()->email . ")</i></b> sent a request to cancel a class");
+                $this->send($fon->t_id, '<b>'.Auth::user()->name .' <i>('.Auth::user()->email . ')</i></b> requested to cancel a class (' . $fon->title . '). <br> Class Time: '.date("d M Y, h:ia",$request->get("times")).' <br> Timezone: '.$fon->timezone.' <br> Here\'s his notes: <br>' . $request->get("note"));
             }
             else
             {
-                $this->send($fon->s_id, '<b>'.Auth::user()->name .' <i>('.Auth::user()->email . ")</i></b> sent a request to cancel a class");
+                $this->send($fon->s_id, '<b>'.Auth::user()->name .' <i>('.Auth::user()->email . ')</i></b> requested to cancel a class (' . $fon->title . '). <br> Class Time: '.date("d M Y, h:ia",$request->get("times")).' <br> Timezone: '.$fon->timezone.' <br> Here\'s his notes: <br>' . $request->get("note"));
 
             }
             $user = User::find(Auth::id());
@@ -1153,13 +1161,13 @@ $now_t = intval($hours) - intval($class_time);
 $st_dt->hours = $now_t;
 $st_dt->save();
 
-if ($st_dt->hours<1 OR $st_dt->hours=='') {
-    mainct::send($st_dt->id,"You have ".($st_dt->hours>0?(floor(intval($st_dt->hours) / 60) .':'. intval($st_dt->hours) % 60):("-".floor(intval(-1*$st_dt->hours) / 60) .':'. intval(-1*$st_dt->hours) % 60))." Hours in your account. You should Purchase hour now.");
-    mainct::send("Admin",$st_dt->name." has ".($st_dt->hours>0?(floor(intval($st_dt->hours) / 60) .':'. intval($st_dt->hours) % 60):("-".floor(intval(-1*$st_dt->hours) / 60) .':'. intval(-1*$st_dt->hours) % 60))." Hours remaining. You can contact him by ".$st_dt->email." or ". $st_dt->phone);
-}
 if ($st_dt->hours==0 OR $st_dt->hours=='') {
-    mainct::send("Admin",$st_dt->name." has ".($st_dt->hours>0?(floor(intval($st_dt->hours) / 60) .':'. intval($st_dt->hours) % 60):("-".floor(intval(-1*$st_dt->hours) / 60) .':'. intval(-1*$st_dt->hours) % 60))." Hours remaining. You can contact him by ".$st_dt->email." or ". $st_dt->phone);
+    mainct::send("Admin",$st_dt->name." has ".($st_dt->hours>0?(floor(floatval($st_dt->hours) / 60) .':'. floatval($st_dt->hours) % 60):("-".floor(floatval(-1*$st_dt->hours) / 60) .':'. floatval(-1*$st_dt->hours) % 60))." Hours remaining. You can contact him by ".$st_dt->email." or ". $st_dt->phone);
     $status = 0;
+}
+elseif ($st_dt->hours<1 OR $st_dt->hours=='') {
+    mainct::send($st_dt->id,"You have ".($st_dt->hours>0?(floor(floatval($st_dt->hours) / 60) .':'. floatval($st_dt->hours) % 60):("-".floor(floatval(-1*$st_dt->hours) / 60) .':'. floatval(-1*$st_dt->hours) % 60))." Hours in your account. You should Purchase hour now.");
+    mainct::send("Admin",$st_dt->name." has ".($st_dt->hours>0?(floor(floatval($st_dt->hours) / 60) .':'. intval($st_dt->hours) % 60):("-".floor(floatval(-1*$st_dt->hours) / 60) .':'. floatval(-1*$st_dt->hours) % 60))." Hours remaining. You can contact him by ".$st_dt->email." or ". $st_dt->phone);
 }
                 return back()
                     ->with("success", "Successfuly Created Progress Note");

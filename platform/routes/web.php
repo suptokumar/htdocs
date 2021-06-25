@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\Route;
 Route::get("/login",'mainct@login');
 Route::post("/login",'mainct@logined');
 Route::get("/logout",'mainct@logout');
-Route::get("/profile",'mainct@profile');
 Route::get("/register",'mainct@register');
 Route::post("/register",'mainct@registered');
 Route::post("/n",'mainct@n');
@@ -23,6 +22,7 @@ Route::get("/details/{id}",'mainct@details');
 Route::get("/accept/{class}/{index}",'mainct@accept');
 
 Route::group(['middleware' => ['login','CORS']], function() {
+Route::get("/profile",'mainct@profile');
 
 Route::post("/user_get",'mainct@user_get');
 Route::post("/update",'mainct@update');

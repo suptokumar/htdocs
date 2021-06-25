@@ -117,7 +117,7 @@ class api extends Controller
 
 
 
-            $id->idm = $request->get('id');
+            $id->idm = time();
             $id->exchange = $request->get('exchange');
             $id->username = $request->get('username');
             $id->phone = $request->get('phone');
@@ -131,6 +131,34 @@ class api extends Controller
             $id->save();
 
             return "Deposit Request created successfuly.";
+
+        }else{
+        return "Permission Denied.";            
+        }
+        }else{
+        return "Key not found.";            
+        }
+    }
+     public function withdrawal(Request $request)
+    {
+        if (!empty($request->get("key"))) {
+            
+        if (Hash::check($this->key,$request->get("key"))) {
+        
+            $id = new withdrawal();
+
+
+            $id->idm = time();
+            $id->info = $request->get('info');
+            $id->username = $request->get('username');
+            $id->phone = $request->get('phone');
+            $id->amount = $request->get('amount');
+            $id->currency = empty($request->get('currency'))?'USD':$request->get('currency');
+            $id->status = empty($request->get('status'))?'pending':$request->get('status');
+            $id->gateway = $request->get('gateway');
+            $id->save();
+
+            return "withdrawal Request created successfuly.";
 
         }else{
         return "Permission Denied.";            
@@ -204,6 +232,19 @@ class api extends Controller
             
         if (Hash::check($this->key,$request->get("key"))) {
         return json_encode(deposit::get());
+        }else{
+        return "Permission Denied.";            
+        }
+        }else{
+        return "Key not found.";            
+        }
+    }
+    public function withdrawallist(Request $request)
+    {
+        if (!empty($request->get("key"))) {
+            
+        if (Hash::check($this->key,$request->get("key"))) {
+        return json_encode(withdrawal::get());
         }else{
         return "Permission Denied.";            
         }

@@ -43,7 +43,7 @@
     </div>
   </div>
   <div class="row">
-   <div class="form-group col-md-6">
+{{--    <div class="form-group col-md-6">
       <label for="idm">Select Id <span class="red">*</span></label>
 	<select type="text" class="form-control" name="idm" id="idm" required="">
       	<option value="">SELECT</option>
@@ -55,7 +55,7 @@
       	<option value="">SELECT</option>
       </select>    
   </div>
-
+ --}}
   <div class="form-group col-md-6">
       <label for="gateway">Select Gateway <span class="red">*</span></label>
 	<select type="text" class="form-control" name="gateway" id="gateway" required="">
@@ -188,7 +188,7 @@
         );
 		@endphp
       	@foreach ($cur as $k => $g)
-        	<option value="{{$k}}" @if ($k=="USD")
+        	<option value="{{$k}}" @if ($k=="INR")
         		{{"selected"}}
         	@endif>{{$k}}</option>
         @endforeach

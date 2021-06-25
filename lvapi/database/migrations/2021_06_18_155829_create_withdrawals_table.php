@@ -17,8 +17,9 @@ class CreateWithdrawalsTable extends Migration
             $table->id();
             $table->text("username");
             $table->text("phone");
-            $table->text("mid");
-            $table->text("exchange");
+            $table->text("idm");
+            $table->text("amount");
+            $table->text("currency");
             $table->text("gateway");
             $table->text("info");
             $table->text("status");

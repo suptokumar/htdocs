@@ -28,7 +28,9 @@ Route::post("/idlist","api@idlist");
 Route::post("/createuser","api@createuser");
 Route::post("/userlist","api@userlist");
 Route::post("/deposit","api@deposit");
+Route::post("/withdrawal","api@withdrawal");
 Route::post("/depositlist","api@depositlist");
+Route::post("/withdrawallist","api@withdrawallist");
 Route::post("/notifications","api@notifications");
 Route::post("/notifications/markasread","api@markread");
 

@@ -77,14 +77,29 @@ Route::group(['prefix' => 'admin','middleware'=>'admin'], function() {
     Route::post("/createapi/createnewid","soft@createnewidaddintodatabase");
 
     // Route for Deposit Management
-    Route::get("/deposit","soft@deposit");
-    Route::get("/createdeposit","soft@createdeposit");
-    Route::get("/declinedeposit/{id}","soft@declinedeposit");
-    Route::get("/deposit/{id}","soft@depositdetails");
-    Route::post("/load_deposit","soft@load_deposit");
-    Route::post("/approvedeposit","soft@approvedeposit");
-    Route::post("/deletedeposit","soft@deletedeposit");
-    Route::post("/phoneid","soft@phoneid");
-    Route::post("/createapi/adddeposit","soft@adddeposit");
+    Route::get("/deposit","depositcontroller@deposit");
+    Route::get("/createdeposit","depositcontroller@createdeposit");
+    Route::get("/declinedeposit/{id}","depositcontroller@declinedeposit");
+    Route::get("/deposit/{id}","depositcontroller@depositdetails");
+    Route::post("/load_deposit","depositcontroller@load_deposit");
+    Route::post("/createapi/declinedeposit","depositcontroller@declinedepositinpost");
+    Route::post("/approvedeposit","depositcontroller@approvedeposit");
+    Route::post("/deletedeposit","depositcontroller@deletedeposit");
+    Route::post("/phoneid","depositcontroller@phoneid");
+    Route::post("/createapi/adddeposit","depositcontroller@adddeposit");
+
+
+    // Route for Withdrawal Management
+    Route::get("/withdrawal","withdrawcontroller@withdrawal");
+    Route::get("/createwithdrawal","withdrawcontroller@createwithdrawal");
+    Route::get("/withdralid","withdrawcontroller@withdralid");
+    Route::post("/createapi/addwithdrawalrequest","withdrawcontroller@addwithdrawalrequest");
+    Route::post("/load_withdraw","withdrawcontroller@load_withdraw");
+    Route::post("/addwithdrawalrequestapprove","withdrawcontroller@addwithdrawalrequestapprove");
+    Route::post("/deletewithdrawal","withdrawcontroller@deletewithdrawal");
+    Route::post("/createapi/declinewithdrawal","withdrawcontroller@declinewithdrawalse");
+    Route::get("/declinewithdrawal/{id}","withdrawcontroller@declinewithdrawal");
+    Route::get("/withdrawal/{id}","withdrawcontroller@withdrawaldetails");
+
 
 });

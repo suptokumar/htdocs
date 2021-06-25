@@ -18,7 +18,9 @@
 			</select>
 		</div>
 		<div class="col-4">
-	<a href="{{ url('/admin/createdeposit') }}" class="btn btn-info float-right">Create New Deposit</a>
+	<a href="{{ url('/admin/createdeposit') }}" class="btn btn-info float-right">Create Wallet Deposit</a>
+  <a href="{{ url('/admin/depositid') }}" class="btn btn-warning float-right">ID deposit</a>
+
 {{-- 	<a href="{{ url('/admin/addconfigure') }}" class="btn btn-danger float-right">Add Exchange Type</a>
   <a href="{{ url('/admin/plan') }}" class="btn btn-success float-right">Add Plan</a> --}}
 		</div>
@@ -68,7 +70,7 @@
         <h5>User</h5>
         </div>
         <div class="col-2" style='padding-top: 15px;'>
-        <h5>Exchange</h5>
+        <h5>Screenshot</h5>
         </div>
         <div class="col-2" style='padding-top: 15px;'><h5>Info</h5>
         </div>
@@ -85,14 +87,13 @@
         <h4>Phone: `+row['phone']+`</h4>
         </div>
         <div class="col-2 center" style='padding-top: 15px;'>
-        <h3>`+row['exchange']+`</h3>
+        <h5><a style='color: red' href="{{ url("/public")}}/`+row['screenshot']+`" target=_blank>View Image</a></h5>
         </div>
         <div class="col-2 center" style='padding-top: 15px;'>
         <h5>ID: `+row['idm']+`</h5>
         <h5>Amount: `+row['amount']+`</h5>
         <h5>Currency: `+row['currency']+`</h5>
         <h5>Gateway: `+row['gateway']+`</h5>
-        <h5>Screenshot: <a href="{{ url("/public")}}/`+row['screenshot']+`" target=_blank>View Image</a></h5>
         </div>
         <div class="col-2 center" style='padding-top: 15px;'>
         <h2 class='badge badge-info p-2'>`+row['status']+`</h2>

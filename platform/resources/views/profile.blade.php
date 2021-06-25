@@ -15,9 +15,12 @@ background: none;
 <div class="row">
 	<div class="col-4">
 		<div style="padding: 2%; background: white; margin: 10px; border-radius: 10px; border: 1px solid #ccc; text-align: center;">
-		<img src="{{ url(empty(Auth::user()->image)?"/public/logo/ag.jpg":"/public/".Auth::user()->image) }}" alt="{{Auth::user()->name}}" style="width: 200px; border-radius: 100%;">
+		<img src="{{ url(empty(Auth::user()->image)?"/public/logo/ag.jpg":"/public/image/0".Auth::user()->image) }}" alt="{{Auth::user()->name}}" style="width: 200px; border-radius: 100%;">
 		<h2>{{Auth::user()->name}}</h2>
+		@if (Auth::user()->type==2)
+			{{-- expr --}}
 		<h5>Client ID:{{Auth::user()->gurdain_id}}</h5>
+		@endif
 		<div style="text-align: left">
 <h6>Email: {{Auth::user()->email}}</h6>
 <h6>Phone Number: {{Auth::user()->phone}}</h6>
@@ -28,20 +31,90 @@ background: none;
 <br>
 <br>
 
-<h6>Zoom Link: {{Auth::user()->zoom_link}}</h6>
-<h6>Calender Link: {{Auth::user()->calender_link}}</h6>
+<h6>Zoom Link:<br><a style="line-break: anywhere;" href="{{Auth::user()->zoom_link}}" target="_blank">{{Auth::user()->zoom_link}}</a></h6>
+<h6>Calender Link:<br><a style="line-break: anywhere;" href="{{Auth::user()->calender_link}}" target="_blank">{{Auth::user()->calender_link}}</a></h6>
 
 @endif
 		</div>
 		</div>
-		<div style="padding: 2%; background: white; margin: 10px; border-radius: 10px; border: 1px solid #ccc; text-align: center;">
+
+@if (Auth::user()->type==2)
+<div style="padding: 2%; background: white; margin: 10px; border-radius: 10px; border: 1px solid #ccc; text-align: center;">
+<h3>Student Evalution</h3>
+<p>
+	{{Auth::user()->evalu}}
+</p>
+</div>
+<div style="padding: 2%; background: white; margin: 10px; border-radius: 10px; border: 1px solid #ccc; text-align: center;">
+<h3>Regular Evalution</h3>
+<p>
+	{{Auth::user()->reg_evalu}}
+</p>
+		</div>
+
+@else
+<div style="padding: 2%; background: white; margin: 10px; border-radius: 10px; border: 1px solid #ccc; text-align: center;">
 <h3>My Bio</h3>
 <p>
 	{{Auth::user()->bio}}
 </p>
 		</div>
+
+
+<div class="row" style="padding: 2%; margin: 10px; border-radius: 10px; border: 1px solid #ccc; text-align: center;">
+	<div class="round col-3">
+	<a href="{{ url('/public/image/0') }}{{Auth::user()->cv}}" target="_blank">Visit CV</a>
 	</div>
+	<div class="round col-3">
+	<a target="_blank" href="{{ url('/public/image/0') }}{{Auth::user()->national_id_front}}"><img style='width: 100%' src="{{ url('/public/image/0') }}{{Auth::user()->national_id_front}}" alt="National ID front Copy"></a>
+	</div>
+	<div class="round col-3">
+	<a target="_blank" href="{{ url('/public/image/0') }}{{Auth::user()->national_id_back}}"><img style='width: 100%' src="{{ url('/public/image/0') }}{{Auth::user()->national_id_back}}" alt="National ID back Copy"></a>
+
+	</div>
+</div>
+
+@endif
+	</div>
+<style>
+	.round {
+    background: white;
+    text-align: center;
+    border-radius: 17px;
+    padding: 13px;
+    margin: 10px;
+}
+</style>
 	<div class="col-8">
+		<div class="row">
+<div class="col-4">
+<div class="round">
+<h5>Previous Class Report</h5>
+@if (Auth::user()->type==2)
+<a href="{{ url('/student/manage_class') }}" target="_blank">Click Here</a>
+@elseif(Auth::user()->type==1)
+<a href="{{ url('/teacher/manage_class') }}" target="_blank">Click Here</a>
+
+@endif
+</div>
+</div>
+<div class="col-4">
+<div class="round">
+<h5>Upcoming Classes in Month</h5>
+<a href="{{ url('/upcoming/'.Auth::id()) }}" target="_blank">Click Here</a>
+</div>
+</div>
+<div class="col-4">
+<div class="round">
+<h5>{{Auth::user()->type==1?"Done Hours":"Remaining Hours"}}</h5>
+@if(floatval(Auth::user()->hours)==0)
+			<h3 style="color:{{Auth::user()->hours<61?'red;':'blue'}}">0:00</h3>
+			@else
+      <h3 class="bioer"  style="color:{{Auth::user()->hours<61?'red;':'blue'}}">{{ floatval(Auth::user()->hours)>0?(floor(floatval(Auth::user()->hours) / 60) .':'. floatval(Auth::user()->hours) % 60):("-".floor(floatval(-1*Auth::user()->hours) / 60) .':'. floatval(-1*Auth::user()->hours) % 60) }}</h3>
+@endif
+</div>
+</div>
+		</div>
 			<div style="padding: 2%; background: white; margin: 10px; border-radius: 10px; border: 1px solid #ccc; ">
 <div class="row">
 <div class="col-sm-6 m-2" style="border-right: 1px solid #ccc;">
@@ -91,6 +164,10 @@ Students:
 
 {{ implode(",",$clt) }}</h6>
 <h6>Cancel Request: {{Auth::user()->cancel_request}}</h6>
+@if (Auth::user()->type!=2)
+<h6>Graduation: {{Auth::user()->graduation}}</h6>
+<h6>Education: {{Auth::user()->education}}</h6>
+@endif
 </div>
 </div>
 

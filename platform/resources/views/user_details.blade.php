@@ -7,189 +7,86 @@
   grid-column: 1 / -1 !important;
     margin-top: 60px;
 flex-direction: column;
+background: none;
 }
 </style>
  <article>
 
-<form style="width: 90%; margin: 0 auto;" action="{{ url('/update') }}" method="POST" enctype="multipart/form-data"><br>
-  <h3 style="text-align: center;">Info of {{$user->name}}</h3>
-      @if ($message = session("message"))
-  <div class="alert alert-danger" role="alert">
-  {{$message}}
-</div>
-@endif
-@if ($success = session("success"))
-  <div class="alert alert-success" role="alert">
-  {{$success}}
-</div>
-@endif
+
 <div class="row">
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('Full Name')}}</label>
-    <input type="text" class="form-control" id="name" name="name"  value="{{ $user->name }}" aria-describedby="emailHelp" placeholder="Enter Full Name">
-  </div>
-<input type="hidden" name="id"  value="{{ $user->id }}">
-@csrf
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('Email address')}}</label>
-    <input type="email" class="form-control" id="email" readonly="" name="email" aria-describedby="emailHelp"  value="{{ $user->email }}" placeholder="Enter email">
-  </div>
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('Phone number')}}</label>
-    <input type="text" class="form-control" id="phone" readonly="" name="phone" aria-describedby="emailHelp"   value="{{ $user->phone }}" placeholder="Enter phone number">
-  </div>
-
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('Address')}}</label>
-    <input type="text" class="form-control" id="address1" name="address1" aria-describedby="emailHelp"  value="{{ $user->address1 }}" placeholder="Full Address">
-  </div>
-  </div>
-<div class="row">
-  @if ($user->type==1 OR $user->type==3)
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('National ID Number')}}</label>
-    <input type="text" class="form-control" id="national_id" name="national_id" aria-describedby="emailHelp"  value="{{ $user->national_id }}" placeholder="{{__('National ID Number')}}">
-  </div>
-
-
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('Calender Link')}}</label>
-    <input type="text" class="form-control" id="calender_link" name="calender_link" aria-describedby="emailHelp"  value="{{ $user->calender_link }}" placeholder="{{__('Calender Link')}}">
-  </div>
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('Zoom Link')}}</label>
-    <input type="text" class="form-control" id="zoom_link" name="zoom_link" aria-describedby="emailHelp"  value="{{ $user->zoom_link }}" placeholder="{{__('Zoom Link')}}">
-  </div>
-
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('Graduation')}}</label>
-    <input type="text" class="form-control" id="zoom_link" name="zoom_link" aria-describedby="emailHelp"  value="{{ $user->graduation }}" readonly="">
-  </div>
-  </div>
-  <div class="row">
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('Education')}}</label>
-    <input type="text" class="form-control" id="education" name="education" aria-describedby="emailHelp"  value="{{ $user->education }}" placeholder="{{__('Your Education')}}">
-  </div>
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('Gender')}}</label>
-    <select name="gender" id="gender" class="form-control">
-      <option value="Male" {{ $user->gender == "Male" ? "selected" : "" }}>Male</option>
-      <option value="Female" {{ $user->gender == "Female" ? "selected" : "" }}>Female</option>
-      <option value="Custom" {{ $user->gender == "Custom" ? "selected" : "" }}>Custom</option>
-    </select>
-  </div>
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('Timezone')}}</label>
-    <input type="text" class="form-control" id="timezone" name="timezone" aria-describedby="emailHelp"  value="{{ $user->timezone }}" placeholder="{{__('Your Timezone')}}">
-  </div>
-
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('Country')}}</label>
-    <input type="text" class="form-control" id="country" name="country" aria-describedby="emailHelp"  value="{{ $user->country }}" placeholder="{{__('Your Country')}}">
-  </div>
-    </div>
-  <div class="row">
-        <div class="form-group col-sm-12">
-    <label for="exampleInputEmail1">{{__('User Bio')}}</label>
-    <textarea class="form-control" id="bio" name="bio" aria-describedby="emailHelp" placeholder="{{__('Your Bio')}}">{{ $user->bio }}</textarea>
-  </div>
-
-  </div>
-    <div class="row">
-<div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('National ID Front Copy')}}</label><br>
-    @if ($user->national_id_front!='')
-      <img src="{{ url('/public/image/') }}/0{{ $user->national_id_front }}" alt="Profile" style="width: 100px;">
-    @endif
-  </div>
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('National ID Back Copy')}}</label><br>
-    @if ($user->national_id_back!='')
-      <img src="{{ url('/public/image/') }}/0{{ $user->national_id_back }}" alt="Profile" style="width: 100px;">
-    @endif
-  </div>
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('Your Photo')}}</label><br>
-
-    @if ($user->image!='')
-      <img src="{{ url('/public/image/') }}/0{{ $user->image }}" alt="Profile" style="width: 100px;">
-    @endif
-  </div>
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('Your CV')}}</label><br>
-    @if ($user->cv!='')
-      <a href="{{ url('/public/image/') }}/0{{ $user->cv }}" download>View your uploaded CV</a>
-    @endif
-  </div>
-  </div>
-
-  @endif
-  @if ($user->type==2)
-  
-
-  <div class="form-group col-sm-3" style="position: relative">
-    <label for="exampleInputEmail1">{{__('Timezone')}}</label>
-    <input type="text" class="form-control" id="timezone" name="timezone" required="" aria-describedby="emailHelp"  value="{{ $user->timezone }}" placeholder="{{__('Your Timezone')}}">
-  </div>
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('Country')}}</label>
-    <input type="text" class="form-control" id="country" name="country" autocomplete="off" required="" aria-describedby="emailHelp"  value="{{ $user->country }}" placeholder="{{__('Your Country')}}">
-  </div>
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('Client ID')}}</label>
-    <input type="text" class="form-control" id="gurdain_id" name="gurdain_id" aria-describedby="emailHelp"  value="{{ $user->gurdain_id }}" placeholder="Client is your parents who bear your costs here">
-  </div>
-
-  <div class="form-group col-sm-3">
-    <label for="exampleInputEmail1">{{__('Status')}}</label>
-    <input type="text" class="form-control"  value="{{ $user->status }}">
-  </div>
-  </div>
-  <div class="row">
-
-
-    <div class="form-group col-sm-6">
-    <label for="exampleInputEmail1">{{__('Student Evaluation')}}</label>
-    <textarea class="form-control" id="bio" name="bio" aria-describedby="emailHelp">{{ $user->evalu }}</textarea>
-  </div>
-
-  <div class="form-group col-sm-6">
-    <label for="exampleInputEmail1">{{__('Regular Evaluation')}}</label>
-    <textarea class="form-control" id="bio" name="bio" aria-describedby="emailHelp">{{ $user->reg_evalu }}</textarea>
-  </div>
-  </div>
-  @endif
-<div class="row">
-  <div class="form-group col-sm-2">
-    <label for="exampleInputEmail1">{{__('Date of Birth')}}</label>
-    <input type="date" class="form-control" id="dateofbirth" readonly name="dateofbirth" aria-describedby="emailHelp" value="{{ $user->dateofbirth }}">
-  </div>
-
-  <div class="form-group col-sm-2">
+  <div class="col-4">
+    <div style="padding: 2%; background: white; margin: 10px; border-radius: 10px; border: 1px solid #ccc; text-align: center;">
+    <img src="{{ url(empty($user->image)?"/public/logo/ag.jpg":"/public/image/0".$user->image) }}" alt="{{$user->name}}" style="width: 200px; border-radius: 100%;">
+    <h2>{{$user->name}}</h2>
     @if ($user->type==2)
-    <label for="exampleInputEmail1">{{__('Remaining Hours')}}</label>
-    @else
-    <label for="exampleInputEmail1">{{__('Done Hours')}}</label>
+      {{-- expr --}}
+    <h5>Client ID:{{$user->gurdain_id}}</h5>
     @endif
-    @if($user->hours==0)
-    <input class="form-control" id="bioer" name="bio" value="0:00">
-    @else
-    <input class="form-control" id="bioer" name="bio" value="{{ intval($user->hours)>0?(floor(intval($user->hours) / 60) .':'. intval($user->hours) % 60):("-".floor(intval(-1*$user->hours) / 60) .':'. intval(-1*$user->hours) % 60) }}">
-    @endif
-    <a href="javascript:void(0)" class="btn btn-success resp">Edit</a>
+    <div style="text-align: left">
+<h6>Email: {{$user->email}}</h6>
+<h6>Phone Number: {{$user->phone}}</h6>
+
+@if ($user->type!=2)
+<h6>ID Number: {{$user->national_id}}</h6>
+
+<br>
+<br>
+
+<h6>Zoom Link:<br><a style="line-break: anywhere;" href="{{$user->zoom_link}}" target="_blank">{{$user->zoom_link}}</a></h6>
+<h6>Calender Link:<br><a style="line-break: anywhere;" href="{{$user->calender_link}}" target="_blank">{{$user->calender_link}}</a></h6>
+
+@endif
+    </div>
+
+    </div>
+
+@if ($user->type==2)
+<div style="padding: 2%; background: white; margin: 10px; border-radius: 10px; border: 1px solid #ccc; text-align: center;">
+<h3>Student Evalution</h3>
+<p>
+  {{$user->evalu}}
+</p>
+</div>
+<div style="padding: 2%; background: white; margin: 10px; border-radius: 10px; border: 1px solid #ccc; text-align: center;">
+<h3>Regular Evalution</h3>
+<p>
+  {{$user->reg_evalu}}
+</p>
+    </div>
+
+@else
+<div style="padding: 2%; background: white; margin: 10px; border-radius: 10px; border: 1px solid #ccc; text-align: center;">
+<h3>My Bio</h3>
+<p>
+  {{$user->bio}}
+</p>
+    </div>
+@endif
+<div class="round">
+<h5>{{$user->type==1?"Done Hours":"Remaining Hours"}}</h5>
+@if(floatval($user->hours)==0)
+      <h3  class="bioer" style="color:{{$user->hours<61?'red;':'blue'}}">0:00</h3>
+      @else
+      <h3 class="bioer"  style="color:{{$user->hours<61?'red;':'blue'}}">{{ floatval($user->hours)>0?(floor(floatval($user->hours) / 60) .':'. floatval($user->hours) % 60):("-".floor(floatval(-1*$user->hours) / 60) .':'. floatval(-1*$user->hours) % 60) }}</h3>
+@endif
+
+@if (Auth::user()->type==3)
+  <button class="btn btn-danger resp">Edit</button>
+@endif
+
     <div class="main_edit" style="max-width: 500px; margin: 0px auto; display: none;">
         <div class="form-group">
     <label for="exampleInputEmail1">{{__('Hours in account')}}</label>
-    <input type="number" class="form-control" id="sd" value="{{intval($user->hours) / 60}}" name="hours" aria-describedby="emailHelp" >
+    <input type="number" class="form-control" id="sd" value="{{floatval($user->hours) / 60}}" name="hours" aria-describedby="emailHelp" >
     <input type="hidden" id="scrf" value="{{csrf_token()}}">
     <input type="hidden" id="id1" value="{{$user->id}}">
   </div>
       <a href="javascript:void(0)" class="btn btn-danger resp_2">Save</a>
       <span class="message"></span>
     </div>
-  </div>
-<script>
+
+
+    <script>
   $(document).ready(function() {
     $(".resp").click(function(event) {
       $(".main_edit").slideToggle(400);
@@ -205,7 +102,7 @@ flex-direction: column;
       })
       .done(function(datas) {
         var data = JSON.parse(datas); 
-        $("#bioer").val(data[0]);
+        $(".bioer").html(data[0]);
         $(".message").html(data[1]);
       })
       .fail(function() {
@@ -218,46 +115,99 @@ flex-direction: column;
     });
   });
 </script>
-  <div class="form-group col-sm-3">
-    @if ($user->type==2)
-    <label for="exampleInputEmail1">{{__('Subjects')}}</label>
-    @else
-    <label for="exampleInputEmail1">{{__('Subjects')}}</label>
-    @endif
-    <input class="form-control" id="bio" name="bio" value="{{ implode(",", $subjects) }}">
+</div>
   </div>
-  <div class="form-group col-sm-3">
-    @if ($user->type==2)
-    <label for="exampleInputEmail1">{{__('Teachers')}}</label>
-    @else
-    <label for="exampleInputEmail1">{{__('Students')}}</label>
-    @endif
-    <div style="border:1px solid #ccc; padding; 5px; overflow:hidden;">
-    @for($j = 0; $j<count($clients); $j++)
-    <div style="float:left; padding: 3px; border-radius:5px; border:1px solid #ccc;">{{$clients[$j]}}</div>
-    @endfor
+
+<style>
+  .round {
+    background: white;
+    text-align: center;
+    border-radius: 17px;
+    padding: 13px;
+    margin: 10px;
+}
+</style>
+  <div class="col-8">
+    <div class="row">
+<div class="col-6">
+<div class="round">
+<h5>Previous Class Report</h5>
+<a href="#1aed">Click Here</a>
+
+</div>
+</div>
+<div class="col-6">
+<div class="round">
+<h5>Upcoming Classes in Month</h5>
+<a href="{{ url('/upcoming/'.$user->id) }}" target="_blank">Click Here</a>
+</div>
+</div>
+
     </div>
-  </div>
-  <div class="form-group col-sm-2">
-    <label for="exampleInputEmail1">{{__('Cancel Requests')}}</label>
-    <input type="text" class="form-control" id="sd" value="{{$user->cancel_request}}" name="hours" aria-describedby="emailHelp">
-    <input type="hidden" id="scrf" value="{{csrf_token()}}">
-    <input type="hidden" id="id1" value="{{$user->id}}">
-  </div>
-  </div>
-  <div style="padding: 10px; overflow: hidden">
-  </div>
-      <div class="form-group col-sm-12">
-    <label for="exampleInputEmail1">{{__('Your Photo')}}</label><br>
-    @if ($user->image!='')
-      <img src="{{ url('/public/image') }}/0{{ $user->image }}" alt="Profile" style="width: 100px;">
-    @endif
-  </div>
-</form>
+      <div style="padding: 2%; background: white; margin: 10px; border-radius: 10px; border: 1px solid #ccc; ">
+<div class="row">
+<div class="col-sm-6 m-2" style="border-right: 1px solid #ccc;">
+<h6>Country: {{$user->country}}</h6>
+<h6>Timezone: {{$user->timezone}}</h6>
+<h6>Gender: {{$user->gender}}</h6>
+<h6>Birthday: {{$user->dateofbirth}}</h6>
+<h6>Address: {{$user->address1}}</h6>
+</div>
+@php
+  use App\Models\report;
+  use App\Models\User;
+  if($user->type==2)
+  {
+  $r = report::where("s_id","=",$user->id)->get();
+}else{
+  $r = report::where("t_id","=",$user->id)->get();
+}
+$subject = [];
+$clt = [];
+foreach ($r as $key => $value) {
+    if(!in_array($value->subject,$subject )){
+
+  array_push($subject,$value->subject);
+}
+
+  if($user->type==2)
+{
+  if(!in_array(User::find($value->t_id)->name,$clt )){
+
+  array_push($clt,User::find($value->t_id)->name);
+  }
+}else{
+if(!in_array(User::find($value->s_id)->name,$clt )){
+    
+  array_push($clt,User::find($value->s_id)->name);
+  }}
+}
+@endphp
+<div class="col-sm-4 m-2">
+<h6>Subjects: {{ implode(",",$subject) }}</h6>
+<h6>@if ($user->type==2)
+  Teacher:
+@else
+Students:
+@endif
+
+{{ implode(",",$clt) }}</h6>
+<h6>Cancel Request: {{$user->cancel_request}}</h6>
+@if ($user->type!=2)
+<h6>Graduation: {{$user->graduation}}</h6>
+<h6>Education: {{$user->education}}</h6>
+@endif
+</div>
+</div>
+
+
+    </div>
+    <div style="padding: 2%; background: white; margin: 10px; border-radius: 10px; border: 1px solid #ccc; text-align: center;">
 
 <div class="pre_class">
-  <h3>This month reports   <a class='btn btn-info float-right' style='width: 310px;' href='{{ url("/upcoming/".$user->id) }}'>Download Upcoming Month's Sheet</a>
-<button onclick="exportTableToExcel('tablon','table')" class="btn btn-success float-right">Download</button></h3>
+  <h3 onclick="exportTableToExcel('tablon','table')">Current Month Reports
+</h3>
+  {{--    <a class='btn btn-info float-right' style='width: 400px; !important' href='{{ url("/upcoming/".$user->id) }}'>Upcomings</a>   --}}
   <table class="table" id="tablon"> 
     <thead class="thead-light"> 
       <tr> 
@@ -296,9 +246,9 @@ flex-direction: column;
   </tbody>
   </table>
 </div>
-
+<div id="1aed"></div>
 <div class="pre_class">
-  <h3>Previous month reports <button onclick="exportTableToExcel('tablosn','table')" class="btn btn-success float-right">Download</button></h3>
+  <h3 onclick="exportTableToExcel('tablosn','table')">Previous month reports</h3>
   <table class="table" id="tablosn"> 
     <thead class="thead-light"> 
       <tr> 
@@ -336,6 +286,9 @@ flex-direction: column;
 @endforeach 
   </tbody>
   </table>
+</div>
+
+  </div>
 </div>
 
 
